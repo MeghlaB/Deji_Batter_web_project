@@ -143,10 +143,7 @@ export default function Navbar() {
                       <LuLayoutDashboard />
                       <span className="text-sm">Dashboard</span>
                     </Link>
-                    <div className="hidden md:flex items-center gap-1">
-                      <FaBolt />
-                      <span className="text-sm">Happy Hour</span>
-                    </div>
+                    
                     <Button
                       onClick={logOut}
                       className="hidden md:flex items-center gap-1"
@@ -158,10 +155,7 @@ export default function Navbar() {
                   </>
                 ) : (
                   <>
-                    <div className="hidden md:flex items-center gap-1">
-                      <FaBolt />
-                      <span className="text-sm">Happy Hour</span>
-                    </div>
+                    
                     <Link
                       to="/auth/login"
                       className="md:block bg-gradient-to-r from-green-500 to-blue-500 px-4 py-1 rounded-md text-sm font-semibold text-white"
@@ -171,9 +165,7 @@ export default function Navbar() {
                   </>
                 )}
 
-                <button className="bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-1 rounded-md text-sm font-semibold text-white">
-                  PC Builder
-                </button>
+               
 
                 {/* Mobile Profile Dropdown */}
                 {user && (

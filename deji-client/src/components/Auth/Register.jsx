@@ -1,7 +1,5 @@
-// Register.jsx
 import React, { useContext, useState } from "react";
 import {
-  Box,
   Button,
   Container,
   TextField,
@@ -11,10 +9,9 @@ import {
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
+
 import { AuthContext } from "../../Provider/Authprovider";
 
 function Register() {
@@ -25,22 +22,32 @@ function Register() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
   const onSubmit = async (data) => {
     if (data.password !== data.confirmPassword) {
-      toast.error("Passwords do not match");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Passwords do not match!",
+      });
       return;
     }
 
     setLoading(true);
+
     try {
+      // Create user
       const result = await createUser(data.email, data.password);
       const user = result.user;
+      console.log(user)
 
+      // Update profile
       await updateUserProfile(data.name, data.photo);
 
+      // Save to database
       const userInfo = {
         name: data.name,
         email: data.email,
@@ -49,12 +56,28 @@ function Register() {
         status: "active",
       };
 
-      await axios.post("http://localhost:5000/users", userInfo);
+      const res = await axios.post("http://localhost:5000/users", userInfo);
 
-      toast.success("Registered successfully!");
-      navigate("/");
+      if (res.data.insertedId || res.data.success) {
+        reset();
+        Swal.fire({
+          position: "top-center",
+          icon: "success",
+          title: "Account created successfully!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate("/");
+      } else {
+        throw new Error("User registration failed on server.");
+      }
     } catch (error) {
-      toast.error("Registration failed",error);
+      console.error("Registration Error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Registration Failed",
+        text: error.message || "Something went wrong",
+      });
     } finally {
       setLoading(false);
     }
@@ -68,7 +91,6 @@ function Register() {
         </Typography>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Name */}
           <TextField
             label="Name"
             fullWidth
@@ -77,8 +99,6 @@ function Register() {
             error={!!errors.name}
             helperText={errors.name?.message}
           />
-
-          {/* Email */}
           <TextField
             label="Email"
             type="email"
@@ -88,8 +108,6 @@ function Register() {
             error={!!errors.email}
             helperText={errors.email?.message}
           />
-
-          {/* Photo URL */}
           <TextField
             label="Photo URL"
             fullWidth
@@ -98,29 +116,29 @@ function Register() {
             error={!!errors.photo}
             helperText={errors.photo?.message}
           />
-
-          {/* Password */}
           <TextField
             label="Password"
             type="password"
             fullWidth
             margin="normal"
-            {...register("password", { required: "Password is required", minLength: 6 })}
+            {...register("password", {
+              required: "Password is required",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters",
+              },
+            })}
             error={!!errors.password}
-            helperText={
-              errors.password?.type === "minLength"
-                ? "Password must be at least 6 characters"
-                : errors.password?.message
-            }
+            helperText={errors.password?.message}
           />
-
-          {/* Confirm Password */}
           <TextField
             label="Confirm Password"
             type="password"
             fullWidth
             margin="normal"
-            {...register("confirmPassword", { required: "Confirm your password" })}
+            {...register("confirmPassword", {
+              required: "Confirm your password",
+            })}
             error={!!errors.confirmPassword}
             helperText={errors.confirmPassword?.message}
           />
@@ -144,8 +162,6 @@ function Register() {
           </Link>
         </Typography>
       </Paper>
-
-      <ToastContainer position="top-center" autoClose={1500} hideProgressBar />
     </Container>
   );
 }

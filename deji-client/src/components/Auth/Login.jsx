@@ -1,4 +1,3 @@
-// Login.jsx
 import React, { useContext, useState } from "react";
 import {
   Box,
@@ -14,14 +13,12 @@ import {
 import { Google as GoogleIcon } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
 import { AuthContext } from "../../Provider/Authprovider";
 
 function Login() {
-  const { signInUser, GoogleLogin } = useContext(AuthContext);
+  const { signIn, GoogleLogin } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -34,36 +31,59 @@ function Login() {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      await signInUser(data.email, data.password);
-      toast.success("Logged in successfully!");
+      const result = await signIn(data.email, data.password);
+      const user = result.user;
+      console.log(user)
+      Swal.fire({
+        position: "top-center",
+        icon: "success",
+        title: "User Logged In Successfully",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       navigate("/");
     } catch (error) {
-      toast.error("Invalid email or password",error);
+      console.error("Login Error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Login Failed",
+        text: error.message || "Something went wrong",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleSign = async () => {
-    try {
-      const result = await GoogleLogin();
-      const user = result.user;
-
-      const userInfo = {
-        name: user.displayName,
-        email: user.email,
-        photo: user.photoURL,
-        role: "user",
-        status: "active",
-      };
-
-      await axios.post("http://localhost:5000/users", userInfo);
-
-      toast.success("Logged in with Google");
-      navigate("/");
-    } catch (error) {
-      toast.error("Google login failed",error);
-    }
+  const handleGoogleSign = async() => {
+    GoogleLogin()
+      .then((res) => {
+        const userInfo = {
+          email: res.user?.email,
+          name: res.user?.displayName,
+          photo: res.user?.photoURL,
+        };
+       axios.post("http://localhost:5000/users", userInfo)
+       .then((res) => {
+          if (res.data.insertedId || res.data.success) {
+            Swal.fire({
+              position: "top-center",
+              icon: "success",
+              title: "Account Created Successfully",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+          navigate("/");
+        });
+      })
+      .catch((error) => {
+        console.error("Google Sign-in Error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Google Login Failed",
+          text: error.message || "Something went wrong",
+        });
+      });
   };
 
   return (
@@ -120,8 +140,6 @@ function Login() {
           </IconButton>
         </Box>
       </Paper>
-
-      <ToastContainer position="top-center" autoClose={1500} hideProgressBar />
     </Container>
   );
 }

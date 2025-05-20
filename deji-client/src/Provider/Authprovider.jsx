@@ -44,9 +44,9 @@ function AuthProvider({ children }) {
   };
 
   // updatephoto
-  const updateUserprofile =(name,photo)=>{
+  const updateUserProfile =(name,photo)=>{
     return updateProfile(auth.currentUser,{
-      displayName:name ,photoURL:photo
+      displayName:name,photoURL:photo
     })
 
   }
@@ -76,7 +76,7 @@ useEffect(() => {
     createUser,
     signIn,
     logOut,
-    updateUserprofile ,
+    updateUserProfile,
     GoogleLogin
   };
   return (
