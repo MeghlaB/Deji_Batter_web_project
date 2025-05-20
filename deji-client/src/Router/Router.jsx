@@ -4,6 +4,13 @@ import {
 } from "react-router-dom";
 import MainLayout from "../Layout/MainLayout";
 import Home from "../components/Home/Home";
+import Product from "../Pages/Product";
+import BLUCK_ORDERS from "../Pages/BLUCK_ORDERS";
+import Contact from "../Pages/Contact";
+import Blog from "../Pages/Blog";
+import Cart from "../Pages/Cart";
+import Login from "../components/Auth/Login";
+import Register from "../components/Auth/Register";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +21,33 @@ const router = createBrowserRouter([
         path: "/",
         element: <Home />,
       },
+      {
+        path:'/products',
+        element:<Product/>
+      },
+      {
+        path:'/b2b',
+        element:<BLUCK_ORDERS/>
+      },
+      {
+        path:'/contact',
+        element:<Contact/>
+      },
+      {
+        path:'/blog',
+        element:<Blog/>
+      },
+      {
+        path:'/cart',
+        element:<Cart/>
+      },{
+        path:'/auth/login',
+        element:<Login/>
+      },
+      {
+        path:'/auth/register',
+        element:<Register/>
+      }
     ],
   },
 ]);

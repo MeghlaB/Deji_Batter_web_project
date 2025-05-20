@@ -1,5 +1,4 @@
-// Navbar.jsx
-import React from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -14,8 +13,21 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Slide from '@mui/material/Slide';
+import { Link, useLocation } from 'react-router-dom';
+import { AuthContext } from '../../Provider/Authprovider';
 
-const navItems = ['HOME', 'PRODUCTS', 'ABOUT DEJI', 'CLIENT FEEDBACK', 'NEWS', 'CONTACT US'];
+// Icons from react-icons
+import { FaBolt } from 'react-icons/fa';
+import { MdLogout } from 'react-icons/md';
+import { LuLayoutDashboard } from 'react-icons/lu';
+
+const navItems = [
+  { label: 'HOME', path: '/' },
+  { label: 'PRODUCTS', path: '/products' },
+  { label: 'BULK ORDERS', path: '/b2b' },
+  { label: 'BLOG', path: '/blog' },
+  { label: 'CONTACT US', path: '/contact' },
+];
 
 function HideOnScroll({ children }) {
   const trigger = useScrollTrigger();
@@ -27,7 +39,11 @@ function HideOnScroll({ children }) {
 }
 
 export default function Navbar() {
+  const { user, logOut } = useContext(AuthContext);
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const profileRef = useRef(null);
+  const location = useLocation();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -40,12 +56,37 @@ export default function Navbar() {
       </Typography>
       <List>
         {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <ListItemText primary={item} />
+          <ListItem key={item.label} disablePadding>
+            <ListItemButton
+              sx={{ textAlign: 'center' }}
+              component={Link}
+              to={item.path}
+              selected={location.pathname === item.path}
+            >
+              <ListItemText
+                primary={item.label}
+                primaryTypographyProps={{
+                  style: {
+                    color: location.pathname === item.path ? 'green' : '#000',
+                    fontWeight: location.pathname === item.path ? 700 : 500,
+                  },
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
+
+        {!user && (
+          <ListItem disablePadding>
+            <ListItemButton
+              component={Link}
+              to="/auth/login"
+              sx={{ textAlign: 'center' }}
+            >
+              <ListItemText primary="LOGIN" />
+            </ListItemButton>
+          </ListItem>
+        )}
       </List>
     </Box>
   );
@@ -64,38 +105,115 @@ export default function Navbar() {
             >
               <MenuIcon />
             </IconButton>
-            {/* Logo */}
 
             <Typography
               variant="h6"
               component="div"
-              color='green'
+              color="green"
               sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}
             >
-              {/* <img src="/logo.png" alt="DEJI Logo" style={{ height: 32, marginRight: 8 }} /> */}
               DEJI
             </Typography>
-            {/* Desktop Nav Items */}
-            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+
+            <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 2 }}>
               {navItems.map((item) => (
                 <Button
-                  key={item}
+                  key={item.label}
+                  component={Link}
+                  to={item.path}
                   sx={{
-                    color: item === 'HOME' ? 'green' : '#000',
-                    fontWeight: 600,
+                    color: location.pathname === item.path ? 'green' : '#000',
+                    fontWeight: location.pathname === item.path ? 700 : 600,
                     textTransform: 'none',
-                    mx: 1,
                   }}
                 >
-                  {item}
+                  {item.label}
                 </Button>
               ))}
+
+              <div className="flex items-center gap-4">
+                {user ? (
+                  <>
+                    <img
+                      src={user.photoURL}
+                      alt="profile"
+                      className="w-8 h-8 rounded-full hidden md:block"
+                    />
+                    <Link to="/dashboard" className="hidden md:flex items-center gap-1">
+                      <LuLayoutDashboard />
+                      <span className="text-sm">Dashboard</span>
+                    </Link>
+                    <div className="hidden md:flex items-center gap-1">
+                      <FaBolt />
+                      <span className="text-sm">Happy Hour</span>
+                    </div>
+                    <Button
+                      onClick={logOut}
+                      className="hidden md:flex items-center gap-1"
+                      sx={{ textTransform: 'none', color: '#000' }}
+                    >
+                      <MdLogout />
+                      <span className="text-sm">LogOut</span>
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <div className="hidden md:flex items-center gap-1">
+                      <FaBolt />
+                      <span className="text-sm">Happy Hour</span>
+                    </div>
+                    <Link
+                      to="/auth/login"
+                      className="md:block bg-gradient-to-r from-green-500 to-blue-500 px-4 py-1 rounded-md text-sm font-semibold text-white"
+                    >
+                      Login
+                    </Link>
+                  </>
+                )}
+
+                <button className="bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-1 rounded-md text-sm font-semibold text-white">
+                  PC Builder
+                </button>
+
+                {/* Mobile Profile Dropdown */}
+                {user && (
+                  <div className="relative md:hidden" ref={profileRef}>
+                    <img
+                      src={user.photoURL}
+                      alt="profile"
+                      onClick={() => setShowDropdown(!showDropdown)}
+                      className="w-8 h-8 rounded-full cursor-pointer"
+                    />
+                    {showDropdown && (
+                      <div className="absolute right-0 mt-2 w-32 text-black bg-white shadow-md rounded-md py-2 z-50">
+                        <Link
+                          to="/dashboard"
+                          className="block px-4 py-2 text-sm hover:bg-gray-200"
+                        >
+                          <div className="flex items-center gap-1">
+                            <LuLayoutDashboard />
+                            <p>Dashboard</p>
+                          </div>
+                        </Link>
+                        <button
+                          onClick={logOut}
+                          className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
+                        >
+                          <div className="flex items-center gap-1">
+                            <MdLogout />
+                            <span>Logout</span>
+                          </div>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </Box>
           </Toolbar>
         </AppBar>
       </HideOnScroll>
 
-      {/* Drawer for mobile */}
       <Box component="nav">
         <Drawer
           variant="temporary"
@@ -111,7 +229,6 @@ export default function Navbar() {
         </Drawer>
       </Box>
 
-      {/* To prevent content from hiding behind AppBar */}
       <Toolbar />
     </>
   );
