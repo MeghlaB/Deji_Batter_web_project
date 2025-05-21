@@ -1,4 +1,4 @@
-import React from "react";
+
 import {
   TextField,
   Button,
@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const InquiryForm = () => {
   const {
@@ -19,19 +20,37 @@ const InquiryForm = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const [status, setStatus] = React.useState(null);
+
 
   const onSubmit = async (data) => {
-    setStatus(null);
+    const detailsData = {
+      name: data?.name,
+      email: data?.email,
+      phone: data?.phone,
+      company: data?.company,
+      message: data?.message,
+    };
+
     try {
-      await axios.post("http://localhost:5000/api/inquiries", data);
-      setStatus({ type: "success", msg: "✅ Your inquiry was submitted successfully!" });
-      reset();
+     const details= await axios.post("http://localhost:5000/inquiries", detailsData);
+       if (details.data.insertedId) {
+        reset();
+        Swal.fire({
+          title: " Successfully",
+          icon: "success",
+          draggable: true,
+        });
+        // Navigate if needed
+        // navigate("/addproduct");
+      }
+      reset(); // clear form
     } catch (err) {
-      setStatus({
-        type: "error",
-        msg: "❌ Failed to submit inquiry. Please try again later.",err
-      });
+       Swal.fire({
+          title: `Please try again ${err}`,
+          icon: "error",
+          draggable: true,
+        });
+      
     }
   };
 
@@ -96,11 +115,7 @@ const InquiryForm = () => {
           </Button>
         </Box>
 
-        {status && (
-          <Box mt={3}>
-            <Alert severity={status.type}>{status.msg}</Alert>
-          </Box>
-        )}
+        
       </form>
     </Paper>
   );

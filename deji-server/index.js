@@ -34,6 +34,7 @@ async function run() {
     await client.connect();
     const usersCollection = client.db("DejiBattery").collection("users");
     const productsCollection = client.db("DejiBattery").collection("products");
+    const inquiriesCollection = client.db("DejiBattery").collection("inquiries");
 
     // users post collection api
     app.post("/users", async (req, res) => {
@@ -110,7 +111,18 @@ app.get('/products/:id', async (req, res) => {
   res.send([product]);
 });
 
+app.post('/inquiries',async(req,res)=>{
+  const inquiriesData = req.body
+  const result = await inquiriesCollection.insertOne(inquiriesData)
+  res.send(result)
+})
 
+
+app.get('/inquiries',async(req,res)=>{
+
+  const result = await inquiriesCollection.find().toArray()
+  res.send(result)
+})
 
 
 
