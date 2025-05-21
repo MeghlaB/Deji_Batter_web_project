@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
+import { FaRobot } from "react-icons/fa";
+import { Link } from "react-router-dom"; // optional: if you're using React Router
 
 import image1 from '../../assets/banner-battery.jpeg';
 import image2 from '../../assets/banner-battery.jpg';
@@ -39,7 +41,7 @@ export default function Banner() {
   }, [nextSlider]);
 
   return (
-    <div className="relative w-full h-[550px] overflow-hidden">
+    <div className="relative w-full h-[600px] overflow-hidden">
       {/* Slider Images */}
       <div
         className="flex transition-transform duration-700 ease-in-out h-full"
@@ -52,25 +54,37 @@ export default function Banner() {
               alt={`Slide ${idx + 1}`}
               className="w-full h-full object-cover"
             />
-           
-            <div className="absolute inset-0 bg-black/60"></div>
+            <div className="absolute inset-0 bg-black/70"></div>
           </div>
         ))}
       </div>
 
       {/* Text Content */}
       <div className="absolute top-0 left-0 z-20 h-full w-full flex items-center justify-between px-6 md:px-20">
-        {/* Left Text Side */}
+        {/* Left Side - Text */}
         <div className="text-white max-w-xl space-y-5">
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-green-400">
-            {carouselImages[currentSlider].title}
-          </h2>
-          <p className="text-sm md:text-lg">
-            {carouselImages[currentSlider].description}
-          </p>
-          <button className="mt-3 px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-full shadow">
-            Learn More
-          </button>
+          <h1 className="text-3xl md:text-5xl font-extrabold leading-tight text-green-400">
+            Singapore’s Longest-Lasting Phone Batteries
+            <br />
+            <span className="text-white text-xl md:text-2xl">12-Month Warranty</span>
+          </h1>
+          <p className="text-sm md:text-lg">{carouselImages[currentSlider].description}</p>
+
+          {/* CTA Buttons */}
+          <div className="flex gap-4 mt-4">
+            <Link
+              to="/products"
+              className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full shadow"
+            >
+              Shop Now
+            </Link>
+            <Link
+              to="/b2b"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full shadow"
+            >
+              Bulk Orders
+            </Link>
+          </div>
         </div>
 
         {/* Right Image Side */}
@@ -101,6 +115,14 @@ export default function Banner() {
       </button>
       <button onClick={nextSlider} className="absolute right-3 top-1/2 -translate-y-1/2 bg-white text-black p-2 rounded-full z-30 shadow">
         ›
+      </button>
+
+      {/* Floating AI Chatbot Button */}
+      <button
+        className="fixed bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white p-4 rounded-full shadow-lg z-50"
+        onClick={() => alert("AI Chatbot coming soon...")}
+      >
+        <FaRobot size={24} />
       </button>
     </div>
   );
