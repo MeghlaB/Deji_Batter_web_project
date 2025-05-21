@@ -5,15 +5,11 @@ const cors = require("cors");
 require("dotenv").config();
 const port = process.env.PORT || 5000;
 
-
 // midleWare
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-     
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
+    origin: ["http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
 );
@@ -38,33 +34,29 @@ async function run() {
     await client.connect();
     const usersCollection = client.db("DejiBattery").collection("users");
     const productsCollection = client.db("DejiBattery").collection("products");
-   
-  
-  
 
     // users post collection api
     app.post("/users", async (req, res) => {
       const userData = req.body;
-    
+
       const query = { email: userData.email };
       const exitingUser = await usersCollection.findOne(query);
       if (exitingUser) {
         return res.send({ message: "user already exits", instertedId: null });
       }
       const result = await usersCollection.insertOne(userData);
-      
+
       res.send(result);
     });
 
     // user get collection api
     app.get("/users", async (req, res) => {
       const result = await usersCollection.find().toArray();
-  //  console.log(result)
+      //  console.log(result)
       res.send(result);
     });
 
-
-    app.get("/users-Admin",  async (req, res) => {
+    app.get("/users-Admin", async (req, res) => {
       const result = await usersCollection.find().toArray();
       // console.log(result);
       res.send(result);
@@ -77,20 +69,48 @@ async function run() {
       const user = await usersCollection.findOne(query);
       res.send({ admin: user?.role === "admin" });
     });
-   
 
-app.post('/add-products',async(req,res)=>{
-  const productsData = req.body
-  const result = await productsCollection.insertOne(productsData)
-  console.log(result)
-  res.send(result)
-})
+    app.post("/add-products", async (req, res) => {
+      const productsData = req.body;
+      const result = await productsCollection.insertOne(productsData);
+      console.log(result);
+      res.send(result);
+    });
+
+    app.get("/products", async (req, res) => {
+      const products = await productsCollection.find().toArray();
+      res.send(products);
+    });
+
+    // app.get("/products/:id",async(req,res)=>{
+    //   const id = req.params.id
+    //   const query= {_id:new ObjectId(id)}
+    //   const result = await productsCollection.find(query).toArray()
+    //   res.send(result)
+    // })
+app.get('/products/:id', async (req, res) => {
+  const id = req.params.id;
+  const product = await productsCollection.findOne({ _id: new ObjectId(id) });
+
+  if (!product) return res.status(404).send({ error: 'Product not found' });
+
+  product.specifications = {
+    Model: product.model,
+    "Battery Type": product.batteryType,
+    Capacity: product.capacity,
+    Voltage: product.voltage,
+    "Limited Voltage": product.limitedVoltage,
+    "Charging Time": product.chargingTime,
+    "Standby Time": product.standbyTime,
+    "Cycle Time": product.cycleTime,
+    Safety: product.safety,
+    Brand: product.brand,
+  };
+
+  res.send([product]);
+});
 
 
-app.get('/products',async(req,res)=>{
-  const products = await productsCollection.find().toArray()
-  res.send(products)
-})
 
 
 
@@ -99,9 +119,9 @@ app.get('/products',async(req,res)=>{
 
 
 
-    
+
+
   } finally {
-   
   }
 }
 run().catch(console.dir);

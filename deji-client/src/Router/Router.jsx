@@ -13,6 +13,7 @@ import Login from "../components/Auth/Login";
 import Register from "../components/Auth/Register";
 import Dashbaord from "../Dashboard/Dashbaord";
 import AddProductForm from "../Dashboard/AdminDashboard/AdminFeauter/AddProduct";
+import ProductDetails from "../Pages/ProductDetails";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path:'/auth/register',
         element:<Register/>
+      },
+      {
+        path:'/products/:id',
+        element:<ProductDetails/>
       }
     ],
   

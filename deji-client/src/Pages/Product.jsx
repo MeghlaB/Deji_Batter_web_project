@@ -12,6 +12,8 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import ProductCard from "../components/ProductCard/ProductCard";
 import * as tf from "@tensorflow/tfjs";
+import { Link } from "react-router-dom";
+
 
 // Fetch products from backend
 const fetchProducts = async () => {
@@ -149,7 +151,9 @@ const Product = () => {
       <Grid container spacing={2}>
         {filtered.map((product) => (
           <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
-            <ProductCard product={product} handleAddToCart={handleAddToCart} />
+            <Link to={`/products/${product._id}`}>
+              <ProductCard product={product} handleAddToCart={handleAddToCart} />
+            </Link>
           </Grid>
         ))}
       </Grid>

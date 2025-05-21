@@ -10,6 +10,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import ProductCard from "../ProductCard/ProductCard";
+import { Link } from "react-router-dom";
 
 // Fetch products from backend
 const fetchProducts = async () => {
@@ -59,17 +60,22 @@ const FeaturedProduct = () => {
 
   return (
     <div className="container mx-auto mt-10">
-    <h1 className="text-center text-2xl font-bold">FeaturedProduct</h1>
-        <Box sx={{ mt: 4, px: 3, mx: "auto", width: "container" }}>
-      {/* Product Grid */}
-      <Grid container spacing={2}>
-        {products.map((product) => (
-          <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
-            <ProductCard product={product} handleAddToCart={handleAddToCart} />
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
+      <h1 className="text-center text-2xl font-bold">FeaturedProduct</h1>
+      <Box sx={{ mt: 4, px: 3, mx: "auto", width: "container" }}>
+        {/* Product Grid */}
+        <Grid container spacing={2}>
+          {products.map((product) => (
+            <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
+              <Link to={`/products/${product._id}`}>
+                <ProductCard
+                  product={product}
+                  handleAddToCart={handleAddToCart}
+                />
+              </Link>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
     </div>
   );
 };
