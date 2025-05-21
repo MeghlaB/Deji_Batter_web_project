@@ -37,6 +37,7 @@ async function run() {
   try {
     await client.connect();
     const usersCollection = client.db("DejiBattery").collection("users");
+    const productsCollection = client.db("DejiBattery").collection("products");
    
   
   
@@ -58,7 +59,7 @@ async function run() {
     // user get collection api
     app.get("/users", async (req, res) => {
       const result = await usersCollection.find().toArray();
-   console.log(result)
+  //  console.log(result)
       res.send(result);
     });
 
@@ -77,6 +78,27 @@ async function run() {
       res.send({ admin: user?.role === "admin" });
     });
    
+
+app.post('/add-products',async(req,res)=>{
+  const productsData = req.body
+  const result = await productsCollection.insertOne(productsData)
+  console.log(result)
+  res.send(result)
+})
+
+
+app.get('/products',async(req,res)=>{
+  const products = await productsCollection.find().toArray()
+  res.send(products)
+})
+
+
+
+
+
+
+
+
     
   } finally {
    

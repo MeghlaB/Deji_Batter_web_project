@@ -11,6 +11,8 @@ import Blog from "../Pages/Blog";
 import Cart from "../Pages/Cart";
 import Login from "../components/Auth/Login";
 import Register from "../components/Auth/Register";
+import Dashbaord from "../Dashboard/Dashbaord";
+import AddProductForm from "../Dashboard/AdminDashboard/AdminFeauter/AddProduct";
 
 const router = createBrowserRouter([
   {
@@ -49,7 +51,21 @@ const router = createBrowserRouter([
         element:<Register/>
       }
     ],
+  
+    
   },
+  // dashbaord
+ {
+  path: '/dashboard',
+  element: <Dashbaord />,
+  children: [
+    {
+      path: 'addproduct',
+      element: <AddProductForm />
+    }
+  ]
+}
+
 ]);
 
 export default router;
