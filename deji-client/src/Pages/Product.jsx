@@ -7,13 +7,13 @@ import {
   TextField,
   MenuItem,
   Button,
+  Slider,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import ProductCard from "../components/ProductCard/ProductCard";
 import * as tf from "@tensorflow/tfjs";
 import { Link } from "react-router-dom";
-
 
 // Fetch products from backend
 const fetchProducts = async () => {
@@ -40,7 +40,7 @@ const Product = () => {
   });
 
   const [brand, setBrand] = useState("");
-  const [priceLimit, setPriceLimit] = useState(99999);
+  const [priceRange, setPriceRange] = useState([20, 50]); // min 20, max 50 SGD
   const [recommendation, setRecommendation] = useState(null);
 
   const handleAddToCart = (product) => {
@@ -70,12 +70,15 @@ const Product = () => {
     setRecommendation(products[bestIndex]);
   };
 
-  // Get unique brands
-  const brands = [...new Set(products.map((p) => p.brand))];
+  // Filter brands to only iPhone and Samsung
+  const filteredBrands = ["iPhone", "Samsung"];
 
-  // Filtered products
+  // Filtered products by brand and price range
   const filtered = products.filter(
-    (p) => (brand ? p.brand === brand : true) && p.price <= priceLimit
+    (p) =>
+      (brand ? p.brand === brand : true) &&
+      p.price >= priceRange[0] &&
+      p.price <= priceRange[1]
   );
 
   if (isLoading)
@@ -93,72 +96,107 @@ const Product = () => {
     );
 
   return (
- <div className="container mx-auto mt-4">
-     <Box sx={{ mt: 4, px: 3, mx: "auto", width: "container" }}>
-      <Typography variant="h4" className="text-center" fontWeight="bold" mb={3}>
-        🛍️ Products
-      </Typography>
-
-     <div className="py-8">
-       {/* Filters */}
-      <Box display="flex" gap={2} mb={3}>
-        <TextField
-          select
-          label="Filter by Brand"
-          value={brand}
-          onChange={(e) => setBrand(e.target.value)}
-          sx={{ minWidth: 180 }}
+    <div className="container mx-auto mt-4 px-4">
+      <Box sx={{ mt: 4, mx: "auto", maxWidth: 1200 }}>
+        <Typography
+          variant="h4"
+          className="text-center"
+          fontWeight="bold"
+          mb={3}
         >
-          <MenuItem value="">All Brands</MenuItem>
-          {brands.map((b, i) => (
-            <MenuItem key={i} value={b}>
-              {b}
-            </MenuItem>
-          ))}
-        </TextField>
+          🛍️ Our Products
+        </Typography>
 
-        <TextField
-          type="number"
-          label="Max Price"
-          value={priceLimit}
-          onChange={(e) => setPriceLimit(Number(e.target.value))}
-        />
-
-        <Button
-          variant="contained"
-          onClick={generateRecommendation}
-          sx={{ whiteSpace: "nowrap" }}
+        {/* Filters */}
+        <Box
+          display="flex"
+          flexDirection={{ xs: "column", sm: "row" }}
+          gap={3}
+          mb={5}
+          alignItems="center"
+          justifyContent="center"
         >
-          🎯 Recommend Product
-        </Button>
-      </Box>
+          <TextField
+            select
+            label="Filter by Brand"
+            value={brand}
+            onChange={(e) => setBrand(e.target.value)}
+            sx={{ minWidth: 180 }}
+            size="small"
+          >
+            <MenuItem value="">All Brands</MenuItem>
+            {filteredBrands.map((b) => (
+              <MenuItem key={b} value={b}>
+                {b}
+              </MenuItem>
+            ))}
+          </TextField>
 
-      {/* Recommended Product */}
-      {recommendation && (
-        <Box mb={3}>
-          <Typography variant="h6" gutterBottom>
-            🎉 Recommended for You:
-          </Typography>
-          <ProductCard
-            product={recommendation}
-            handleAddToCart={handleAddToCart}
-          />
+          <Box sx={{ width: 240 }}>
+            <Typography gutterBottom>Price Range (SGD)</Typography>
+            <Slider
+              value={priceRange}
+              onChange={(_, newValue) => setPriceRange(newValue)}
+              valueLabelDisplay="auto"
+              min={20}
+              max={50}
+              step={1}
+              marks={[
+                { value: 20, label: "20" },
+                { value: 50, label: "50" },
+              ]}
+              sx={{ color: "primary.main" }}
+            />
+          </Box>
+
+          <Button
+            variant="contained"
+            onClick={generateRecommendation}
+            sx={{ whiteSpace: "nowrap", height: 40 }}
+          >
+            🎯 Recommend Product
+          </Button>
         </Box>
-      )}
-     </div>
 
-      {/* Product Grid */}
-      <Grid container spacing={2}>
-        {filtered.map((product) => (
-          <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
-            <Link to={`/products/${product._id}`}>
-              <ProductCard product={product} handleAddToCart={handleAddToCart} />
-            </Link>
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
- </div>
+        {/* Recommended Product */}
+        {recommendation && (
+          <Box mb={5}>
+            <Typography variant="h6" gutterBottom>
+              🎉 Recommended for You:
+            </Typography>
+            <ProductCard
+              product={recommendation}
+              handleAddToCart={handleAddToCart}
+            />
+          </Box>
+        )}
+
+        {/* Product Grid */}
+        <Grid container spacing={3}>
+          {filtered.length > 0 ? (
+            filtered.map((product) => (
+              <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
+                <Link to={`/products/${product._id}`} style={{ textDecoration: 'none' }}>
+                  <ProductCard
+                    product={product}
+                    handleAddToCart={handleAddToCart}
+                  />
+                </Link>
+              </Grid>
+            ))
+          ) : (
+            <Typography
+              variant="body1"
+              textAlign="center"
+              color="text.secondary"
+              sx={{ width: "100%", mt: 4 }}
+            >
+              No products found for selected filters.
+            </Typography>
+          )}
+        </Grid>
+      </Box>
+    </div>
   );
 };
 

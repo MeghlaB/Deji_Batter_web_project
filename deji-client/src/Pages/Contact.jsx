@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-
+import { IoLogoWhatsapp } from "react-icons/io5";
 const ContactPage = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [loading, setLoading] = useState(false);
@@ -113,7 +113,7 @@ const ContactPage = () => {
           zIndex: 1000,
         }}
       >
-        WhatsApp Us
+        <IoLogoWhatsapp />
       </a>
     </div>
   );
