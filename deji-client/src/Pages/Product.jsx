@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Grid,
@@ -91,12 +91,14 @@ const Product = () => {
     );
 
   return (
-    <Box sx={{ mt: 4, px: 3, mx: "auto", width: "container" }}>
-      <Typography variant="h4" fontWeight="bold" mb={3}>
+ <div className="container mx-auto mt-4">
+     <Box sx={{ mt: 4, px: 3, mx: "auto", width: "container" }}>
+      <Typography variant="h4" className="text-center" fontWeight="bold" mb={3}>
         🛍️ Products
       </Typography>
 
-      {/* Filters */}
+     <div className="py-8">
+       {/* Filters */}
       <Box display="flex" gap={2} mb={3}>
         <TextField
           select
@@ -141,6 +143,7 @@ const Product = () => {
           />
         </Box>
       )}
+     </div>
 
       {/* Product Grid */}
       <Grid container spacing={2}>
@@ -151,6 +154,7 @@ const Product = () => {
         ))}
       </Grid>
     </Box>
+ </div>
   );
 };
 
