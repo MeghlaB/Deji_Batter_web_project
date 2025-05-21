@@ -3,6 +3,7 @@ import {
   BookImageIcon,
   Boxes,
   Home,
+  HomeIcon,
   User,
   UserPlus,
 } from 'lucide-react';
@@ -23,6 +24,10 @@ function AdminDashboard() {
         <Link to="/dashboard/addproduct" className="flex items-center gap-3 hover:text-gray-300">
           <FaCartPlus size={20} />
           Add Product
+        </Link>
+        <Link to="/" className="flex items-center gap-3 hover:text-gray-300">
+          <HomeIcon size={20} />
+         Home
         </Link>
       </div>
 

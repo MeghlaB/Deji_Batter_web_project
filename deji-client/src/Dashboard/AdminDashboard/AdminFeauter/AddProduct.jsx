@@ -1,202 +1,258 @@
 import React from "react";
-import { useForm } from "react-hook-form";
 import {
-  Box,
   Button,
   Grid,
-  InputLabel,
-  MenuItem,
-  Select,
   TextField,
   Typography,
   Paper,
+  Box,
 } from "@mui/material";
+import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
-
-const image_hosting_key = import.meta.env.VITE_IMAGEHOSTING;
-const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
+const imageHostingKey = import.meta.env.VITE_IMAGEHOSTING;
+const imageHostingURL = `https://api.imgbb.com/1/upload?key=${imageHostingKey}`;
 
 const AddProductForm = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit = async (data) => {
     try {
-      const formData = new FormData();
-      formData.append("image", data.image[0]);
+      const imageData = new FormData();
+      imageData.append("image", data.image[0]);
 
-      const res = await axios.post(image_hosting_api, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const imgUploadRes = await axios.post(imageHostingURL, imageData);
+      const imageUrl = imgUploadRes.data.data.display_url;
 
-      if (res.data.success) {
-        const imageUrl = res.data.data.display_url;
+      const productData = {
+        model: data.model,
+        batteryType: data.batteryType,
+        capacity: data.capacity,
+        voltage: data.voltage,
+        limitedVoltage: data.limitedVoltage,
+        chargingTime: data.chargingTime,
+        standbyTime: data.standbyTime,
+        cycleTime: data.cycleTime,
+        safety: data.safety,
+        brand: data.brand,
+        price: parseFloat(data.price),
+        stock: parseInt(data.stock),
+        description: data.description,
+        title:data.title,
+        imageURL: imageUrl,
+      };
 
-        const productData = {
-          id: data.productId,
-          name: data.name,
-          price: parseFloat(data.price),
-          stock: parseInt(data.stock),
-          brand: data.brand,
-          specs: {
-            capacity: data.capacity,
-            voltage: data.voltage,
-            warranty: data.warranty,
-          },
-          imageURL: imageUrl,
-        };
-console.log(productData)
-        const saveRes = await axios.post("http://localhost:5000/add-products", productData);
-          if (saveRes.data.insertedId) {
-          reset();
-          Swal.fire({
-            title: "Products Added Successfully",
-            icon: "success",
-            draggable: true,
-          });
-         
-        }
+      const res = await axios.post("http://localhost:5000/add-products", productData);
+
+      if (res.data.insertedId) {
+        reset();
+         Swal.fire({
+          title: "Product Added Successfully",
+          icon: "success",
+          draggable: true,
+        });
       }
     } catch (error) {
-      console.error("Upload error:", error);
-      Swal.fire("❌ Failed to add product", "", "error");
+      console.error("Error uploading product:", error);
     }
   };
 
   return (
-    <Paper
-      elevation={6}
-      sx={{
-        maxWidth: 800,
-        mx: "auto",
-        mt: 6,
-        p: 4,
-        borderRadius: 4,
-        background: "linear-gradient(to right, #f0f4ff, #e0f7ff)",
-      }}
-    >
-      <Typography variant="h4" textAlign="center" color="primary" fontWeight="bold" mb={4}>
-        🛒 Add New Battery Product
-      </Typography>
+    <Box sx={{ maxWidth: 900, mx: "auto", mt: 5 }}>
+      <Paper
+        elevation={6}
+        sx={{
+          p: 4,
+          borderRadius: 4,
+          background: "linear-gradient(to right, #f0f4ff, #e0f7ff)",
+        }}
+      >
+        <Typography
+          variant="h4"
+          textAlign="center"
+          fontWeight="bold"
+          mb={4}
+          color="primary"
+        >
+          Add New Battery Product
+        </Typography>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Product ID"
-              fullWidth
-              variant="outlined"
-              {...register("productId")}
-              required
-            />
-          </Grid>
+        <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+          <div className="py-2">
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="title"
+                fullWidth
+                {...register("title", { required: true })}
+                error={!!errors.title}
+              />
+            </Grid>
+          </div>
+          <Grid container spacing={3}>
+        
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Model"
+                fullWidth
+                {...register("model", { required: true })}
+                error={!!errors.model}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Product Name"
-              fullWidth
-              variant="outlined"
-              {...register("name")}
-              required
-            />
-          </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Battery Type"
+                fullWidth
+                {...register("batteryType", { required: true })}
+                error={!!errors.batteryType}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <TextField
-              type="number"
-              label="Price (SGD)"
-              fullWidth
-              variant="outlined"
-              {...register("price")}
-              required
-            />
-          </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Capacity (mAh)"
+                fullWidth
+                {...register("capacity", { required: true })}
+                error={!!errors.capacity}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <TextField
-              type="number"
-              label="Stock Quantity"
-              fullWidth
-              variant="outlined"
-              {...register("stock")}
-              required
-            />
-          </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Voltage (V)"
+                fullWidth
+                {...register("voltage", { required: true })}
+                error={!!errors.voltage}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <InputLabel>Brand</InputLabel>
-            <Select
-              defaultValue=""
-              fullWidth
-              {...register("brand")}
-              displayEmpty
-              required
-              variant="outlined"
-            >
-              <MenuItem value="" disabled>
-                Select Brand
-              </MenuItem>
-              <MenuItem value="iPhone">iPhone</MenuItem>
-              <MenuItem value="Samsung">Samsung</MenuItem>
-              <MenuItem value="Huawei">Huawei</MenuItem>
-              <MenuItem value="Xiaomi">Xiaomi</MenuItem>
-            </Select>
-          </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Limited Voltage (V)"
+                fullWidth
+                {...register("limitedVoltage", { required: true })}
+                error={!!errors.limitedVoltage}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <InputLabel>Upload Product Image</InputLabel>
-            <input type="file" variant="outlined"  {...register("image")} required />
-          </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Charging Time"
+                fullWidth
+                {...register("chargingTime", { required: true })}
+                error={!!errors.chargingTime}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="Capacity (mAh)"
-              fullWidth
-              variant="outlined"
-              {...register("capacity")}
-              required
-            />
-          </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Standby Time"
+                fullWidth
+                {...register("standbyTime", { required: true })}
+                error={!!errors.standbyTime}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="Voltage (V)"
-              fullWidth
-              variant="outlined"
-              {...register("voltage")}
-              required
-            />
-          </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Cycle Time"
+                fullWidth
+                {...register("cycleTime", { required: true })}
+                error={!!errors.cycleTime}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="Warranty (Months)"
-              fullWidth
-              variant="outlined"
-              {...register("warranty")}
-              required
-            />
-          </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Safety Info"
+                fullWidth
+                {...register("safety", { required: true })}
+                error={!!errors.safety}
+              />
+            </Grid>
 
-          <Grid item xs={12}>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              fullWidth
-              sx={{
-                py: 1.5,
-                fontSize: "16px",
-                fontWeight: "bold",
-                textTransform: "none",
-              }}
-            >
-              ➕ Add Product
-            </Button>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Brand"
+                fullWidth
+                {...register("brand", { required: true })}
+                error={!!errors.brand}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={3}>
+              <TextField
+                label="Price (৳)"
+                type="number"
+                fullWidth
+                {...register("price", { required: true })}
+                error={!!errors.price}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={3}>
+              <TextField
+                label="Stock"
+                type="number"
+                fullWidth
+                {...register("stock", { required: true })}
+                error={!!errors.stock}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Typography variant="subtitle2" gutterBottom>
+                Upload Product Image
+              </Typography>
+              <input
+                type="file"
+                accept="image/*"
+                {...register("image", { required: true })}
+                style={{ marginTop: "8px" }}
+              />
+            </Grid>
+
+            
+
+           
           </Grid>
-        </Grid>
-      </form>
-    </Paper>
+       <div className="mt-8 space-y-2.5">
+           <Grid item xs={12}>
+              <TextField
+                label="Description"
+                fullWidth
+                multiline
+                rows={4}
+                {...register("description", { required: true })}
+                error={!!errors.description}
+              />
+            </Grid>
+           <Grid item xs={12}>
+              <Button
+                type="submit"
+                variant="contained"
+                size="large"
+                fullWidth
+                sx={{
+                  py: 1.5,
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                  textTransform: "none",
+                }}
+              >
+                 Submit Product
+              </Button>
+            </Grid>
+       </div>
+        </form>
+
+      </Paper>
+    </Box>
   );
 };
 
