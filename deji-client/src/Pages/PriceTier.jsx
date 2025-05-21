@@ -1,4 +1,3 @@
-// PriceTier.jsx
 import React from "react";
 import {
   Table,
@@ -8,6 +7,8 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Typography,
+  Box,
 } from "@mui/material";
 
 const PriceTier = () => {
@@ -17,29 +18,40 @@ const PriceTier = () => {
   ];
 
   return (
-    <TableContainer
-      component={Paper}
-      className="max-w-xl mx-auto shadow-md rounded-xl overflow-hidden"
-    >
-      <Table aria-label="Price Tier Table">
-        <TableHead className="bg-gray-100">
-          <TableRow>
-            <TableCell className="font-bold text-gray-700">Quantity</TableCell>
-            <TableCell className="font-bold text-gray-700">Price (SGD)</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {tiers.map((tier, i) => (
-            <TableRow key={i}>
-              <TableCell>
-                {tier.minQty} - {tier.maxQty ? tier.maxQty : "and above"}
-              </TableCell>
-              <TableCell>${tier.price}</TableCell>
+    <Box className="max-w-2xl mx-auto mt-10 px-4">
+      <Typography variant="h6" align="center" gutterBottom>
+         Wholesale Pricing Tiers
+      </Typography>
+
+      <Typography variant="body2" align="center" color="textSecondary" className="mb-4">
+        Get better pricing with bulk orders. Our tiered pricing ensures maximum value as you scale.
+      </Typography>
+
+      <TableContainer component={Paper} className="rounded-xl shadow-lg">
+        <Table aria-label="Wholesale Price Tiers">
+          <TableHead sx={{ backgroundColor: "#f3f4f6" }}>
+            <TableRow>
+              <TableCell sx={{ fontWeight: "bold" }}>Quantity Range</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Unit Price (SGD)</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {tiers.map((tier, i) => (
+              <TableRow
+                key={i}
+                hover
+                sx={{ transition: "all 0.2s", "&:hover": { backgroundColor: "#f9fafb" } }}
+              >
+                <TableCell>
+                  {tier.minQty} – {tier.maxQty ? tier.maxQty : "and above"}
+                </TableCell>
+                <TableCell>${tier.price.toFixed(2)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 };
 
