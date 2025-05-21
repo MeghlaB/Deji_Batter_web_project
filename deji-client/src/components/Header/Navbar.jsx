@@ -16,10 +16,11 @@ import Slide from '@mui/material/Slide';
 import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../Provider/Authprovider';
 
-// Icons from react-icons
+// Icons
 import { FaBolt } from 'react-icons/fa';
 import { MdLogout } from 'react-icons/md';
 import { LuLayoutDashboard } from 'react-icons/lu';
+import useAdmin from '../../Hooks/useAdmin';
 
 const navItems = [
   { label: 'HOME', path: '/' },
@@ -40,10 +41,11 @@ function HideOnScroll({ children }) {
 
 export default function Navbar() {
   const { user, logOut } = useContext(AuthContext);
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const profileRef = useRef(null);
   const location = useLocation();
+  const [isAdmin] = useAdmin();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -139,33 +141,31 @@ export default function Navbar() {
                       alt="profile"
                       className="w-8 h-8 rounded-full hidden md:block"
                     />
-                    <Link to="/dashboard" className="hidden md:flex items-center gap-1">
-                      <LuLayoutDashboard />
-                      <span className="text-sm">Dashboard</span>
-                    </Link>
-                    
+
+                    {isAdmin && (
+                      <Link to="/dashboard" className="hidden md:flex items-center gap-1 font-bold">
+                        <LuLayoutDashboard className='' />
+                        <span className="text-sm">DASHBOARD</span>
+                      </Link>
+                    )}
+
                     <Button
                       onClick={logOut}
                       className="hidden md:flex items-center gap-1"
                       sx={{ textTransform: 'none', color: '#000' }}
                     >
-                      <MdLogout />
-                      <span className="text-sm">LogOut</span>
+                      <MdLogout className='font-bold' />
+                      <span className="text-sm font-bold">LogOut</span>
                     </Button>
                   </>
                 ) : (
-                  <>
-                    
-                    <Link
-                      to="/auth/login"
-                      className="md:block bg-gradient-to-r from-green-500 to-blue-500 px-4 py-1 rounded-md text-sm font-semibold text-white"
-                    >
-                      Login
-                    </Link>
-                  </>
+                  <Link
+                    to="/auth/login"
+                    className="md:block bg-gradient-to-r from-green-500 to-blue-500 px-4 py-1 rounded-md text-sm font-semibold text-white"
+                  >
+                    Login
+                  </Link>
                 )}
-
-               
 
                 {/* Mobile Profile Dropdown */}
                 {user && (
@@ -178,15 +178,17 @@ export default function Navbar() {
                     />
                     {showDropdown && (
                       <div className="absolute right-0 mt-2 w-32 text-black bg-white shadow-md rounded-md py-2 z-50">
-                        <Link
-                          to="/dashboard"
-                          className="block px-4 py-2 text-sm hover:bg-gray-200"
-                        >
-                          <div className="flex items-center gap-1">
-                            <LuLayoutDashboard />
-                            <p>Dashboard</p>
-                          </div>
-                        </Link>
+                        {isAdmin && (
+                          <Link
+                            to="/dashboard"
+                            className="block px-4 py-2 text-sm hover:bg-gray-200"
+                          >
+                            <div className="flex items-center gap-1">
+                              <LuLayoutDashboard />
+                              <p>Dashboard</p>
+                            </div>
+                          </Link>
+                        )}
                         <button
                           onClick={logOut}
                           className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
