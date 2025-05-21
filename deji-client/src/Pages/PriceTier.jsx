@@ -1,3 +1,4 @@
+// PriceTier.jsx
 import React from "react";
 import {
   Table,
@@ -7,15 +8,12 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Typography,
 } from "@mui/material";
 
 const PriceTier = () => {
   const tiers = [
-    { minQty: 1, maxQty: 9, price: 20 },
-    { minQty: 10, maxQty: 49, price: 18 },
-    { minQty: 50, maxQty: 99, price: 15 },
-    { minQty: 100, maxQty: null, price: 12 },
+    { minQty: 10, maxQty: 50, price: 28 },
+    { minQty: 51, maxQty: null, price: 25 },
   ];
 
   return (

@@ -1,10 +1,10 @@
-import React from 'react'
-import BlogList from '../BlogList/Bloglist'
+import BlogGenerator from "../components/BlogGenerator/BlogGenerator"
+
 
 function Blog() {
   return (
     <div>
-      <BlogList/>
+      <BlogGenerator/>
     </div>
   )
 }

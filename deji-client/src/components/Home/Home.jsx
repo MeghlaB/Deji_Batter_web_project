@@ -5,10 +5,12 @@ import FeaturedProduct from '../FeaturedProduct/FeaturedProduct'
 
 
 
+
 function Home() {
   return (
     <div>
     <Banner/>
+    {/* <Chatboat/> */}
     <FeaturedProduct>
       
     </FeaturedProduct>

@@ -26,9 +26,11 @@ const InquiryForm = () => {
     const detailsData = {
       name: data?.name,
       email: data?.email,
+      shop: data?.shop,
       phone: data?.phone,
       company: data?.company,
-      message: data?.message,
+      quantity: data?.quantity,
+
     };
 
     try {
@@ -55,9 +57,9 @@ const InquiryForm = () => {
   };
 
   return (
-    <Paper elevation={4} className="max-w-xl mx-auto mt-8 p-6 rounded-xl">
+     <Paper elevation={4} className="max-w-xl mx-auto mt-8 p-6 rounded-xl">
       <Typography variant="h6" gutterBottom>
-        Submit Your Wholesale Inquiry
+        📝 Submit Your Wholesale Inquiry
       </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -68,6 +70,13 @@ const InquiryForm = () => {
             error={!!errors.name}
             helperText={errors.name?.message}
             {...register("name", { required: "Name is required" })}
+          />
+          <TextField
+            label="Shop Name"
+            fullWidth
+            {...register("shop", { required: "Shop Name is required" })}
+            error={!!errors.shop}
+            helperText={errors.shop?.message}
           />
           <TextField
             label="Email"
@@ -86,19 +95,20 @@ const InquiryForm = () => {
           <TextField
             label="Phone Number"
             fullWidth
-            {...register("phone")}
+            {...register("phone", { required: "Phone number is required" })}
+            error={!!errors.phone}
+            helperText={errors.phone?.message}
           />
           <TextField
-            label="Company Name"
+            label="Quantity Required"
+            type="number"
             fullWidth
-            {...register("company")}
-          />
-          <TextField
-            label="Message"
-            fullWidth
-            multiline
-            minRows={4}
-            {...register("message")}
+            {...register("quantity", {
+              required: "Please enter quantity",
+              min: { value: 10, message: "Minimum quantity is 10" },
+            })}
+            error={!!errors.quantity}
+            helperText={errors.quantity?.message}
           />
         </div>
 
@@ -114,8 +124,6 @@ const InquiryForm = () => {
             {isSubmitting ? <CircularProgress size={24} /> : "Submit Inquiry"}
           </Button>
         </Box>
-
-        
       </form>
     </Paper>
   );
