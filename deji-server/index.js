@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const OpenAI = require("openai");
+const { OpenAI } = require('openai');
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 
@@ -10,14 +10,13 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173"], // আপনার frontend URL দিন
+    origin: ["http://localhost:5173"], 
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
 );
 app.use(express.json());
 
-// OpenAI Configuration
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -137,30 +136,21 @@ async function run() {
 
     // --- OpenAI Article Generation API ---
 
-    app.post("/generate-article", async (req, res) => {
-      try {
-        const { topic } = req.body;
-        if (!topic) {
-          return res.status(400).json({ error: "Topic is required" });
-        }
+ 
+app.post('/chat', async (req, res) => {
+  const { message } = req.body;
 
-        const response = await openai.chat.completions.create({
-          model: "gpt-3.5-turbo",
-          messages: [
-            { role: "system", content: "You are a helpful assistant." },
-            { role: "user", content: `Write a blog article about ${topic}` },
-          ],
-        });
-
-        const article = response.choices[0].message.content;
-        res.json({ article });
-      } catch (error) {
-        console.error("Error in /generate-article:", error);
-        res
-          .status(500)
-          .json({ error: error.message || "Internal Server Error" });
-      }
+  try {
+    const chatResponse = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [{ role: 'user', content: message }],
     });
+
+    res.json({ reply: chatResponse.choices[0].message.content });
+  } catch (err) {
+    res.status(500).json({ error: 'OpenAI error', detail: err.message });
+  }
+});
 
     // ... contact api ....
 
