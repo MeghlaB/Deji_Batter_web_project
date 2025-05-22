@@ -15,6 +15,7 @@ import Privateroute from "./Privateroute";
 import AdminHome from "../Dashboard/AdminDashboard/AdminFeauter/AdminHome";
 import ManageProducts from "../Dashboard/AdminDashboard/AdminFeauter/MangePRoducts";
 import EditProduct from "../Dashboard/AdminDashboard/AdminFeauter/EditProduct";
+import Manageoders from "../Dashboard/AdminDashboard/AdminFeauter/Manageoders";
 
 const router = createBrowserRouter([
   {
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
             `http://localhost:5000/products/${params.id}`
           ),
       },
+      {
+        path:'manage-oders',
+        element:<Manageoders/>
+      }
     ],
   },
 ]);

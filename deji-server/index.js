@@ -118,6 +118,7 @@ async function run() {
       res.send([product]);
     });
 
+
     app.patch("/products/:id", async (req, res) => {
       const id = req.params.id;
 
@@ -128,14 +129,14 @@ async function run() {
       try {
         const updateData = { ...req.body };
 
-        // _id আপডেট থেকে রক্ষা করো
+   
         if (updateData._id) delete updateData._id;
 
-        // price এবং stock যদি থাকে, তাহলে টাইপ কনভার্শন
+     
         if (updateData.price) updateData.price = parseFloat(updateData.price);
         if (updateData.stock) updateData.stock = parseInt(updateData.stock);
 
-        // আপডেট ডকুমেন্ট তৈরি করো
+       
         const updateDoc = { $set: updateData };
 
         const result = await productsCollection.updateOne(
@@ -173,6 +174,40 @@ async function run() {
       const inquiries = await inquiriesCollection.find().toArray();
       res.send(inquiries);
     });
+
+
+    app.patch("/inquiries/:id", async (req, res) => {
+  const id = req.params.id;
+  const { status } = req.body;
+  const allowedStatuses = ["Processing", "Shipped", "Delivered"];
+
+  if (!ObjectId.isValid(id)) {
+    return res.status(400).send({ error: "Invalid order ID" });
+  }
+
+  if (!allowedStatuses.includes(status)) {
+    return res.status(400).send({ error: "Invalid status value" });
+  }
+
+  try {
+    const result = await inquiriesCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { status } }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).send({ error: "Order not found" });
+    }
+
+    res.send({
+      message: "Order status updated successfully",
+      modifiedCount: result.modifiedCount,
+    });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    res.status(500).send({ error: "Internal Server Error" });
+  }
+});
 
     // --- OpenAI Article Generation API ---
 
