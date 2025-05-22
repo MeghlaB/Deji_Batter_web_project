@@ -1,250 +1,205 @@
-import React from "react";
-import { useForm, useFieldArray } from "react-hook-form";
-import useAxiosPublic from "../../../Hooks/UseAxiosPublic";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  CircularProgress,
+  Paper,
+} from "@mui/material";
+import { useForm, Controller } from "react-hook-form";
+import axios from "axios";
 import Swal from "sweetalert2";
 
+const imageHostingKey = import.meta.env.VITE_IMAGEHOSTING;
+const imageHostingURL = `https://api.imgbb.com/1/upload?key=${imageHostingKey}`;
+
 const EditProduct = () => {
-  const axiosPublic = useAxiosPublic();
+  const { id } = useParams();
+  console.log(id)
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(true);
+
   const {
-    register,
-    handleSubmit,
     control,
+    handleSubmit,
     reset,
-    formState: { errors },
+    watch,
+    setValue,
   } = useForm({
     defaultValues: {
-      key_features: [""],
+      model: "",
+      batteryType: "",
+      capacity: "",
+      voltage: "",
+      limitedVoltage: "",
+      chargingTime: "",
+      standbyTime: "",
+      cycleTime: "",
+      safety: "",
+      brand: "",
+      price: "",
+      stock: "",
+      imageURL: "",
+      description: "",
+      image: null, // for new image upload
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "key_features",
-  });
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5000/products/${id}`)
+      .then((res) => {
+        const data = res.data[0];
+        reset(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching product:", error);
+        setLoading(false);
+      });
+  }, [id, reset]);
+
+  // Watch the file input (image) for upload
+  const imageFile = watch("image");
 
   const onSubmit = async (data) => {
-    const productsData = {
-      title: data?.title,
-      category: data?.category,
-      price: data?.price,
-      previous_price: data?.previous_price,
-      regular_price: data?.regular_price,
-      discount: data?.discount,
-      save_amount: data?.save_amount,
-      status: data?.status,
-      brand: data?.brand,
-      key_features: data?.key_features,
-      image: data?.image,
-      product_code: data?.product_code
-    };
-
     try {
-      const productsRes = await axiosPublic.post("/add-products", productsData);
+      let imageUrl = data.imageURL;
 
-      if (productsRes.data.insertedId) {
-        reset();
+      // যদি নতুন ছবি আপলোড করা হয়
+      if (data.image && data.image.length > 0) {
+        const imageData = new FormData();
+        imageData.append("image", data.image[0]);
+
+        const imgUploadRes = await axios.post(imageHostingURL, imageData);
+        imageUrl = imgUploadRes.data.data.display_url;
+      }
+
+      const updatedProduct = {
+        ...data,
+        price: parseFloat(data.price),
+        stock: parseInt(data.stock),
+        imageURL: imageUrl,
+      };
+
+      // image ফাইল কে বাদ দিয়ে আপডেট পাঠাতে হবে
+      delete updatedProduct.image;
+
+      const res = await axios.patch(`http://localhost:5000/products/${id}`, updatedProduct);
+
+      if (res.data.modifiedCount > 0) {
         Swal.fire({
-          title: "Product Added Successfully",
+          title: "Product Updated Successfully",
           icon: "success",
-          draggable: true,
         });
-        // Navigate if needed
-        // navigate("/addproduct");
+        navigate("/dashboard/manage-products");
+      } else {
+        Swal.fire({
+          title: "No changes were made",
+          icon: "info",
+        });
       }
     } catch (error) {
-      console.error("Product submission failed", error);
+      console.error("Error updating product:", error);
       Swal.fire({
-        title: "Something went wrong!",
+        title: "Error!",
+        text: "Failed to update product.",
         icon: "error",
       });
     }
   };
 
-  const categoryOption = ['Desktop', 'Laptop', 'Mobile', 'Camera', 'Monitor', 'UPS', 'Tablet', 'Component', 'Sever & Storage', 'Accessories']
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" mt={10}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-xl rounded-2xl">
-      <h2 className="text-2xl font-bold mb-6  text-center">
-        Edit Product
-      </h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Title */}
-        <div>
-          <label className="block mb-1 font-semibold">Title</label>
-          <input
-            type="text"
-            defaultValues={'Hello'}
-            {...register("title", { required: "Title is required" })}
-            className="w-full px-4 py-2 border rounded-lg"
-          />
-          {errors.title && (
-            <p className="text-red-500 text-sm">{errors.title.message}</p>
-          )}
-        </div>
+    <Box sx={{ maxWidth: 900, mx: "auto", mt: 5 }}>
+      <Paper elevation={6} sx={{ p: 4, borderRadius: 4 }}>
+        <Typography variant="h4" textAlign="center" fontWeight="bold" mb={4}>
+          Edit Product
+        </Typography>
 
-        {/* Category */}
-        <div>
-          <label className="block mb-1 font-semibold">Category</label>
-          <select
-            {...register("category", { required: true })}
-            className="w-full px-4 py-2 border rounded-lg"
-          >
-            {/* <option value="Desktop">Desktop</option>
-            <option value="Laptop">Laptop</option>
-            <option value="Accessories">Accessories</option> */}
-            {
-              categoryOption.map(ctOption => <option value={ctOption}>{ctOption}</option>)
-            }
-          </select>
-        </div>
-
-        {/* Price */}
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block mb-1 font-semibold">Price</label>
-            <input
-              type="number"
-              {...register("price", { required: true })}
-              className="w-full px-4 py-2 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-semibold">Previous Price</label>
-            <input
-              type="number"
-              {...register("previous_price")}
-              className="w-full px-4 py-2 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-semibold">Regular Price</label>
-            <input
-              type="number"
-              {...register("regular_price")}
-              className="w-full px-4 py-2 border rounded-lg"
-            />
-          </div>
-        </div>
-
-        {/* Discount & Save Amount */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block mb-1 font-semibold">Discount</label>
-            <input
-              type="text"
-              {...register("discount")}
-              className="w-full px-4 py-2 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-semibold">Save Amount</label>
-            <input
-              type="number"
-              {...register("save_amount")}
-              className="w-full px-4 py-2 border rounded-lg"
-            />
-          </div>
-        </div>
-
-        {/* Status */}
-        <div>
-          <label className="block mb-1 font-semibold">Status</label>
-          <select
-            {...register("status")}
-            className="w-full px-4 py-2 border rounded-lg"
-          >
-            <option value="In Stock">In Stock</option>
-            <option value="Out of Stock">Out of Stock</option>
-          </select>
-        </div>
-
-        {/* Brand & Model */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block mb-1 font-semibold">Brand</label>
-            <input
-              type="text"
-              {...register("brand")}
-              className="w-full px-4 py-2 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-semibold">Model</label>
-            <input
-              type="text"
-              {...register("model")}
-              className="w-full px-4 py-2 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-semibold">Product Code</label>
-            <input
-              type="text"
-              {...register("product_code")}
-              className="w-full px-4 py-2 border rounded-lg"
-            />
-          </div>
-        </div>
-
-        {/* Key Features (dynamic) */}
-        <div>
-          <label className="block mb-2 font-semibold">Key Features</label>
-          {fields.map((item, index) => (
-            <div key={item.id} className="flex items-center gap-2 mb-2">
-              <input
-                type="text"
-                {...register(`key_features.${index}`)}
-                className="flex-1 px-4 py-2 border rounded-lg"
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box display="flex" flexDirection="column" gap={3}>
+            {[
+              { label: "Model", name: "model" },
+              { label: "Battery Type", name: "batteryType" },
+              { label: "Capacity (mAh)", name: "capacity" },
+              { label: "Voltage (V)", name: "voltage" },
+              { label: "Limited Voltage (V)", name: "limitedVoltage" },
+              { label: "Charging Time", name: "chargingTime" },
+              { label: "Standby Time", name: "standbyTime" },
+              { label: "Cycle Time", name: "cycleTime" },
+              { label: "Safety Info", name: "safety" },
+              { label: "Brand", name: "brand" },
+              { label: "Price (৳)", name: "price", type: "number" },
+              { label: "Stock", name: "stock", type: "number" },
+              { label: "Image URL", name: "imageURL" },
+            ].map(({ label, name, type = "text" }) => (
+              <Controller
+                key={name}
+                name={name}
+                control={control}
+                render={({ field }) => (
+                  <TextField {...field} label={label} fullWidth type={type} variant="outlined" />
+                )}
               />
-              <button
-                type="button"
-                onClick={() => remove(index)}
-                className="text-red-600 font-bold px-2"
-              >
-                ×
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => append("")}
-            className="mt-2 text-blue-500 font-semibold"
-          >
-            + Add Feature
-          </button>
-        </div>
+            ))}
 
-        {/* Image URL */}
-        <div>
-          <label className="block mb-1 font-semibold">Image URL</label>
-          <input
-            type="url"
-            {...register("image")}
-            className="w-full px-4 py-2 border rounded-lg"
-          />
-        </div>
+            {/* নতুন ছবি আপলোড ফাইল ইনপুট */}
+            <Controller
+              name="image"
+              control={control}
+              render={({ field }) => (
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => field.onChange(e.target.files)}
+                />
+              )}
+            />
 
-        {/* Image Preview */}
-        {/* <div>
-          <label className="block mb-1 font-semibold">Image Preview</label>
-          <img
-            src="https://www.startech.com.bd/image/cache/catalog/desktop-pc/ryzen-pc/ryzen-7-7700/ryzen-7-7700-01-200x200.webp"
-            alt="Preview"
-            className="w-32 h-32 object-contain border p-1 rounded"
-          />
-        </div> */}
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Description"
+                  fullWidth
+                  multiline
+                  rows={4}
+                  variant="outlined"
+                />
+              )}
+            />
 
-        {/* Submit */}
-        <div className="pt-4">
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700"
-          >
-            Submit Product
-          </button>
-        </div>
-      </form>
-    </div>
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              fullWidth
+              sx={{
+                py: 1.5,
+                fontWeight: "bold",
+                fontSize: "16px",
+                textTransform: "none",
+              }}
+            >
+              Update Product
+            </Button>
+          </Box>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 

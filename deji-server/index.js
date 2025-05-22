@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { OpenAI } = require('openai');
+const { OpenAI } = require("openai");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 
@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173"], 
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
@@ -91,7 +91,6 @@ async function run() {
     // Get product by ID with specifications
     app.get("/products/:id", async (req, res) => {
       const id = req.params.id;
-
       if (!ObjectId.isValid(id)) {
         return res.status(400).send({ error: "Invalid product ID" });
       }
@@ -119,6 +118,47 @@ async function run() {
       res.send([product]);
     });
 
+    app.patch("/products/:id", async (req, res) => {
+      const id = req.params.id;
+
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).send({ error: "Invalid product ID" });
+      }
+
+      try {
+        const updateData = { ...req.body };
+
+        // _id আপডেট থেকে রক্ষা করো
+        if (updateData._id) delete updateData._id;
+
+        // price এবং stock যদি থাকে, তাহলে টাইপ কনভার্শন
+        if (updateData.price) updateData.price = parseFloat(updateData.price);
+        if (updateData.stock) updateData.stock = parseInt(updateData.stock);
+
+        // আপডেট ডকুমেন্ট তৈরি করো
+        const updateDoc = { $set: updateData };
+
+        const result = await productsCollection.updateOne(
+          { _id: new ObjectId(id) },
+          updateDoc
+        );
+
+        if (result.matchedCount === 0) {
+          return res.status(404).send({ error: "Product not found" });
+        }
+
+        res.send({
+          message: "Product updated successfully",
+          modifiedCount: result.modifiedCount,
+        });
+      } catch (error) {
+        console.error("Error updating product:", error);
+        res
+          .status(500)
+          .send({ error: error.message || "Internal Server Error" });
+      }
+    });
+
     // --- Inquiries APIs ---
 
     // Add inquiry
@@ -136,21 +176,20 @@ async function run() {
 
     // --- OpenAI Article Generation API ---
 
- 
-app.post('/chat', async (req, res) => {
-  const { message } = req.body;
+    app.post("/chat", async (req, res) => {
+      const { message } = req.body;
 
-  try {
-    const chatResponse = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [{ role: 'user', content: message }],
+      try {
+        const chatResponse = await openai.chat.completions.create({
+          model: "gpt-4",
+          messages: [{ role: "user", content: message }],
+        });
+
+        res.json({ reply: chatResponse.choices[0].message.content });
+      } catch (err) {
+        res.status(500).json({ error: "OpenAI error", detail: err.message });
+      }
     });
-
-    res.json({ reply: chatResponse.choices[0].message.content });
-  } catch (err) {
-    res.status(500).json({ error: 'OpenAI error', detail: err.message });
-  }
-});
 
     // ... contact api ....
 

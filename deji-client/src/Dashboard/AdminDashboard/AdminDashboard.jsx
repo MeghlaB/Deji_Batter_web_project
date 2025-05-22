@@ -25,6 +25,10 @@ function AdminDashboard() {
           <FaCartPlus size={20} />
           Add Product
         </Link>
+        <Link to="/dashboard/manage-products" className="flex items-center gap-3 hover:text-gray-300">
+          <FaCartPlus size={20} />
+          Manage Product
+        </Link>
         <Link to="/" className="flex items-center gap-3 hover:text-gray-300">
           <HomeIcon size={20} />
          Home
