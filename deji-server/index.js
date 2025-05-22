@@ -20,6 +20,16 @@ app.use(express.json());
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+async function generateBlogPost(topic) {
+  const prompt = `Write a detailed blog post titled "${topic}". Also include a meta title and meta description for SEO.`;
+
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4",
+    messages: [{ role: "user", content: prompt }],
+  });
+
+  return completion.choices[0].message.content;
+}
 
 // MongoDB Configuration
 const uri = `mongodb+srv://dejiBattery:${process.env.DB_PASSWORD}@cluster0.rjxogi9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -118,7 +128,6 @@ async function run() {
       res.send([product]);
     });
 
-
     app.patch("/products/:id", async (req, res) => {
       const id = req.params.id;
 
@@ -129,14 +138,11 @@ async function run() {
       try {
         const updateData = { ...req.body };
 
-   
         if (updateData._id) delete updateData._id;
 
-     
         if (updateData.price) updateData.price = parseFloat(updateData.price);
         if (updateData.stock) updateData.stock = parseInt(updateData.stock);
 
-       
         const updateDoc = { $set: updateData };
 
         const result = await productsCollection.updateOne(
@@ -175,56 +181,55 @@ async function run() {
       res.send(inquiries);
     });
 
-
     app.patch("/inquiries/:id", async (req, res) => {
-  const id = req.params.id;
-  const { status } = req.body;
-  const allowedStatuses = ["Processing", "Shipped", "Delivered"];
+      const id = req.params.id;
+      const { status } = req.body;
+      const allowedStatuses = ["Processing", "Shipped", "Delivered"];
 
-  if (!ObjectId.isValid(id)) {
-    return res.status(400).send({ error: "Invalid order ID" });
-  }
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).send({ error: "Invalid order ID" });
+      }
 
-  if (!allowedStatuses.includes(status)) {
-    return res.status(400).send({ error: "Invalid status value" });
-  }
+      if (!allowedStatuses.includes(status)) {
+        return res.status(400).send({ error: "Invalid status value" });
+      }
 
-  try {
-    const result = await inquiriesCollection.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { status } }
-    );
+      try {
+        const result = await inquiriesCollection.updateOne(
+          { _id: new ObjectId(id) },
+          { $set: { status } }
+        );
 
-    if (result.matchedCount === 0) {
-      return res.status(404).send({ error: "Order not found" });
-    }
+        if (result.matchedCount === 0) {
+          return res.status(404).send({ error: "Order not found" });
+        }
 
-    res.send({
-      message: "Order status updated successfully",
-      modifiedCount: result.modifiedCount,
+        res.send({
+          message: "Order status updated successfully",
+          modifiedCount: result.modifiedCount,
+        });
+      } catch (error) {
+        console.error("Error updating order status:", error);
+        res.status(500).send({ error: "Internal Server Error" });
+      }
     });
-  } catch (error) {
-    console.error("Error updating order status:", error);
-    res.status(500).send({ error: "Internal Server Error" });
-  }
-});
 
     // --- OpenAI Article Generation API ---
 
-    app.post("/chat", async (req, res) => {
-      const { message } = req.body;
+    // app.post("/chat", async (req, res) => {
+    //   const { message } = req.body;
 
-      try {
-        const chatResponse = await openai.chat.completions.create({
-          model: "gpt-4",
-          messages: [{ role: "user", content: message }],
-        });
+    //   try {
+    //     const chatResponse = await openai.chat.completions.create({
+    //       model: "gpt-4",
+    //       messages: [{ role: "user", content: message }],
+    //     });
 
-        res.json({ reply: chatResponse.choices[0].message.content });
-      } catch (err) {
-        res.status(500).json({ error: "OpenAI error", detail: err.message });
-      }
-    });
+    //     res.json({ reply: chatResponse.choices[0].message.content });
+    //   } catch (err) {
+    //     res.status(500).json({ error: "OpenAI error", detail: err.message });
+    //   }
+    // });
 
     // ... contact api ....
 
@@ -238,6 +243,51 @@ async function run() {
       const contact = await contactCollection.find().toArray();
       res.send(contact);
     });
+
+    // ..........OpenApi blog post.........
+    // app.post("/generate", async (req, res) => {
+    //   const { topic } = req.body;
+    //   try {
+    //     const blog = await generateBlogPost(topic);
+    //     res.send({ blog });
+    //   } catch (err) {
+    //     res.status(500).send({ error: "Failed to generate blog." });
+    //   }
+    // });
+  const { OpenAI } = require("openai");
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY, // বা সরাসরি key বসাতে পারো
+});
+
+app.post("/generate", async (req, res) => {
+  const { topic } = req.body;
+
+  if (!topic) {
+    return res.status(400).json({ error: "Topic is required" });
+  }
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo", 
+      messages: [
+        {
+          role: "user",
+          content: `Write a beautiful, detailed blog post about: ${topic}`,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 800,
+    });
+
+    const blog = completion.choices[0].message.content.trim();
+    res.json({ blog });
+  } catch (error) {
+    console.error("OpenAI Error:", error.message);
+    res.status(500).json({ error: "Failed to generate blog" });
+  }
+});
+
   } finally {
     // Do NOT close client here, keep connection alive
   }

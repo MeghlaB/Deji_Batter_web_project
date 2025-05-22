@@ -26,8 +26,7 @@ const EditProduct = () => {
     control,
     handleSubmit,
     reset,
-    watch,
-    setValue,
+    
   } = useForm({
     defaultValues: {
       model: "",
@@ -44,7 +43,7 @@ const EditProduct = () => {
       stock: "",
       imageURL: "",
       description: "",
-      image: null, // for new image upload
+      image: null, 
     },
   });
 
@@ -62,14 +61,13 @@ const EditProduct = () => {
       });
   }, [id, reset]);
 
-  // Watch the file input (image) for upload
-  const imageFile = watch("image");
+
 
   const onSubmit = async (data) => {
     try {
       let imageUrl = data.imageURL;
 
-      // যদি নতুন ছবি আপলোড করা হয়
+ 
       if (data.image && data.image.length > 0) {
         const imageData = new FormData();
         imageData.append("image", data.image[0]);

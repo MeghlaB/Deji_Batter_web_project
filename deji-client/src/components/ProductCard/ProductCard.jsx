@@ -1,4 +1,3 @@
-// components/ProductCard.jsx
 import React from "react";
 import {
   Card,
@@ -7,8 +6,11 @@ import {
   Typography,
   Button,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ product, handleAddToCart }) => {
+  const navigate = useNavigate();
+
   return (
     <Card sx={{ maxWidth: 300, m: 2, borderRadius: 3 }}>
       <CardMedia
@@ -16,6 +18,8 @@ const ProductCard = ({ product, handleAddToCart }) => {
         height="200"
         image={product.imageURL}
         alt={product.name}
+        sx={{ cursor: "pointer" }}
+        onClick={() => navigate(`/products/${product.id}`)}  
       />
       <CardContent>
         <Typography variant="h6">{product.name}</Typography>
