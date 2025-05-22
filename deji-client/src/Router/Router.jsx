@@ -14,6 +14,8 @@ import Register from "../components/Auth/Register";
 import Dashbaord from "../Dashboard/Dashbaord";
 import AddProductForm from "../Dashboard/AdminDashboard/AdminFeauter/AddProduct";
 import ProductDetails from "../Pages/ProductDetails";
+import Privateroute from "./Privateroute";
+import AdminHome from "../Dashboard/AdminDashboard/AdminFeauter/AdminHome";
 
 const router = createBrowserRouter([
   {
@@ -62,11 +64,15 @@ const router = createBrowserRouter([
   // dashbaord
  {
   path: '/dashboard',
-  element: <Dashbaord />,
+  element: <Privateroute><Dashbaord /></Privateroute>,
   children: [
     {
       path: 'addproduct',
       element: <AddProductForm />
+    },
+    {
+      path:'adminhome',
+      element:<AdminHome/>
     }
   ]
 }

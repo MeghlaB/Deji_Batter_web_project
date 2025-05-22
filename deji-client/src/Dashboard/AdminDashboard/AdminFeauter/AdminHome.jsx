@@ -1,152 +1,147 @@
-import React, { useContext, useState } from "react";
-import {
-  FaBox,
-  FaUser,
-  FaShoppingCart,
-  FaCog,
-  FaSignOutAlt,
-  FaEye,
-  FaEdit,
-  FaTrash,
-  FaBars,
-} from "react-icons/fa";
-import { Link, useLoaderData } from "react-router-dom";
-import Swal from "sweetalert2";
-import { AuthContext } from "../../../Provider/AuthProvider";
+import React, { useEffect, useState } from "react";
+import { Box, Typography, Grid, Paper, CircularProgress } from "@mui/material";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import WarningIcon from "@mui/icons-material/Warning";
+import axios from "axios";
+import DashboardChart from "../../../components/DashboardChart/DashboardCharat";
 
-function AdminHome() {
+const AdminHome = () => {
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [lowStock, setLowStock] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const loadedProducts = useLoaderData()
-  console.log(loadedProducts)
-  const [products, setProduct] = useState(loadedProducts)
-  const {user} = useContext(AuthContext)
-
-  const handleDeleteProduct = (_id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        fetch(`http://localhost:5000/products/${_id}`, {
-          method: "DELETE",
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data)
-            if (data.deletedCount > 0) {
-              Swal.fire("Deleted!", "Product has been deleted.", "success");
-              const remaining = products.filter((p) => p._id !== _id);
-              setProduct(remaining);
-              console.log(remaining)
-            }
-          });
-      }
-    });
+  const fetchOrders = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/inquiries");
+      const orders = res.data || [];
+      setTotalOrders(orders.length);
+      const total = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+      setTotalRevenue(total);
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+      setError("Failed to load orders");
+    }
   };
 
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/products");
+      const products = res.data || [];
+      const low = products.filter((p) => p.stock < 5).length;
+      setLowStock(low);
+    } catch (err) {
+      console.error("Error fetching products:", err);
+      setError("Failed to load products");
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      await Promise.all([fetchOrders(), fetchProducts()]);
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const stats = [
+    {
+      title: "Total Orders",
+      value: totalOrders,
+      icon: <ShoppingCartIcon fontSize="large" color="primary" />,
+      bg: "#E3F2FD",
+    },
+    {
+      title: "Total Revenue",
+      value: `৳ ${totalRevenue.toLocaleString()}`,
+      icon: <MonetizationOnIcon fontSize="large" color="success" />,
+      bg: "#E8F5E9",
+    },
+    {
+      title: "Low Stock Alerts",
+      value: lowStock,
+      icon: <WarningIcon fontSize="large" color="warning" />,
+      bg: "#FFF3E0",
+    },
+  ];
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ textAlign: "center", mt: 10 }}>
+        <Typography variant="h6" color="error">
+          {error}
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
-    <div data-theme="dark" className="drawer lg:drawer-open min-h-screen">
-      {/* Drawer Toggle for Mobile */}
-      <input id="admin-drawer" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col">
-        {/* Navbar */}
-        <div className="w-full navbar bg-base-200 lg:hidden">
-          <div className="flex-none">
-            <label htmlFor="admin-drawer" className="btn btn-square btn-ghost">
-              <FaBars />
-            </label>
-          </div>
-          <div className="flex-1">
-            <h2 className="text-xl font-bold">ORYON Admin</h2>
-          </div>
-          <div className="flex-none">
-            <div className="avatar">
-              <div className="w-8 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                <img src={user.photoURL} />
-              </div>
-            </div>
-          </div>
-        </div>
+    <Box maxWidth="900px" mx="auto" p={3}>
+      <Typography
+        variant="h4"
+        gutterBottom
+        textAlign="center"
+        fontWeight="bold"
+      >
+        Admin Dashboard
+      </Typography>
 
-        {/* Main Content */}
-        <main className="p-4 space-y-6">
-          {/* Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="card bg-base-200 p-4">
-              <h2 className="text-xl font-bold">Products</h2>
-              <p className="text-lg">{products.length}</p>
-            </div>
-            <div className="card bg-base-200 p-4">
-              <h2 className="text-xl font-bold">Orders</h2>
-              <p className="text-lg">12</p>
-            </div>
-            <div className="card bg-base-200 p-4">
-              <h2 className="text-xl font-bold">Revenue</h2>
-              <p className="text-lg">$3,240</p>
-            </div>
-            <div className="card bg-base-200 p-4">
-              <h2 className="text-xl font-bold">Users</h2>
-              <p className="text-lg">57</p>
-            </div>
-          </div>
+      <Grid container spacing={4}>
+        {stats.map(({ title, value, icon, bg }, index) => (
+          <Grid item xs={12} sm={4} key={index}>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 3,
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                backgroundColor: bg,
+                borderRadius: 2,
+                boxShadow: "0 3px 10px rgb(0 0 0 / 0.1)",
+              }}
+            >
+              <Box sx={{ color: "primary.main" }}>{icon}</Box>
+              <Box>
+                <Typography
+                  variant="subtitle1"
+                  color="text.secondary"
+                  fontWeight={600}
+                >
+                  {title}
+                </Typography>
+                <Typography variant="h5" fontWeight="bold">
+                  {value}
+                </Typography>
+              </Box>
 
-          {/* Product Table */}
-          <div className="overflow-x-auto bg-base-200 rounded-lg shadow">
-            <table className="table table-zebra w-full">
-              <thead>
-                <tr>
-                  <th>Image</th>
-                  <th>Name</th>
-                  <th>Price</th>
-                  <th>Stock</th>
-                  <th>Added</th>
-                  <th className="text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((p, idx) => (
-                  <tr key={p._id}>
-                    <td>
-                      <img src={p.image} alt={p.name} className="w-12 h-12 rounded" />
-                    </td>
-                    <td>{p.title}</td>
-                    <td>{p.price}</td>
-                    <td>{p.status == 'In Stock' ? "True" : "False"}</td>
-                    <td>{p?.time}</td>
-                    <td className="flex gap-2 justify-center flex-wrap">
-                      <Link to={`/product/${p._id}`} className="btn btn-sm btn-info"><FaEye /></Link>
-                      <Link to='/dashboard/editproduct' className="btn btn-sm btn-warning"><FaEdit /></Link>
-                      <button onClick={() => handleDeleteProduct(p._id)} className="btn btn-sm btn-error"><FaTrash /></button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </main>
-      </div>
-
-      {/* Sidebar */}
-      <div className="drawer-side">
-        <label htmlFor="admin-drawer" className="drawer-overlay"></label>
-        <aside className="w-64 bg-base-200 p-4">
-          <h2 className="text-2xl font-bold mb-6 text-primary">ORYON</h2>
-          <ul className="menu">
-            <li><a><FaBox /> Products</a></li>
-            <li><a><FaShoppingCart /> Orders</a></li>
-            <li><a><FaUser /> Users</a></li>
-            <li><a><FaCog /> Settings</a></li>
-            <li className="text-red-500"><a><FaSignOutAlt /> Logout</a></li>
-          </ul>
-        </aside>
-      </div>
-    </div>
+             
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+      
+      {/* Chart Section */}
+      <Box mt={5}>
+        <Typography variant="h6" gutterBottom>
+          Orders & Revenue Overview
+        </Typography>
+        <DashboardChart />
+      </Box>
+    </Box>
+    
   );
-}
+};
 
 export default AdminHome;

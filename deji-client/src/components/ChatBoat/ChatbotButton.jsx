@@ -26,7 +26,7 @@ const Chatbot = () => {
     } catch (err) {
       setMessages([
         ...newMessages,
-        { sender: "bot", text: "❌ Something went wrong." },
+        { sender: "bot", text: "❌ Something went wrong." ,err},
       ]);
     }
   };

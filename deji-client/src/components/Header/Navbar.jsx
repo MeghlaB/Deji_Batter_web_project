@@ -143,7 +143,7 @@ export default function Navbar() {
                     />
 
                     {isAdmin && (
-                      <Link to="/dashboard" className="hidden md:flex items-center gap-1 font-bold">
+                      <Link to="/dashboard/adminhome" className="hidden md:flex items-center gap-1 font-bold">
                         <LuLayoutDashboard className='' />
                         <span className="text-sm">DASHBOARD</span>
                       </Link>
