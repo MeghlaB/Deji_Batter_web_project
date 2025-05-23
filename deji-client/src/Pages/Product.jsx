@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 
 // Fetch products from backend
 const fetchProducts = async () => {
-  const res = await axios.get("https://deji-server.vercel.app/products");
+  const res = await axios.get("http://localhost:5000/products");
   return res.data;
 };
 

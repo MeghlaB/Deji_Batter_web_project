@@ -56,7 +56,7 @@ function Register() {
         status: "active",
       };
 
-      const res = await axios.post("https://deji-server.vercel.app/users", userInfo);
+      const res = await axios.post("http://localhost:5000/users", userInfo);
 
       if (res.data.insertedId || res.data.success) {
         reset();

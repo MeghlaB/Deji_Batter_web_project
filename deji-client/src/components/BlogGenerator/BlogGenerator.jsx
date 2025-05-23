@@ -14,7 +14,7 @@ const BlogGenerator = () => {
     if (!selectedTopic) return;
     setLoading(true);
     try {
-      const response = await axios.post("https://deji-server.vercel.app/generate-article", {
+      const response = await axios.post("http://localhost:5000/generate-article", {
         topic: selectedTopic,
       });
       setArticle(response.data.article);
