@@ -15,15 +15,14 @@ const ProductCategories = ({ onCategorySelect }) => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'flex-start', // changed from center to flex-start
-      padding: '20px 20px 40px', // reduced top padding
-      minHeight: '100vh',
+      justifyContent: 'flex-start',
+      padding: '20px 10px'
     }}>
-      <h2 style={{ marginBottom: '20px', marginTop: '10px' }}>Product Categories</h2>
+      <h2 style={{ margin: '10px 0 20px' }}>Product Categories</h2>
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-        gap: '25px',
+        gap: '20px',
         width: '100%',
         maxWidth: '900px',
         justifyItems: 'center'
@@ -34,9 +33,9 @@ const ProductCategories = ({ onCategorySelect }) => {
             onClick={() => onCategorySelect(category.slug)}
             style={{
               backgroundColor: '#f8f9fa',
-              padding: '20px',
+              padding: '18px',
               borderRadius: '12px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
               width: '100%',
               maxWidth: '160px',
               cursor: 'pointer',
@@ -46,7 +45,7 @@ const ProductCategories = ({ onCategorySelect }) => {
             onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
             onMouseLeave={e => e.currentTarget.style.transform = 'scale(1.0)'}
           >
-            <div style={{ marginBottom: '10px' }}>{category.icon}</div>
+            <div style={{ marginBottom: '8px' }}>{category.icon}</div>
             <div style={{ fontWeight: '600', fontSize: '14px' }}>{category.name}</div>
           </div>
         ))}
