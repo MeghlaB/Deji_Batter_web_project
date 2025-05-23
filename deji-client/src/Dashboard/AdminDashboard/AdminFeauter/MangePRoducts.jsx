@@ -1,69 +1,84 @@
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import {
+  Box,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   CircularProgress,
   Typography,
   Avatar,
-  Box
-} from '@mui/material';
-import { Edit } from 'lucide-react';
-import { Link } from 'react-router-dom';
+  Button,
+  Stack,
+} from "@mui/material";
+import { Edit } from "lucide-react";
+import { Link } from "react-router-dom";
+import ExportButton from "./ExportButton";
 
-const MangePRoducts = () => {
-  const { data: products = [], isLoading, isError } = useQuery({
-    queryKey: ['products'],
+const ManageProducts = () => {
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["products"],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:5000/products');
+      const res = await axios.get("http://localhost:5000/products");
       return res.data;
     },
   });
 
   if (isLoading) {
     return (
-      <Box
-        height="80vh"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <CircularProgress />
+      <Box height="80vh" display="flex" justifyContent="center" alignItems="center">
+        <CircularProgress size={48} />
       </Box>
     );
   }
 
   if (isError) {
     return (
-      <Box
-        height="80vh"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Typography color="error">Failed to load data.</Typography>
+      <Box height="80vh" display="flex" justifyContent="center" alignItems="center">
+        <Typography color="error" fontSize={18}>
+          Failed to load products. Please try again later.
+        </Typography>
       </Box>
     );
   }
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      mt={4}
-      px={2}
-    >
-      <TableContainer component={Paper} sx={{ maxWidth: 1200, width: '100%' }}>
+    <Box p={3}>
+      {/* Header */}
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        justifyContent="space-between"
+        alignItems={{ xs: "flex-start", sm: "center" }}
+        spacing={2}
+        mb={4}
+      >
+        <Typography variant="h5" fontWeight={600} color="primary">
+           Manage Products
+        </Typography>
+        <Stack direction="row" spacing={2}>
+          <Link to="/dashboard/addproduct">
+            <Button variant="contained" color="primary" size="small">
+              Add Product
+            </Button>
+          </Link>
+          <ExportButton />
+        </Stack>
+      </Stack>
+
+      {/* Products Table */}
+      <TableContainer component={Paper} elevation={4}>
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: "#f9fafb" }}>
               <TableCell>#</TableCell>
               <TableCell>Image</TableCell>
               <TableCell>Model</TableCell>
@@ -72,19 +87,19 @@ const MangePRoducts = () => {
               <TableCell>Price</TableCell>
               <TableCell>Stock</TableCell>
               <TableCell>Brand</TableCell>
-              <TableCell>Edit</TableCell>
+              <TableCell align="center">Edit</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {products.map((item, index) => (
-              <TableRow key={item._id}>
+              <TableRow key={item._id} hover sx={{ transition: "all 0.2s" }}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>
                   <Avatar
-                    variant="square"
+                    variant="rounded"
                     src={item.imageURL}
                     alt={item.model}
-                    sx={{ width: 56, height: 56 }}
+                    sx={{ width: 50, height: 50 }}
                   />
                 </TableCell>
                 <TableCell>{item.model}</TableCell>
@@ -93,13 +108,17 @@ const MangePRoducts = () => {
                 <TableCell>{item.price}৳</TableCell>
                 <TableCell>{item.stock}</TableCell>
                 <TableCell>{item.brand}</TableCell>
-                <Link to={`/dashboard/products-edit/${item._id}`}
-                className='flex items-center justify-center'
-                >
-                  <TableCell>
-                  <Edit/>
+                <TableCell align="center">
+                  <Link to={`/dashboard/products-edit/${item._id}`}>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={<Edit size={18} />}
+                    >
+                      Edit
+                    </Button>
+                  </Link>
                 </TableCell>
-                </Link>
               </TableRow>
             ))}
           </TableBody>
@@ -109,4 +128,4 @@ const MangePRoducts = () => {
   );
 };
 
-export default MangePRoducts;
+export default ManageProducts;

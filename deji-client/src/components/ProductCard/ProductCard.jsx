@@ -12,7 +12,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
   const navigate = useNavigate();
 
   return (
-    <Card sx={{ maxWidth: 300, m: 2, borderRadius: 3 }}>
+    <Card sx={{ maxWidth: 250, m: 2, borderRadius: 3 }}>
       <CardMedia
         component="img"
         height="200"

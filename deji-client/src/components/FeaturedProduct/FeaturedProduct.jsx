@@ -3,14 +3,12 @@ import {
   Grid,
   Typography,
   CircularProgress,
-  TextField,
-  MenuItem,
-  Button,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import ProductCard from "../ProductCard/ProductCard";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";  // <-- ইমপোর্ট করো
 
 // Fetch products from backend
 const fetchProducts = async () => {
@@ -18,7 +16,7 @@ const fetchProducts = async () => {
   return res.data;
 };
 
-// Add product to localStorage cart
+// Add product to localStorage cart & show modal
 const addToLocalCart = (product) => {
   const existing = JSON.parse(localStorage.getItem("cart")) || [];
   const exists = existing.find((item) => item._id === product._id);
@@ -28,6 +26,16 @@ const addToLocalCart = (product) => {
     existing.push({ ...product, quantity: 1 });
   }
   localStorage.setItem("cart", JSON.stringify(existing));
+
+  Swal.fire({
+    icon: 'success',
+    title: 'Added!',
+    text: `${product.name} has been added to your cart.`,
+    timer: 1500,
+    showConfirmButton: false,
+    position: 'top-end',
+    toast: true,
+  });
 };
 
 const FeaturedProduct = () => {

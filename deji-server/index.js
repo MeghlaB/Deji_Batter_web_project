@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { OpenAI } = require("openai");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const { Parser } = require("json2csv");
 require("dotenv").config();
 
 const app = express();
@@ -254,39 +255,101 @@ async function run() {
     //     res.status(500).send({ error: "Failed to generate blog." });
     //   }
     // });
-  const { OpenAI } = require("openai");
+    const { OpenAI } = require("openai");
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // বা সরাসরি key বসাতে পারো
-});
-
-app.post("/generate", async (req, res) => {
-  const { topic } = req.body;
-
-  if (!topic) {
-    return res.status(400).json({ error: "Topic is required" });
-  }
-
-  try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo", 
-      messages: [
-        {
-          role: "user",
-          content: `Write a beautiful, detailed blog post about: ${topic}`,
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: 800,
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
     });
 
-    const blog = completion.choices[0].message.content.trim();
-    res.json({ blog });
+    app.post("/generate", async (req, res) => {
+      const { topic } = req.body;
+
+      if (!topic) {
+        return res.status(400).json({ error: "Topic is required" });
+      }
+
+      try {
+        const completion = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "user",
+              content: `Write a beautiful, detailed blog post about: ${topic}`,
+            },
+          ],
+          temperature: 0.7,
+          max_tokens: 800,
+        });
+
+        const blog = completion.choices[0].message.content.trim();
+        res.json({ blog });
+      } catch (error) {
+        console.error("OpenAI Error:", error.message);
+        res.status(500).json({ error: "Failed to generate blog" });
+      }
+    });
+
+    // ............export-products csv
+  app.get('/api/export-products', async (req, res) => {
+  try {
+    const products = await productsCollection.find({}).toArray();
+
+    if (products.length === 0) {
+      return res.status(404).send('No products found to export.');
+    }
+
+ 
+    const flattenedProducts = products.map((product) => {
+      const specs = product.specifications || {};
+
+      return {
+        id: product._id,
+        model: product.model,
+        batteryType: product.batteryType,
+        capacity: product.capacity,
+        voltage: product.voltage,
+        limitedVoltage: product.limitedVoltage,
+        chargingTime: product.chargingTime,
+        standbyTime: product.standbyTime,
+        cycleTime: product.cycleTime,
+        safety: product.safety,
+        brand: product.brand,
+        price: product.price,
+        stock: product.stock,
+        description: product.description,
+        title: product.title,
+        imageURL: product.imageURL,
+        // specifications fields 
+        spec_Model: specs.Model,
+        spec_BatteryType: specs['Battery Type'],
+        spec_Capacity: specs.Capacity,
+        spec_Voltage: specs.Voltage,
+        spec_LimitedVoltage: specs['Limited Voltage'],
+        spec_ChargingTime: specs['Charging Time'],
+        spec_StandbyTime: specs['Standby Time'],
+        spec_CycleTime: specs['Cycle Time'],
+        spec_Safety: specs.Safety,
+        spec_Brand: specs.Brand,
+      };
+    });
+
+    const parser = new Parser();
+    const csv = parser.parse(flattenedProducts);
+
+    res.header('Content-Type', 'text/csv');
+    res.attachment('products.csv');
+    return res.send(csv);
   } catch (error) {
-    console.error("OpenAI Error:", error.message);
-    res.status(500).json({ error: "Failed to generate blog" });
+    console.error('❌ CSV export failed:', error);
+    res.status(500).send('Server error');
   }
 });
+
+
+
+
+
+
 
   } finally {
     // Do NOT close client here, keep connection alive
