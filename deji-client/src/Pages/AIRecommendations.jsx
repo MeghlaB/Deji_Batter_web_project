@@ -3,13 +3,13 @@ import { Grid, Typography } from "@mui/material";
 import ProductCard from "./ProductCard";
 
 const AIRecommendations = ({ products, cartItems }) => {
-  // কার্টে থাকা ব্র্যান্ডের ইউনিক লিস্ট
+ 
   const brandsInCart = [...new Set(cartItems.map((item) => item.brand))];
 
-  // ব্র্যান্ড মেলানো ছাড়া অন্য প্রোডাক্ট নিন (সিম্পল লজিক)
+ 
   const recommended = products
     .filter((p) => !brandsInCart.includes(p.brand))
-    .slice(0, 4); // সর্বোচ্চ ৪ টি
+    .slice(0, 4); 
 
   if (recommended.length === 0) {
     return (

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { FaRobot } from "react-icons/fa";
-import { Link } from "react-router-dom"; // optional: if you're using React Router
+import { Link } from "react-router-dom"; 
 
 import image1 from '../../assets/banner-battery.jpeg';
 import image2 from '../../assets/banner-battery.jpg';
@@ -117,13 +117,8 @@ export default function Banner() {
         ›
       </button>
 
-      {/* Floating AI Chatbot Button */}
-      <button
-        className="fixed bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white p-4 rounded-full shadow-lg z-50"
-        onClick={() => alert("AI Chatbot coming soon...")}
-      >
-        <FaRobot size={24} />
-      </button>
+    
+      
     </div>
   );
 }

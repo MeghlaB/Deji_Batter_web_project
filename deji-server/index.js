@@ -11,7 +11,7 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173","https://dejibattery-80307.web.app"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
@@ -215,23 +215,7 @@ async function run() {
       }
     });
 
-    // --- OpenAI Article Generation API ---
-
-    // app.post("/chat", async (req, res) => {
-    //   const { message } = req.body;
-
-    //   try {
-    //     const chatResponse = await openai.chat.completions.create({
-    //       model: "gpt-4",
-    //       messages: [{ role: "user", content: message }],
-    //     });
-
-    //     res.json({ reply: chatResponse.choices[0].message.content });
-    //   } catch (err) {
-    //     res.status(500).json({ error: "OpenAI error", detail: err.message });
-    //   }
-    // });
-
+   
     // ... contact api ....
 
     app.post("/contact", async (req, res) => {
@@ -245,50 +229,7 @@ async function run() {
       res.send(contact);
     });
 
-    // ..........OpenApi blog post.........
-    // app.post("/generate", async (req, res) => {
-    //   const { topic } = req.body;
-    //   try {
-    //     const blog = await generateBlogPost(topic);
-    //     res.send({ blog });
-    //   } catch (err) {
-    //     res.status(500).send({ error: "Failed to generate blog." });
-    //   }
-    // });
-    const { OpenAI } = require("openai");
-
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    app.post("/generate", async (req, res) => {
-      const { topic } = req.body;
-
-      if (!topic) {
-        return res.status(400).json({ error: "Topic is required" });
-      }
-
-      try {
-        const completion = await openai.chat.completions.create({
-          model: "gpt-3.5-turbo",
-          messages: [
-            {
-              role: "user",
-              content: `Write a beautiful, detailed blog post about: ${topic}`,
-            },
-          ],
-          temperature: 0.7,
-          max_tokens: 800,
-        });
-
-        const blog = completion.choices[0].message.content.trim();
-        res.json({ blog });
-      } catch (error) {
-        console.error("OpenAI Error:", error.message);
-        res.status(500).json({ error: "Failed to generate blog" });
-      }
-    });
-
+   
     // ............export-products csv
   app.get('/api/export-products', async (req, res) => {
   try {

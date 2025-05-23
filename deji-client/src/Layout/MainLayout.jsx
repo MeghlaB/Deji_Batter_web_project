@@ -10,7 +10,7 @@ function MainLayout() {
       <div className="min-h-[calc(100vh-288px)] mb-15">
         <Outlet />
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

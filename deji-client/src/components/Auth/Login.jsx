@@ -62,7 +62,7 @@ function Login() {
           name: res.user?.displayName,
           photo: res.user?.photoURL,
         };
-       axios.post("http://localhost:5000/users", userInfo)
+       axios.post("https://deji-server.vercel.app/users", userInfo)
        .then((res) => {
           if (res.data.insertedId || res.data.success) {
             Swal.fire({
