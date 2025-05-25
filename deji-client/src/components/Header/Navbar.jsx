@@ -1,33 +1,33 @@
-import React, { useContext, useRef, useState } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import MenuIcon from '@mui/icons-material/Menu';
-import Button from '@mui/material/Button';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import useScrollTrigger from '@mui/material/useScrollTrigger';
-import Slide from '@mui/material/Slide';
-import { Link, useLocation } from 'react-router-dom';
-import { AuthContext } from '../../Provider/Authprovider';
-
-// Icons
-import { FaBolt } from 'react-icons/fa';
-import { MdLogout } from 'react-icons/md';
-import { LuLayoutDashboard } from 'react-icons/lu';
-import useAdmin from '../../Hooks/useAdmin';
+import React, { useContext, useRef, useState } from "react";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+  Button,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  useScrollTrigger,
+  Slide,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import { Link, useLocation } from "react-router-dom";
+import { AuthContext } from "../../Provider/Authprovider";
+import { FaBolt } from "react-icons/fa";
+import { MdLogout } from "react-icons/md";
+import { LuLayoutDashboard } from "react-icons/lu";
+import useAdmin from "../../Hooks/useAdmin";
 
 const navItems = [
-  { label: 'HOME', path: '/' },
-  { label: 'PRODUCTS', path: '/products' },
-  { label: 'BULK ORDERS', path: '/b2b' },
-  { label: 'BLOG', path: '/blog' },
-  { label: 'CONTACT US', path: '/contact' },
+  { label: "HOME", path: "/" },
+  { label: "PRODUCTS", path: "/products" },
+  { label: "BULK ORDERS", path: "/b2b" },
+  { label: "BLOG", path: "/blog" },
+  { label: "CONTACT US", path: "/contact" },
 ];
 
 function HideOnScroll({ children }) {
@@ -52,15 +52,15 @@ export default function Navbar() {
   };
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
+      <Typography variant="h6" sx={{ my: 2, color: "#003049" }}>
         DEJI
       </Typography>
       <List>
         {navItems.map((item) => (
           <ListItem key={item.label} disablePadding>
             <ListItemButton
-              sx={{ textAlign: 'center' }}
+              sx={{ textAlign: "center" }}
               component={Link}
               to={item.path}
               selected={location.pathname === item.path}
@@ -69,7 +69,7 @@ export default function Navbar() {
                 primary={item.label}
                 primaryTypographyProps={{
                   style: {
-                    color: location.pathname === item.path ? 'green' : '#000',
+                    color: location.pathname === item.path ? "green" : "#000",
                     fontWeight: location.pathname === item.path ? 700 : 500,
                   },
                 }}
@@ -83,7 +83,7 @@ export default function Navbar() {
             <ListItemButton
               component={Link}
               to="/auth/login"
-              sx={{ textAlign: 'center' }}
+              sx={{ textAlign: "center" }}
             >
               <ListItemText primary="LOGIN" />
             </ListItemButton>
@@ -96,14 +96,18 @@ export default function Navbar() {
   return (
     <>
       <HideOnScroll>
-        <AppBar component="nav" position="fixed" sx={{ backgroundColor: 'white', color: '#000' }}>
+        <AppBar
+          component="nav"
+          position="fixed"
+          sx={{ backgroundColor: "white", color: "#000" }}
+        >
           <Toolbar>
             <IconButton
               color="inherit"
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: 'none' } }}
+              sx={{ mr: 2, display: { sm: "none" } }}
             >
               <MenuIcon />
             </IconButton>
@@ -111,22 +115,34 @@ export default function Navbar() {
             <Typography
               variant="h6"
               component="div"
-              color="green"
-              sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}
+              sx={{
+                flexGrow: 1,
+                display: "flex",
+                alignItems: "center",
+                color: "#f3722c",
+                fontWeight: "bold",
+              }}
             >
-              DEJI
+              DEJI BATTERY
             </Typography>
 
-            <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 2 }}>
+            <Box
+              sx={{
+                display: { xs: "none", sm: "flex" },
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
               {navItems.map((item) => (
                 <Button
                   key={item.label}
                   component={Link}
                   to={item.path}
                   sx={{
-                    color: location.pathname === item.path ? 'green' : '#000',
+                    color:
+                      location.pathname === item.path ? "#f8961e" : "#000",
                     fontWeight: location.pathname === item.path ? 700 : 600,
-                    textTransform: 'none',
+                    textTransform: "none",
                   }}
                 >
                   {item.label}
@@ -143,8 +159,11 @@ export default function Navbar() {
                     />
 
                     {isAdmin && (
-                      <Link to="/dashboard/adminhome" className="hidden md:flex items-center gap-1 font-bold">
-                        <LuLayoutDashboard className='' />
+                      <Link
+                        to="/dashboard/adminhome"
+                        className="hidden md:flex items-center gap-1 font-bold"
+                      >
+                        <LuLayoutDashboard />
                         <span className="text-sm">DASHBOARD</span>
                       </Link>
                     )}
@@ -152,16 +171,20 @@ export default function Navbar() {
                     <Button
                       onClick={logOut}
                       className="hidden md:flex items-center gap-1"
-                      sx={{ textTransform: 'none', color: '#000' }}
+                      sx={{ textTransform: "none", color: "#000" }}
                     >
-                      <MdLogout className='font-bold' />
+                      <MdLogout />
                       <span className="text-sm font-bold">LogOut</span>
                     </Button>
                   </>
                 ) : (
                   <Link
                     to="/auth/login"
-                    className="md:block bg-gradient-to-r from-green-500 to-blue-500 px-4 py-1 rounded-md text-sm font-semibold text-white"
+                    className="md:block px-4 py-1 rounded-md text-sm font-semibold text-white"
+                    style={{
+                      backgroundImage:
+                        "linear-gradient(to right, #f9c74f, #f3722c)",
+                    }}
                   >
                     Login
                   </Link>
@@ -215,8 +238,8 @@ export default function Navbar() {
           onClose={handleDrawerToggle}
           ModalProps={{ keepMounted: true }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": { boxSizing: "border-box", width: 240 },
           }}
         >
           {drawer}
