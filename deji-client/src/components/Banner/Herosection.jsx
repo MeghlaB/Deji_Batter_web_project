@@ -63,7 +63,9 @@ export default function Banner() {
       <div className="absolute top-0 left-0 z-20 h-full w-full flex items-center justify-between px-6 md:px-20">
         {/* Left Side - Text */}
         <div className="text-white max-w-xl space-y-5">
-          <h1 className="text-3xl md:text-5xl font-extrabold leading-tight text-green-400">
+          <h1 className="text-3xl md:text-5xl font-extrabold leading-tight"
+           style={{ color: "#f8961e" }}
+          >
             Singapore’s Longest-Lasting Phone Batteries
             <br />
             <span className="text-white text-xl md:text-2xl">12-Month Warranty</span>
@@ -74,13 +76,13 @@ export default function Banner() {
           <div className="flex gap-4 mt-4">
             <Link
               to="/products"
-              className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full shadow"
+              className="bg-orange-400 hover:bg-orange-700 text-white px-5 py-2 rounded-full shadow"
             >
               Shop Now
             </Link>
             <Link
               to="/b2b"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full shadow"
+              className="bg-[#3c096c] hover:bg-[#240046] text-white px-5 py-2 rounded-full shadow"
             >
               Bulk Orders
             </Link>
