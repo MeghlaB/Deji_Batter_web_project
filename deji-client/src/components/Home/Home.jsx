@@ -14,8 +14,9 @@ function Home() {
     <div>
       <Banner />
       <ChatlingWidget/>
+       <ProductCategories/>
     <FeaturedProduct></FeaturedProduct>
-  <ProductCategories/>
+ 
     <BulkOrderSection/>
   <ServiceGuaranteeSection/>
     </div>
