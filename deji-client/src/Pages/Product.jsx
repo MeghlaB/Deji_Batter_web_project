@@ -14,13 +14,12 @@ import ProductCard from "../components/ProductCard/ProductCard";
 import * as tf from "@tensorflow/tfjs";
 import { Link } from "react-router-dom";
 
-// Fetch products from backend
 const fetchProducts = async () => {
   const res = await axios.get("http://localhost:5000/products");
   return res.data;
 };
 
-// Add product to localStorage cart
+
 const addToLocalCart = (product) => {
   const existing = JSON.parse(localStorage.getItem("cart")) || [];
   const exists = existing.find((item) => item._id === product._id);
@@ -33,7 +32,11 @@ const addToLocalCart = (product) => {
 };
 
 const Product = () => {
-  const { data: products = [], isLoading, isError } = useQuery({
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
   });
@@ -69,7 +72,6 @@ const Product = () => {
     setRecommendation(products[bestIndex]);
   };
 
-  // Auto AI suggestion logic
   useEffect(() => {
     if (products.length < 3) return;
 
@@ -79,7 +81,7 @@ const Product = () => {
     const similarity = products
       .map((p) => ({
         product: p,
-        score: 1 / (1 + Math.abs(p.price - avgPrice)), // inverse of distance
+        score: 1 / (1 + Math.abs(p.price - avgPrice)), 
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, 3)
@@ -88,10 +90,8 @@ const Product = () => {
     setSuggestedProducts(similarity);
   }, [products]);
 
-  // Get unique brands
   const brands = [...new Set(products.map((p) => p.brand))];
 
-  // Filtered products
   const filtered = products.filter(
     (p) => (brand ? p.brand === brand : true) && p.price <= priceLimit
   );
@@ -106,7 +106,7 @@ const Product = () => {
   if (isError)
     return (
       <Typography textAlign="center" mt={5} color="error">
-        ❌ Failed to load products
+         Failed to load products
       </Typography>
     );
 
@@ -119,47 +119,58 @@ const Product = () => {
           fontWeight="bold"
           mb={3}
         >
-          🛍️ Products
+          Products
         </Typography>
 
-        {/* Filters */}
-        <Box display="flex" gap={2} mb={3}>
-          <TextField
-            select
-            label="Filter by Brand"
-            value={brand}
-            onChange={(e) => setBrand(e.target.value)}
-            sx={{ minWidth: 180 }}
-          >
-            <MenuItem value="">All Brands</MenuItem>
-            {brands.map((b, i) => (
-              <MenuItem key={i} value={b}>
-                {b}
-              </MenuItem>
-            ))}
-          </TextField>
+        {/* Filters and Recommend Button */}
+        <Box className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+          {/* Left side: Filters */}
+          <div className="flex flex-wrap gap-4">
+            <TextField
+              select
+              label="Filter by Brand"
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+              sx={{ minWidth: 180 }}
+            >
+              <MenuItem value="">All Brands</MenuItem>
+              {brands.map((b, i) => (
+                <MenuItem key={i} value={b}>
+                  {b}
+                </MenuItem>
+              ))}
+            </TextField>
 
-          <TextField
-            type="number"
-            label="Max Price"
-            value={priceLimit}
-            onChange={(e) => setPriceLimit(Number(e.target.value))}
-          />
+            <TextField
+              type="number"
+              label="Max Price"
+              value={priceLimit}
+              onChange={(e) => setPriceLimit(Number(e.target.value))}
+            />
+          </div>
 
           <Button
             variant="contained"
             onClick={generateRecommendation}
-            sx={{ whiteSpace: "nowrap" }}
+            sx={{
+              backgroundColor: "orange",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#cc5200",
+              },
+              whiteSpace: "nowrap",
+              mt: { xs: 0, md: 0 },
+            }}
           >
-            🎯 Recommend Product
+            Recommend Product
           </Button>
         </Box>
 
-        {/* Highlighted Product */}
+        {/* Recommended Product */}
         {recommendation && (
           <Box mb={4}>
             <Typography variant="h6" gutterBottom>
-              🎉 Top Pick For You:
+              Top Pick For You:
             </Typography>
             <ProductCard
               product={recommendation}
@@ -182,11 +193,11 @@ const Product = () => {
           ))}
         </Grid>
 
-        {/* AI Suggestion Section */}
+        {/* Suggested Products */}
         {suggestedProducts.length > 0 && (
           <Box mt={6}>
             <Typography variant="h5" fontWeight="bold" mb={2}>
-              🧠 You Might Also Like
+              You Might Also Like
             </Typography>
             <Grid container spacing={2}>
               {suggestedProducts.map((product) => (
