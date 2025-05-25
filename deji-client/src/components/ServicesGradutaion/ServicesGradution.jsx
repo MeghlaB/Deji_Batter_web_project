@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaShieldAlt, FaHeadset, FaTruck, FaUndoAlt, FaClock } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 const services = [
   {
@@ -34,23 +35,55 @@ const services = [
   },
 ];
 
+// Animation variants
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0 },
+};
+
 const ServiceGuaranteeSection = () => {
   return (
     <section className="bg-gray-50 py-12">
       <div className="container mx-auto px-4 text-center">
-        <h2 className="text-3xl font-bold mb-8 text-gray-800">Our Services & Guarantee</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          {services.map(service => (
-            <div
+        <motion.h2
+          className="text-3xl font-bold mb-8 text-gray-800"
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: false, amount: 0.5 }}
+        >
+          Our Services & Guarantee
+        </motion.h2>
+
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.3 }}
+        >
+          {services.map((service) => (
+            <motion.div
               key={service.id}
-              className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-200"
+              variants={cardVariants}
+              transition={{ duration: 0.4 }}
+              className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
             >
               <div className="mb-4 flex justify-center">{service.icon}</div>
               <h3 className="text-lg font-semibold mb-2">{service.title}</h3>
               <p className="text-gray-600 text-sm">{service.description}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

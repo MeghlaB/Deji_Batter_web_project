@@ -11,15 +11,23 @@ const BulkOrderSection = () => {
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
+          viewport={{ once: false, amount: 0.4 }} // Replay on scroll
         >
-          {/* Left: Image */}
+          {/* Left: Image with floating effect */}
           <motion.div
             className="flex justify-center md:justify-start"
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.4 }}
+            animate={{
+              y: [0, -10, 0], // subtle up and down
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
           >
             <img
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgeTjEJiuOfsTn7KAu5XHs1gsuILlbpz-RVg&s"
@@ -34,7 +42,7 @@ const BulkOrderSection = () => {
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.4 }}
           >
             <h2 className="text-3xl font-extrabold text-gray-800 mb-4 leading-snug">
               Bulk Orders & Business Solutions
