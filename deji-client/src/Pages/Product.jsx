@@ -105,7 +105,7 @@ const Product = () => {
 
   if (isError)
     return (
-      <Typography textAlign="center" mt={5} color="error">
+      <Typography className="text-orange-400" textAlign="center" mt={5} color="error">
          Failed to load products
       </Typography>
     );
@@ -115,7 +115,7 @@ const Product = () => {
       <Box sx={{ mt: 4, px: 3, mx: "auto", width: "container" }}>
         <Typography
           variant="h4"
-          className="text-center"
+          className="text-center text-orange-400"
           fontWeight="bold"
           mb={3}
         >
@@ -196,7 +196,9 @@ const Product = () => {
         {/* Suggested Products */}
         {suggestedProducts.length > 0 && (
           <Box mt={6}>
-            <Typography variant="h5" fontWeight="bold" mb={2}>
+            <Typography 
+            className="text-orange-400"
+             variant="h5" fontWeight="bold" mb={2}>
               You Might Also Like
             </Typography>
             <Grid container spacing={2}>

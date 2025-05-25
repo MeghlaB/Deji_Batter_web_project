@@ -50,7 +50,7 @@ const InquiryForm = () => {
     <Box className="max-w-2xl mx-auto mt-12 px-4">
       <Paper elevation={4} className="rounded-2xl p-6 shadow-md">
         <Typography variant="h5" align="center" gutterBottom>
-          📦 Submit a Wholesale Order
+          Submit a Wholesale Order
         </Typography>
         <Typography
           variant="body2"
@@ -105,7 +105,6 @@ const InquiryForm = () => {
             <Button
               type="submit"
               variant="contained"
-              color="primary"
               fullWidth
               size="large"
               sx={{
@@ -113,10 +112,14 @@ const InquiryForm = () => {
                 py: 1.5,
                 textTransform: "none",
                 fontWeight: "bold",
+                backgroundColor: "#f97316",     
+                "&:hover": {
+                  backgroundColor: "#ea580c",  
+                },
               }}
               disabled={isSubmitting}
             >
-              {isSubmitting ? <CircularProgress size={24} /> : "Submit Order"}
+              {isSubmitting ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Submit Order"}
             </Button>
           </Box>
         </form>
