@@ -12,23 +12,41 @@ const ProductCard = ({ product, handleAddToCart }) => {
   const navigate = useNavigate();
 
   return (
-    <Card sx={{ maxWidth: 250, m: 2, borderRadius: 3 }}>
+    <Card
+      sx={{
+        maxWidth: 250,
+        m: 2,
+        borderRadius: 3,
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        "&:hover": {
+          transform: "translateY(-4px)",
+          boxShadow: "0 6px 18px rgba(0,0,0,0.1)",
+        },
+      }}
+    >
       <CardMedia
         component="img"
         height="200"
         image={product.imageURL}
         alt={product.name}
         sx={{ cursor: "pointer" }}
-        onClick={() => navigate(`/products/${product.id}`)}  
+        onClick={() => navigate(`/products/${product._id}`)}
       />
       <CardContent>
-        <Typography variant="h6">{product.name}</Typography>
+        <Typography variant="h6" gutterBottom>
+          {product.name}
+        </Typography>
         <Typography color="text.secondary">SGD {product.price}</Typography>
         <Button
           variant="contained"
-          color="primary"
           fullWidth
-          sx={{ mt: 2 }}
+          sx={{
+            mt: 2,
+            backgroundColor: "#f8961e",
+            "&:hover": {
+              backgroundColor: "#f57c00",
+            },
+          }}
           onClick={() => handleAddToCart(product)}
         >
           Add to Cart

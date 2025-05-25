@@ -8,15 +8,16 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import ProductCard from "../ProductCard/ProductCard";
 import { Link } from "react-router-dom";
-import Swal from "sweetalert2";  // <-- ইমপোর্ট করো
+import Swal from "sweetalert2";
+import { motion } from "framer-motion"; // 
 
-// Fetch products from backend
+// Fetch products
 const fetchProducts = async () => {
   const res = await axios.get("http://localhost:5000/products");
   return res.data;
 };
 
-// Add product to localStorage cart & show modal
+// Add product to cart (localStorage)
 const addToLocalCart = (product) => {
   const existing = JSON.parse(localStorage.getItem("cart")) || [];
   const exists = existing.find((item) => item._id === product._id);
@@ -61,25 +62,42 @@ const FeaturedProduct = () => {
 
   if (isError)
     return (
-      <Typography textAlign="center" mt={5} color="error">
-        ❌ Failed to load products
+      <Typography textAlign="center" mt={5} color="#f8961e">
+        Failed to load products
       </Typography>
     );
 
   return (
     <div className="container mx-auto mt-10">
-      <h1 className="text-center text-2xl font-bold">FeaturedProduct</h1>
+  
+      <motion.h1
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center text-3xl font-bold text-gray-800"
+        style={{color:'#f8961e'}}
+      >
+        Featured Products
+      </motion.h1>
+
       <Box sx={{ mt: 4, px: 3, mx: "auto", width: "container" }}>
-        {/* Product Grid */}
+        {/* Product Grid with Animation */}
         <Grid container spacing={2}>
-          {products.map((product) => (
+          {products.map((product, index) => (
             <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
-              <Link to={`/products/${product._id}`}>
-                <ProductCard
-                  product={product}
-                  handleAddToCart={handleAddToCart}
-                />
-              </Link>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ scale: 1.03 }}
+              >
+                <Link to={`/products/${product._id}`}>
+                  <ProductCard
+                    product={product}
+                    handleAddToCart={handleAddToCart}
+                  />
+                </Link>
+              </motion.div>
             </Grid>
           ))}
         </Grid>

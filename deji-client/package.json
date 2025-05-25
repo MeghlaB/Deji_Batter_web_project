@@ -19,6 +19,7 @@
     "axios": "^1.9.0",
     "deji-client": "file:",
     "firebase": "^11.8.0",
+    "framer-motion": "^12.12.2",
     "localforage": "^1.10.0",
     "lucide-react": "^0.511.0",
     "match-sorter": "^8.0.1",
