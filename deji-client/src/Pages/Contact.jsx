@@ -10,6 +10,7 @@ import {
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { IoLogoWhatsapp } from "react-icons/io5";
+
 const ContactPage = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [loading, setLoading] = useState(false);
@@ -80,41 +81,63 @@ const ContactPage = () => {
               rows={4}
               required
             />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ mt: 2 }}
-              disabled={loading}
-            >
-              {loading ? <CircularProgress size={24} /> : 'Send Message'}
-            </Button>
+            {/* Button container flex */}
+            <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  flex: 1,
+                  borderRadius: '12px',
+                  py: 1.5,
+                  textTransform: 'none',
+                  fontWeight: 'bold',
+                  backgroundColor: '#f97316', 
+                  color: '#fff',
+                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                  '&:hover': {
+                    backgroundColor: '#ea580c',
+                    transform: 'scale(1.05)',
+                    boxShadow: '0 6px 12px rgba(234, 88, 12, 0.5)',
+                  },
+                  '&:disabled': {
+                    backgroundColor: '#fbbf24', 
+                    color: '#fff',
+                  },
+                }}
+                disabled={loading}
+              >
+                {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Send Message'}
+              </Button>
+
+              <Button
+                component="a"
+                href="https://wa.me/65XXXXXXXX" // Replace with actual WhatsApp number
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  backgroundColor: '#25D366',
+                  color: 'white',
+                  minWidth: '56px',
+                  borderRadius: '12px',
+                  '&:hover': {
+                    backgroundColor: '#1ebe57',
+                    boxShadow: '0 6px 12px rgba(37, 211, 102, 0.5)',
+                    transform: 'scale(1.1)',
+                  },
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.5rem',
+                  padding: 0,
+                }}
+              >
+                <IoLogoWhatsapp />
+              </Button>
+            </Box>
           </form>
         </Paper>
       </Box>
-
-      {/* WhatsApp Floating Button */}
-      <a
-        href="https://wa.me/65XXXXXXXX" // Replace with actual WhatsApp number (no +, just countrycode+number)
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          backgroundColor: '#25D366',
-          color: 'white',
-          padding: '12px 20px',
-          borderRadius: '50px',
-          boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-          textDecoration: 'none',
-          fontWeight: 600,
-          zIndex: 1000,
-        }}
-      >
-        <IoLogoWhatsapp />
-      </a>
     </div>
   );
 };
