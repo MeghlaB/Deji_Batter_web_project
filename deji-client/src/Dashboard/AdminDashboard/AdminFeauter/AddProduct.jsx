@@ -10,6 +10,21 @@ import {
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { styled } from "@mui/material/styles";
+
+
+const CustomButton = styled(Button)({
+  backgroundColor: "#f8961e",
+  color: "#fff",
+  fontWeight: "bold",
+  fontSize: "16px",
+  textTransform: "none",
+  padding: "12px 0",
+  "&:hover": {
+    backgroundColor: "#e07b00",
+  },
+});
+
 const imageHostingKey = import.meta.env.VITE_IMAGEHOSTING;
 const imageHostingURL = `https://api.imgbb.com/1/upload?key=${imageHostingKey}`;
 
@@ -43,7 +58,7 @@ const AddProductForm = () => {
         price: parseFloat(data.price),
         stock: parseInt(data.stock),
         description: data.description,
-        title:data.title,
+        title: data.title,
         imageURL: imageUrl,
       };
 
@@ -51,7 +66,7 @@ const AddProductForm = () => {
 
       if (res.data.insertedId) {
         reset();
-         Swal.fire({
+        Swal.fire({
           title: "Product Added Successfully",
           icon: "success",
           draggable: true,
@@ -64,20 +79,13 @@ const AddProductForm = () => {
 
   return (
     <Box sx={{ maxWidth: 900, mx: "auto", mt: 5 }}>
-      <Paper
-        elevation={6}
-        sx={{
-          p: 4,
-          borderRadius: 4,
-          background: "linear-gradient(to right, #f0f4ff, #e0f7ff)",
-        }}
-      >
+      <Paper elevation={6} sx={{ p: 4, borderRadius: 4 }}>
         <Typography
           variant="h4"
           textAlign="center"
           fontWeight="bold"
           mb={4}
-          color="primary"
+          color="#f8961e"
         >
           Add New Battery Product
         </Typography>
@@ -86,15 +94,15 @@ const AddProductForm = () => {
           <div className="py-2">
             <Grid item xs={12} sm={6}>
               <TextField
-                label="title"
+                label="Title"
                 fullWidth
                 {...register("title", { required: true })}
                 error={!!errors.title}
               />
             </Grid>
           </div>
+
           <Grid container spacing={3}>
-        
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Model"
@@ -216,13 +224,10 @@ const AddProductForm = () => {
                 style={{ marginTop: "8px" }}
               />
             </Grid>
-
-            
-
-           
           </Grid>
-       <div className="mt-8 space-y-2.5">
-           <Grid item xs={12}>
+
+          <div className="mt-8 space-y-2.5">
+            <Grid item xs={12}>
               <TextField
                 label="Description"
                 fullWidth
@@ -232,25 +237,15 @@ const AddProductForm = () => {
                 error={!!errors.description}
               />
             </Grid>
-           <Grid item xs={12}>
-              <Button
-                type="submit"
-                variant="contained"
-                size="large"
-                fullWidth
-                sx={{
-                  py: 1.5,
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                  textTransform: "none",
-                }}
-              >
-                 Submit Product
-              </Button>
-            </Grid>
-       </div>
-        </form>
 
+          
+            <Grid item xs={12}>
+              <CustomButton type="submit" fullWidth>
+                Submit Product
+              </CustomButton>
+            </Grid>
+          </div>
+        </form>
       </Paper>
     </Box>
   );

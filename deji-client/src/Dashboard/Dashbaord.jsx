@@ -28,7 +28,7 @@ export default function Dashboard() {
         {/* Close Button */}
         <button
           onClick={toggleSidebar}
-          className={`btn bg-red-600 text-white btn-sm absolute top-2 right-4`}
+          className={`btn bg-red-600 text-white text-3xl btn-sm absolute top-2 right-4`}
         >
           <ImCross  />
         </button>
@@ -44,7 +44,7 @@ export default function Dashboard() {
         <div className="p-4">
           <button
             onClick={toggleSidebar}
-            className="btn bg-green-600 text-white drawer-button"
+            className="btn bg-orange-600 text-white drawer-button text-3xl"
           >
             <ImMenu />
           </button>

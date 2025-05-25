@@ -33,7 +33,7 @@ function Login() {
     try {
       const result = await signIn(data.email, data.password);
       const user = result.user;
-      console.log(user)
+      console.log(user);
       Swal.fire({
         position: "top-center",
         icon: "success",
@@ -54,7 +54,7 @@ function Login() {
     }
   };
 
-  const handleGoogleSign = async() => {
+  const handleGoogleSign = async () => {
     GoogleLogin()
       .then((res) => {
         const userInfo = {
@@ -62,8 +62,7 @@ function Login() {
           name: res.user?.displayName,
           photo: res.user?.photoURL,
         };
-       axios.post("http://localhost:5000/users", userInfo)
-       .then((res) => {
+        axios.post("http://localhost:5000/users", userInfo).then((res) => {
           if (res.data.insertedId || res.data.success) {
             Swal.fire({
               position: "top-center",
@@ -117,17 +116,38 @@ function Login() {
             type="submit"
             fullWidth
             variant="contained"
-            color="success"
-            sx={{ mt: 2 }}
+            sx={{
+              mt: 2,
+              borderRadius: "12px",
+              py: 1.5,
+              textTransform: "none",
+              fontWeight: "bold",
+              backgroundColor: "#f8961e",
+              color: "#fff",
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
+              "&:hover": {
+                backgroundColor: "#d67a19",
+                transform: "scale(1.05)",
+                boxShadow: "0 6px 12px rgba(214, 122, 25, 0.5)",
+              },
+              "&:disabled": {
+                backgroundColor: "#fbbf24",
+                color: "#fff",
+              },
+            }}
             disabled={loading}
           >
-            {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
+            {loading ? (
+              <CircularProgress size={24} sx={{ color: "white" }} />
+            ) : (
+              "Login"
+            )}
           </Button>
         </form>
 
         <Typography variant="body2" align="center" mt={2}>
           Don't have an account?{" "}
-          <Link to="/auth/register" style={{ color: "#1976d2" }}>
+          <Link to="/auth/register" style={{ color: "#f8961e" }}>
             Register
           </Link>
         </Typography>
@@ -135,8 +155,23 @@ function Login() {
         <Divider sx={{ my: 3 }}>OR</Divider>
 
         <Box display="flex" justifyContent="center">
-          <IconButton onClick={handleGoogleSign}>
-            <GoogleIcon color="primary" fontSize="large" />
+          <IconButton
+            onClick={handleGoogleSign}
+            sx={{
+              backgroundColor: "#f8961e",
+              color: "#fff",
+              width: 56,
+              height: 56,
+              "&:hover": {
+                backgroundColor: "#d67a19",
+                transform: "scale(1.1)",
+                boxShadow: "0 6px 12px rgba(214, 122, 25, 0.5)",
+              },
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
+            }}
+            aria-label="Sign in with Google"
+          >
+            <GoogleIcon fontSize="large" />
           </IconButton>
         </Box>
       </Paper>
@@ -144,4 +179,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Login
