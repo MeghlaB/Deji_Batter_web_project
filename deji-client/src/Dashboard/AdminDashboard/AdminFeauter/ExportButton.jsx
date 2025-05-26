@@ -1,8 +1,19 @@
 // ExportButton.js
-import { Button } from "@mui/material";
+import { Button, styled } from "@mui/material";
 import React from "react";
 
 const ExportButton = () => {
+  const CustomButton = styled(Button)({
+  backgroundColor: "#f8961e",
+  color: "#fff",
+  fontWeight: "bold",
+  fontSize: "16px",
+  textTransform: "none",
+  padding: "10px 16px",
+  "&:hover": {
+    backgroundColor: "#e07b00",
+  },
+});
   const handleExport = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/export-products");
@@ -25,11 +36,10 @@ const ExportButton = () => {
   return (
     <Button
       onClick={handleExport}
-      variant="contained"
-      color="primary"
-      size="small"
+     
     >
-      Export Products (CSV)
+     <CustomButton> Export Products (CSV)</CustomButton>
+     
     </Button>
   );
 };

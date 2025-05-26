@@ -7,6 +7,7 @@ import {
   Typography,
   CircularProgress,
   Paper,
+  styled,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
@@ -16,6 +17,17 @@ const imageHostingKey = import.meta.env.VITE_IMAGEHOSTING;
 const imageHostingURL = `https://api.imgbb.com/1/upload?key=${imageHostingKey}`;
 
 const EditProduct = () => {
+  const CustomButton = styled(Button)({
+  backgroundColor: "#f8961e",
+  color: "#fff",
+  fontWeight: "bold",
+  fontSize: "16px",
+  textTransform: "none",
+  padding: "10px 16px",
+  "&:hover": {
+    backgroundColor: "#e07b00",
+  },
+});
   const { id } = useParams();
   console.log(id)
   const navigate = useNavigate();
@@ -83,7 +95,7 @@ const EditProduct = () => {
         imageURL: imageUrl,
       };
 
-      // image ফাইল কে বাদ দিয়ে আপডেট পাঠাতে হবে
+    
       delete updatedProduct.image;
 
       const res = await axios.patch(`http://localhost:5000/products/${id}`, updatedProduct);
@@ -121,7 +133,7 @@ const EditProduct = () => {
   return (
     <Box sx={{ maxWidth: 900, mx: "auto", mt: 5 }}>
       <Paper elevation={6} sx={{ p: 4, borderRadius: 4 }}>
-        <Typography variant="h4" textAlign="center" fontWeight="bold" mb={4}>
+        <Typography variant="h4" textAlign="center" fontWeight="bold" mb={4} color="#f8961e">
           Edit Product
         </Typography>
 
@@ -152,7 +164,7 @@ const EditProduct = () => {
               />
             ))}
 
-            {/* নতুন ছবি আপলোড ফাইল ইনপুট */}
+         
             <Controller
               name="image"
               control={control}
@@ -182,17 +194,12 @@ const EditProduct = () => {
 
             <Button
               type="submit"
-              variant="contained"
-              size="large"
+              
               fullWidth
-              sx={{
-                py: 1.5,
-                fontWeight: "bold",
-                fontSize: "16px",
-                textTransform: "none",
-              }}
+              
             >
-              Update Product
+            <CustomButton>Update Product</CustomButton>
+            
             </Button>
           </Box>
         </form>

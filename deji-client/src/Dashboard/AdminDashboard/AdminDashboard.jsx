@@ -2,6 +2,7 @@ import {
   BarChart2,
   BookImageIcon,
   Boxes,
+  ClipboardList,
   Home,
   HomeIcon,
   User,
@@ -26,11 +27,11 @@ function AdminDashboard() {
           Add Product
         </Link>
         <Link to="/dashboard/manage-products" className="flex items-center gap-3 hover:text-gray-300">
-          <FaCartPlus size={20} />
+           <Boxes size={20} />
           Manage Product
         </Link>
         <Link to="/dashboard/manage-oders" className="flex items-center gap-3 hover:text-gray-300">
-          <FaCartPlus size={20} />
+           <ClipboardList size={20}/>
           Manage Oders
         </Link>
         <Link to="/" className="flex items-center gap-3 hover:text-gray-300">

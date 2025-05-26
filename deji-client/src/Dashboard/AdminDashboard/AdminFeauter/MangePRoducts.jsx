@@ -15,10 +15,24 @@ import {
   Avatar,
   Button,
   Stack,
+  styled,
 } from "@mui/material";
 import { Edit } from "lucide-react";
 import { Link } from "react-router-dom";
 import ExportButton from "./ExportButton";
+
+// Custom styled button
+const CustomButton = styled(Button)({
+  backgroundColor: "#f8961e",
+  color: "#fff",
+  fontWeight: "bold",
+  fontSize: "16px",
+  textTransform: "none",
+  padding: "10px 16px",
+  "&:hover": {
+    backgroundColor: "#e07b00",
+  },
+});
 
 const ManageProducts = () => {
   const {
@@ -35,7 +49,12 @@ const ManageProducts = () => {
 
   if (isLoading) {
     return (
-      <Box height="80vh" display="flex" justifyContent="center" alignItems="center">
+      <Box
+        height="80vh"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
         <CircularProgress size={48} />
       </Box>
     );
@@ -43,7 +62,12 @@ const ManageProducts = () => {
 
   if (isError) {
     return (
-      <Box height="80vh" display="flex" justifyContent="center" alignItems="center">
+      <Box
+        height="80vh"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
         <Typography color="error" fontSize={18}>
           Failed to load products. Please try again later.
         </Typography>
@@ -61,16 +85,14 @@ const ManageProducts = () => {
         spacing={2}
         mb={4}
       >
-        <Typography variant="h5" fontWeight={600} color="primary">
-           Manage Products
+        <Typography variant="h5" fontWeight={600} color="#f8961e">
+          Manage Products
         </Typography>
         <Stack direction="row" spacing={2}>
           <Link to="/dashboard/addproduct">
-            <Button variant="contained" color="primary" size="small">
-              Add Product
-            </Button>
+            <CustomButton>Add Product</CustomButton>
           </Link>
-          <ExportButton />
+          <ExportButton CustomButton={CustomButton} />
         </Stack>
       </Stack>
 
@@ -114,6 +136,15 @@ const ManageProducts = () => {
                       variant="outlined"
                       size="small"
                       startIcon={<Edit size={18} />}
+                      sx={{
+                        borderColor: "#f8961e",
+                        color: "#f8961e",
+                        "&:hover": {
+                          borderColor: "#e07b00",
+                          backgroundColor: "#fff7f0",
+                          color: "#e07b00",
+                        },
+                      }}
                     >
                       Edit
                     </Button>

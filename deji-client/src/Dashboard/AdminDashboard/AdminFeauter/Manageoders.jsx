@@ -79,7 +79,7 @@ const ManageOrders = () => {
         margin: "40px auto",
       }}
     >
-      <Typography variant="h4" align="center" gutterBottom>
+      <Typography variant="h4" align="center" gutterBottom color="#f8961e">
         Manage Orders
       </Typography>
 
