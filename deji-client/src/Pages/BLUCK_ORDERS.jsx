@@ -32,9 +32,9 @@ const BLUCK_ORDERS = () => {
         </Typography>
       </motion.div>
 
-      {/* Grid Layout: Price Tier and Inquiry Form */}
+ 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Price Tier Section with Animation */}
+    
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -49,7 +49,7 @@ const BLUCK_ORDERS = () => {
           </Box>
         </motion.div>
 
-        {/* Inquiry Form Section with Animation */}
+    
         <motion.div
           initial="hidden"
           whileInView="visible"
