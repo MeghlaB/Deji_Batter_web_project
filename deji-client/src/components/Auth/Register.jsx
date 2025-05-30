@@ -42,7 +42,7 @@ function Register() {
       // Create user
       const result = await createUser(data.email, data.password);
       const user = result.user;
-      console.log(user)
+      console.log(user);
 
       // Update profile
       await updateUserProfile(data.name, data.photo);
@@ -56,7 +56,10 @@ function Register() {
         status: "active",
       };
 
-      const res = await axios.post("http://localhost:5000/users", userInfo);
+      const res = await axios.post(
+        "http://localhost:5000/users",
+        userInfo
+      );
 
       if (res.data.insertedId || res.data.success) {
         reset();
@@ -142,22 +145,31 @@ function Register() {
             error={!!errors.confirmPassword}
             helperText={errors.confirmPassword?.message}
           />
-
           <Button
             type="submit"
             fullWidth
             variant="contained"
-            color="primary"
-            sx={{ mt: 2 }}
+            sx={{
+              mt: 2,
+              backgroundColor: "#11B808",
+              color: "#fff",
+              "&:hover": {
+                backgroundColor: "#66A049",
+              },
+            }}
             disabled={loading}
           >
-            {loading ? <CircularProgress size={24} color="inherit" /> : "Register"}
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Register"
+            )}
           </Button>
         </form>
 
         <Typography variant="body2" align="center" mt={2}>
           Already have an account?{" "}
-          <Link to="/account/login" style={{ color: "#1976d2" }}>
+          <Link to="/auth/login" style={{ color: "#11B808" }}>
             Login
           </Link>
         </Typography>

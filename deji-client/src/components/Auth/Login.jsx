@@ -122,16 +122,16 @@ function Login() {
               py: 1.5,
               textTransform: "none",
               fontWeight: "bold",
-              backgroundColor: "#f8961e",
+              backgroundColor: "#11B808",
               color: "#fff",
               transition: "transform 0.2s ease, box-shadow 0.2s ease",
               "&:hover": {
-                backgroundColor: "#d67a19",
+                backgroundColor: "#77B254",
                 transform: "scale(1.05)",
-                boxShadow: "0 6px 12px rgba(214, 122, 25, 0.5)",
+             
               },
               "&:disabled": {
-                backgroundColor: "#fbbf24",
+                backgroundColor: "#77B254",
                 color: "#fff",
               },
             }}
@@ -147,7 +147,7 @@ function Login() {
 
         <Typography variant="body2" align="center" mt={2}>
           Don't have an account?{" "}
-          <Link to="/auth/register" style={{ color: "#f8961e" }}>
+          <Link to="/auth/register" style={{ color: "#11B808" }}>
             Register
           </Link>
         </Typography>
@@ -158,14 +158,14 @@ function Login() {
           <IconButton
             onClick={handleGoogleSign}
             sx={{
-              backgroundColor: "#f8961e",
+              backgroundColor: "#11B808",
               color: "#fff",
               width: 56,
               height: 56,
               "&:hover": {
-                backgroundColor: "#d67a19",
+                backgroundColor: "#77B254",
                 transform: "scale(1.1)",
-                boxShadow: "0 6px 12px rgba(214, 122, 25, 0.5)",
+              
               },
               transition: "transform 0.2s ease, box-shadow 0.2s ease",
             }}

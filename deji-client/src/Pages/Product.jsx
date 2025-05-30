@@ -1,223 +1,84 @@
-import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Grid,
-  Typography,
-  CircularProgress,
-  TextField,
-  MenuItem,
-  Button,
-} from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import ProductCard from "../components/ProductCard/ProductCard";
-import * as tf from "@tensorflow/tfjs";
-import { Link } from "react-router-dom";
+// App.jsx
+import { useState } from "react";
 
-const fetchProducts = async () => {
-  const res = await axios.get("http://localhost:5000/products");
-  return res.data;
-};
+const categories = [
+  "Super Capacity iPhone Battery",
+  "Original Capacity iPhone Battery",
+  "Decode Battery",
+  "Show Battery Health",
+  "Samsung Battery",
+  "Huawei Battery",
+  "Xiaomi Battery",
+  "Phone Charger",
+];
 
+const products = [
+  {
+    image:
+      "https://i.ibb.co/0Cw6Z5h/type-c-lightning.jpg",
+    title: "Type C to Lightning Fast Charging USB Data Cable",
+  },
+  {
+    image:
+      "https://i.ibb.co/mTktVT1/usb-lightning.jpg",
+    title: "USB to Lightning Fast Charging USB Data Cable",
+  },
+  {
+    image:
+      "https://i.ibb.co/NV1FLy1/20w-charger.jpg",
+    title: "Fast iPhone Wall Charger Phone Charger 20W",
+  },
+];
 
-const addToLocalCart = (product) => {
-  const existing = JSON.parse(localStorage.getItem("cart")) || [];
-  const exists = existing.find((item) => item._id === product._id);
-  if (exists) {
-    exists.quantity += 1;
-  } else {
-    existing.push({ ...product, quantity: 1 });
-  }
-  localStorage.setItem("cart", JSON.stringify(existing));
-};
+export default function App() {
+  const [searchTerm, setSearchTerm] = useState("");
 
-const Product = () => {
-  const {
-    data: products = [],
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["products"],
-    queryFn: fetchProducts,
-  });
-
-  const [brand, setBrand] = useState("");
-  const [priceLimit, setPriceLimit] = useState(99999);
-  const [recommendation, setRecommendation] = useState(null);
-  const [suggestedProducts, setSuggestedProducts] = useState([]);
-
-  const handleAddToCart = (product) => {
-    addToLocalCart(product);
-  };
-
-  const generateRecommendation = () => {
-    if (products.length < 2) return;
-
-    const prices = products.map((p) => p.price);
-    const tensor = tf.tensor1d(prices);
-    const min = tensor.min();
-    const max = tensor.max();
-    const normalized = tensor.sub(min).div(max.sub(min));
-    const scores = normalized.dataSync();
-
-    let bestIndex = 0;
-    let highest = scores[0];
-    for (let i = 1; i < scores.length; i++) {
-      if (scores[i] > highest) {
-        highest = scores[i];
-        bestIndex = i;
-      }
-    }
-
-    setRecommendation(products[bestIndex]);
-  };
-
-  useEffect(() => {
-    if (products.length < 3) return;
-
-    const avgPrice =
-      products.reduce((sum, p) => sum + p.price, 0) / products.length;
-
-    const similarity = products
-      .map((p) => ({
-        product: p,
-        score: 1 / (1 + Math.abs(p.price - avgPrice)), 
-      }))
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 3)
-      .map((item) => item.product);
-
-    setSuggestedProducts(similarity);
-  }, [products]);
-
-  const brands = [...new Set(products.map((p) => p.brand))];
-
-  const filtered = products.filter(
-    (p) => (brand ? p.brand === brand : true) && p.price <= priceLimit
+  const filteredProducts = products.filter((product) =>
+    product.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  if (isLoading)
-    return (
-      <Box textAlign="center" mt={5}>
-        <CircularProgress />
-      </Box>
-    );
-
-  if (isError)
-    return (
-      <Typography className="text-orange-400" textAlign="center" mt={5} color="error">
-         Failed to load products
-      </Typography>
-    );
 
   return (
-    <div className="container mx-auto mt-4">
-      <Box sx={{ mt: 4, px: 3, mx: "auto", width: "container" }}>
-        <Typography
-          variant="h4"
-          className="text-center text-orange-400"
-          fontWeight="bold"
-          mb={3}
-        >
-          Products
-        </Typography>
-
-        {/* Filters and Recommend Button */}
-        <Box className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-          {/* Left side: Filters */}
-          <div className="flex flex-wrap gap-4">
-            <TextField
-              select
-              label="Filter by Brand"
-              value={brand}
-              onChange={(e) => setBrand(e.target.value)}
-              sx={{ minWidth: 180 }}
+    <div className="flex min-h-screen">
+      {/* Sidebar */}
+      <div className="w-64 p-4 bg-gray-100 border-r">
+        <h2 className="text-2xl font-bold mb-4">Deji Battery</h2>
+        <input
+          type="text"
+          placeholder="Search keywords"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="input input-bordered w-full mb-4"
+        />
+        <ul className="space-y-2">
+          {categories.map((item, idx) => (
+            <li
+              key={idx}
+              className="cursor-pointer hover:text-blue-600 text-sm"
             >
-              <MenuItem value="">All Brands</MenuItem>
-              {brands.map((b, i) => (
-                <MenuItem key={i} value={b}>
-                  {b}
-                </MenuItem>
-              ))}
-            </TextField>
-
-            <TextField
-              type="number"
-              label="Max Price"
-              value={priceLimit}
-              onChange={(e) => setPriceLimit(Number(e.target.value))}
-            />
-          </div>
-
-          <Button
-            variant="contained"
-            onClick={generateRecommendation}
-            sx={{
-              backgroundColor: "orange",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "#cc5200",
-              },
-              whiteSpace: "nowrap",
-              mt: { xs: 0, md: 0 },
-            }}
-          >
-            Recommend Product
-          </Button>
-        </Box>
-
-        {/* Recommended Product */}
-        {recommendation && (
-          <Box mb={4}>
-            <Typography variant="h6" gutterBottom>
-              Top Pick For You:
-            </Typography>
-            <ProductCard
-              product={recommendation}
-              handleAddToCart={handleAddToCart}
-            />
-          </Box>
-        )}
-
-        {/* Product Grid */}
-        <Grid container spacing={2}>
-          {filtered.map((product) => (
-            <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
-              <Link to={`/products/${product._id}`}>
-                <ProductCard
-                  product={product}
-                  handleAddToCart={handleAddToCart}
-                />
-              </Link>
-            </Grid>
+              {item}
+            </li>
           ))}
-        </Grid>
+        </ul>
+      </div>
 
-        {/* Suggested Products */}
-        {suggestedProducts.length > 0 && (
-          <Box mt={6}>
-            <Typography 
-            className="text-orange-400"
-             variant="h5" fontWeight="bold" mb={2}>
-              You Might Also Like
-            </Typography>
-            <Grid container spacing={2}>
-              {suggestedProducts.map((product) => (
-                <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
-                  <Link to={`/products/${product._id}`}>
-                    <ProductCard
-                      product={product}
-                      handleAddToCart={handleAddToCart}
-                    />
-                  </Link>
-                </Grid>
-              ))}
-            </Grid>
-          </Box>
-        )}
-      </Box>
+      {/* Products */}
+      <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 flex-1">
+        {filteredProducts.map((product, index) => (
+          <div
+            key={index}
+            className="border p-4 rounded-lg shadow hover:shadow-lg transition duration-200"
+          >
+            <img
+              src={product.image}
+              alt={product.title}
+              className="w-full h-40 object-contain mb-3"
+            />
+            <h3 className="text-center font-medium text-sm">
+              {product.title}
+            </h3>
+          </div>
+        ))}
+      </div>
     </div>
   );
-};
-
-export default Product;
+}

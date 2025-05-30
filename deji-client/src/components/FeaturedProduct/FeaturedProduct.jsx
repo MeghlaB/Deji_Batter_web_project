@@ -75,7 +75,7 @@ const FeaturedProduct = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="text-center text-3xl font-bold text-gray-800"
-        style={{color:'#f8961e'}}
+        style={{color:'#11B808'}}
       >
         Featured Products
       </motion.h1>

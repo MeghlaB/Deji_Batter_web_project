@@ -1,29 +1,7 @@
 import React from "react";
-import {
-  Button,
-  Grid,
-  TextField,
-  Typography,
-  Paper,
-  Box,
-} from "@mui/material";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { styled } from "@mui/material/styles";
-
-
-const CustomButton = styled(Button)({
-  backgroundColor: "#f8961e",
-  color: "#fff",
-  fontWeight: "bold",
-  fontSize: "16px",
-  textTransform: "none",
-  padding: "12px 0",
-  "&:hover": {
-    backgroundColor: "#e07b00",
-  },
-});
 
 const imageHostingKey = import.meta.env.VITE_IMAGEHOSTING;
 const imageHostingURL = `https://api.imgbb.com/1/upload?key=${imageHostingKey}`;
@@ -38,28 +16,48 @@ const AddProductForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      const imageData = new FormData();
-      imageData.append("image", data.image[0]);
+      const imageFiles = [
+        data.image1[0],
+        data.image2[0],
+        data.image3[0],
+        data.image4[0],
+        data.image5[0],
+      ];
 
-      const imgUploadRes = await axios.post(imageHostingURL, imageData);
-      const imageUrl = imgUploadRes.data.data.display_url;
+      const imageUploadPromises = imageFiles.map((file) => {
+        const formData = new FormData();
+        formData.append("image", file);
+        return axios.post(imageHostingURL, formData);
+      });
+
+      const responses = await Promise.all(imageUploadPromises);
+      const imageURLs = responses.map((res) => res.data.data.display_url);
 
       const productData = {
+        title: data.title,
+        brand: data.brand,
         model: data.model,
         batteryType: data.batteryType,
+        batteryGrade: data.batteryGrade,
         capacity: data.capacity,
         voltage: data.voltage,
         limitedVoltage: data.limitedVoltage,
+        cycleTime: data.cycleTime,
         chargingTime: data.chargingTime,
         standbyTime: data.standbyTime,
-        cycleTime: data.cycleTime,
+       
+        material: data.material,
+        warranty: data.warranty,
         safety: data.safety,
-        brand: data.brand,
+        workingTemp: data.workingTemp,
+        moq: data.moq,
+        certification:data.certification,
+        paymentTerms: data.paymentTerms,
+        port: data.port,
         price: parseFloat(data.price),
         stock: parseInt(data.stock),
         description: data.description,
-        title: data.title,
-        imageURL: imageUrl,
+        imageURLs: imageURLs,
       };
 
       const res = await axios.post("http://localhost:5000/add-products", productData);
@@ -69,7 +67,7 @@ const AddProductForm = () => {
         Swal.fire({
           title: "Product Added Successfully",
           icon: "success",
-          draggable: true,
+          confirmButtonColor: "#11B808",
         });
       }
     } catch (error) {
@@ -78,176 +76,53 @@ const AddProductForm = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 900, mx: "auto", mt: 5 }}>
-      <Paper elevation={6} sx={{ p: 4, borderRadius: 4 }}>
-        <Typography
-          variant="h4"
-          textAlign="center"
-          fontWeight="bold"
-          mb={4}
-          color="#f8961e"
-        >
-          Add New Battery Product
-        </Typography>
+    <div className="max-w-5xl mx-auto mt-10 p-8 bg-white rounded-lg shadow-md">
+      <h2 className="text-3xl font-bold text-center text-green-500 mb-8">
+        Add  Battery Product
+      </h2>
 
-        <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
-          <div className="py-2">
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Title"
-                fullWidth
-                {...register("title", { required: true })}
-                error={!!errors.title}
-              />
-            </Grid>
-          </div>
+      <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data" className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <input type="text" placeholder="Title" {...register("title", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Brand" {...register("brand", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Model" {...register("model", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Battery Type" {...register("batteryType", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Battery Cell Grade" {...register("batteryGrade", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Capacity (mAh)" {...register("capacity", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Standard Voltage (V)" {...register("voltage", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Limited Voltage (V)" {...register("limitedVoltage", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Cycle Time" {...register("cycleTime", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Charging Time" {...register("chargingTime", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Standby Time" {...register("standbyTime", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Certification" {...register("certification", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Material" {...register("material", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Warranty" {...register("warranty", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Safety Features" {...register("safety", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Working Temp (°C)" {...register("workingTemp", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Minimum Order Quantity" {...register("moq", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Payment Terms" {...register("paymentTerms", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Port" {...register("port", { required: true })} className="input input-bordered w-full" />
+          <input type="text" placeholder="Price" {...register("price", { required: true })} className="input input-bordered w-full" />
+        
+          <input type="number" placeholder="Stock" {...register("stock", { required: true })} className="input input-bordered w-full" />
+        </div>
 
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Model"
-                fullWidth
-                {...register("model", { required: true })}
-                error={!!errors.model}
-              />
-            </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Battery Type"
-                fullWidth
-                {...register("batteryType", { required: true })}
-                error={!!errors.batteryType}
-              />
-            </Grid>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <input type="file" {...register("image1", { required: true })} accept="image/*" className="file-input file-input-bordered w-full" />
+          <input type="file" {...register("image2", { required: true })} accept="image/*" className="file-input file-input-bordered w-full" />
+          <input type="file" {...register("image3", { required: true })} accept="image/*" className="file-input file-input-bordered w-full" />
+          <input type="file" {...register("image4", { required: true })} accept="image/*" className="file-input file-input-bordered w-full" />
+          <input type="file" {...register("image5", { required: true })} accept="image/*" className="file-input file-input-bordered w-full" />
+        </div>
+        <textarea placeholder="Short Description" {...register("description", { required: true })} rows="3" className="textarea textarea-bordered w-full" />
 
-            <Grid item xs={12} sm={4}>
-              <TextField
-                label="Capacity (mAh)"
-                fullWidth
-                {...register("capacity", { required: true })}
-                error={!!errors.capacity}
-              />
-            </Grid>
 
-            <Grid item xs={12} sm={4}>
-              <TextField
-                label="Voltage (V)"
-                fullWidth
-                {...register("voltage", { required: true })}
-                error={!!errors.voltage}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={4}>
-              <TextField
-                label="Limited Voltage (V)"
-                fullWidth
-                {...register("limitedVoltage", { required: true })}
-                error={!!errors.limitedVoltage}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Charging Time"
-                fullWidth
-                {...register("chargingTime", { required: true })}
-                error={!!errors.chargingTime}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Standby Time"
-                fullWidth
-                {...register("standbyTime", { required: true })}
-                error={!!errors.standbyTime}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Cycle Time"
-                fullWidth
-                {...register("cycleTime", { required: true })}
-                error={!!errors.cycleTime}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Safety Info"
-                fullWidth
-                {...register("safety", { required: true })}
-                error={!!errors.safety}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Brand"
-                fullWidth
-                {...register("brand", { required: true })}
-                error={!!errors.brand}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <TextField
-                label="Price (৳)"
-                type="number"
-                fullWidth
-                {...register("price", { required: true })}
-                error={!!errors.price}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <TextField
-                label="Stock"
-                type="number"
-                fullWidth
-                {...register("stock", { required: true })}
-                error={!!errors.stock}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Typography variant="subtitle2" gutterBottom>
-                Upload Product Image
-              </Typography>
-              <input
-                type="file"
-                accept="image/*"
-                {...register("image", { required: true })}
-                style={{ marginTop: "8px" }}
-              />
-            </Grid>
-          </Grid>
-
-          <div className="mt-8 space-y-2.5">
-            <Grid item xs={12}>
-              <TextField
-                label="Description"
-                fullWidth
-                multiline
-                rows={4}
-                {...register("description", { required: true })}
-                error={!!errors.description}
-              />
-            </Grid>
-
-          
-            <Grid item xs={12}>
-              <CustomButton type="submit" fullWidth>
-                Submit Product
-              </CustomButton>
-            </Grid>
-          </div>
-        </form>
-      </Paper>
-    </Box>
+        <button type="submit" className="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-semibold text-lg rounded-lg transition">
+          Submit Product
+        </button>
+      </form>
+    </div>
   );
 };
 

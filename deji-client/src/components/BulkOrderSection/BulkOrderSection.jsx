@@ -59,7 +59,7 @@ const BulkOrderSection = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="mt-4 px-6 py-3 bg-[#f8961e] text-white rounded-lg hover:bg-blue-700 transition duration-300"
+                className="mt-4 px-6 py-3 bg-[#11B808] text-white rounded-lg hover:bg-blue-700 transition duration-300"
               >
                 Bulk Orders
               </motion.button>

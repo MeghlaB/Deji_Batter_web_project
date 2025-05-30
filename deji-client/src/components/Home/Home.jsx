@@ -1,10 +1,11 @@
+import FAQAccordion from "../../Pages/Question";
 import Banner from "../Banner/Herosection";
 import BulkOrderSection from "../BulkOrderSection/BulkOrderSection";
 import CertificateSection from "../Certificates/Certificates";
 import ChatlingWidget from "../Chatbasebot/Chatbasebot";
 
 import FeaturedProduct from "../FeaturedProduct/FeaturedProduct";
-import ProductCategories from "../ProductCategories/ProductCategories";
+
 import ServiceGuaranteeSection from "../ServicesGradutaion/ServicesGradution";
 
 function Home() {
@@ -18,6 +19,7 @@ function Home() {
       <BulkOrderSection />
       <ServiceGuaranteeSection />
       <CertificateSection/>
+      <FAQAccordion/>
     </div>
   );
 }

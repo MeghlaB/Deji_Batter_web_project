@@ -1,4 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
+import icon from "../../assets/icon.png";
 import {
   AppBar,
   Box,
@@ -69,7 +70,7 @@ export default function Navbar() {
                 primary={item.label}
                 primaryTypographyProps={{
                   style: {
-                    color: location.pathname === item.path ? "green" : "#000",
+                    color: location.pathname === item.path ? "#11B808" : "#000",
                     fontWeight: location.pathname === item.path ? 700 : 500,
                   },
                 }}
@@ -77,7 +78,6 @@ export default function Navbar() {
             </ListItemButton>
           </ListItem>
         ))}
-
         {!user && (
           <ListItem disablePadding>
             <ListItemButton
@@ -101,7 +101,8 @@ export default function Navbar() {
           position="fixed"
           sx={{ backgroundColor: "white", color: "#000" }}
         >
-          <Toolbar>
+          <Toolbar sx={{ justifyContent: "space-between" }}>
+            {/* Mobile Menu Button */}
             <IconButton
               color="inherit"
               aria-label="open drawer"
@@ -112,20 +113,16 @@ export default function Navbar() {
               <MenuIcon />
             </IconButton>
 
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{
-                flexGrow: 1,
-                display: "flex",
-                alignItems: "center",
-                color: "#f3722c",
-                fontWeight: "bold",
-              }}
-            >
-              DEJI BATTERY
-            </Typography>
+            {/* Logo */}
+            <Link to="/">
+              <img
+                src={icon}
+                alt="logo"
+                style={{ width: "50px", height: "40px" }}
+              />
+            </Link>
 
+            {/* Desktop Nav */}
             <Box
               sx={{
                 display: { xs: "none", sm: "flex" },
@@ -140,7 +137,7 @@ export default function Navbar() {
                   to={item.path}
                   sx={{
                     color:
-                      location.pathname === item.path ? "#f8961e" : "#000",
+                      location.pathname === item.path ? "#11B808" : "#000",
                     fontWeight: location.pathname === item.path ? 700 : 600,
                     textTransform: "none",
                   }}
@@ -152,12 +149,14 @@ export default function Navbar() {
               <div className="flex items-center gap-4">
                 {user ? (
                   <>
+                    {/* Profile Picture */}
                     <img
                       src={user.photoURL}
                       alt="profile"
                       className="w-8 h-8 rounded-full hidden md:block"
                     />
 
+                    {/* Dashboard Link (Admin Only) */}
                     {isAdmin && (
                       <Link
                         to="/dashboard/adminhome"
@@ -168,6 +167,7 @@ export default function Navbar() {
                       </Link>
                     )}
 
+                    {/* Logout */}
                     <Button
                       onClick={logOut}
                       className="hidden md:flex items-center gap-1"
@@ -183,7 +183,7 @@ export default function Navbar() {
                     className="md:block px-4 py-1 rounded-md text-sm font-semibold text-white"
                     style={{
                       backgroundImage:
-                        "linear-gradient(to right, #f9c74f, #f3722c)",
+                        "linear-gradient(to right, #11B808, #77B254)",
                     }}
                   >
                     Login
@@ -231,6 +231,7 @@ export default function Navbar() {
         </AppBar>
       </HideOnScroll>
 
+      {/* Drawer (Mobile Nav) */}
       <Box component="nav">
         <Drawer
           variant="temporary"
@@ -246,6 +247,7 @@ export default function Navbar() {
         </Drawer>
       </Box>
 
+      {/* Push content below fixed navbar */}
       <Toolbar />
     </>
   );

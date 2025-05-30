@@ -7,31 +7,31 @@ const services = [
     id: 1,
     title: 'Product Guarantee',
     description: 'Every battery comes with a specified warranty and reliable quality assurance.',
-    icon: <FaShieldAlt size={30} className="text-blue-600" />
+    icon: <FaShieldAlt size={30} />
   },
   {
     id: 2,
     title: 'Customer Service',
     description: 'Our support team is always available to help with any issues or questions.',
-    icon: <FaHeadset size={30} className="text-blue-600" />
+    icon: <FaHeadset size={30}  />
   },
   {
     id: 3,
     title: 'Fast Delivery',
     description: 'Enjoy fast and reliable delivery service across the country.',
-    icon: <FaTruck size={30} className="text-blue-600" />
+    icon: <FaTruck size={30}  />
   },
   {
     id: 4,
     title: 'Return Policy',
     description: 'Easy and quick return process for defective or incorrect products.',
-    icon: <FaUndoAlt size={30} className="text-blue-600" />
+    icon: <FaUndoAlt size={30}  />
   },
   {
     id: 5,
     title: '24/7 Support',
     description: 'We’re here to assist you anytime, day or night.',
-    icon: <FaClock size={30} className="text-blue-600" />
+    icon: <FaClock size={30}/>
   },
 ];
 

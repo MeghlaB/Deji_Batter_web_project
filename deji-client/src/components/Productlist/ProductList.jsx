@@ -7,6 +7,7 @@ import AIRecommendations from "../components/AIRecommendations";
 
 const fetchProducts = async () => {
   const res = await axios.get("http://localhost:5000/products");
+  console.log(res.data)
   return res.data;
 };
 

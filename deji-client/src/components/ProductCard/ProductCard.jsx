@@ -9,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ product, handleAddToCart }) => {
+  console.log(product)
   const navigate = useNavigate();
 
   return (
@@ -27,7 +28,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
       <CardMedia
         component="img"
         height="200"
-        image={product.imageURL}
+        image={product.imageURLs[0]}
         alt={product.name}
         sx={{ cursor: "pointer" }}
         onClick={() => navigate(`/products/${product._id}`)}
@@ -37,7 +38,10 @@ const ProductCard = ({ product, handleAddToCart }) => {
           {product.name}
         </Typography>
         <Typography color="text.secondary">SGD {product.price}</Typography>
-        <Button
+        <Typography>
+          {product.model}
+        </Typography>
+        {/* <Button
           variant="contained"
           fullWidth
           sx={{
@@ -50,7 +54,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
           onClick={() => handleAddToCart(product)}
         >
           Add to Cart
-        </Button>
+        </Button> */}
       </CardContent>
     </Card>
   );
