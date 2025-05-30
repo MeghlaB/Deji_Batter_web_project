@@ -9,6 +9,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
     <Card
       sx={{
         maxWidth: 250,
+        height:380,
         m: 2,
         borderRadius: 3,
         transition: "transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease",
