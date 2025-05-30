@@ -103,7 +103,7 @@ const ProductDetails = () => {
           />
 
           <div className="flex gap-3">
-            {images.slice(0, 2).map((img, i) => (
+            {images.slice(0, 3).map((img, i) => (
               <img
                 key={i}
                 src={img}

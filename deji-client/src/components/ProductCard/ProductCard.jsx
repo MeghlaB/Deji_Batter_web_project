@@ -1,15 +1,8 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-  Button,
-} from "@mui/material";
+import { Card, CardContent, CardMedia, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ product, handleAddToCart }) => {
-  console.log(product)
   const navigate = useNavigate();
 
   return (
@@ -18,10 +11,12 @@ const ProductCard = ({ product, handleAddToCart }) => {
         maxWidth: 250,
         m: 2,
         borderRadius: 3,
-        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease",
+        border: "1px solid transparent", // Default border
         "&:hover": {
           transform: "translateY(-4px)",
           boxShadow: "0 6px 18px rgba(0,0,0,0.1)",
+          border: "2px solid green", // Green border on hover
         },
       }}
     >
@@ -37,10 +32,19 @@ const ProductCard = ({ product, handleAddToCart }) => {
         <Typography variant="h6" gutterBottom>
           {product.name}
         </Typography>
-        <Typography color="text.secondary">SGD {product.price}</Typography>
-        <Typography>
-          {product.model}
-        </Typography>
+       
+<Typography
+  sx={{
+    border: '1px solid #ccc',
+    textAlign: 'center',
+    padding: '12px',
+    borderRadius: '6px',
+    width: '100%',
+    fontWeight: 500,
+  }}
+>
+  {product.model}
+</Typography>
         {/* <Button
           variant="contained"
           fullWidth

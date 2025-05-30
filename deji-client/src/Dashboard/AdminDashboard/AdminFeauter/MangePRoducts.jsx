@@ -21,16 +21,16 @@ import { Edit } from "lucide-react";
 import { Link } from "react-router-dom";
 import ExportButton from "./ExportButton";
 
-// Custom styled button
+// Custom styled button with green color (#11B808)
 const CustomButton = styled(Button)({
-  backgroundColor: "#f8961e",
+  backgroundColor: "#11B808",
   color: "#fff",
   fontWeight: "bold",
   fontSize: "16px",
   textTransform: "none",
   padding: "10px 16px",
   "&:hover": {
-    backgroundColor: "#e07b00",
+    backgroundColor: "#0e9006",
   },
 });
 
@@ -85,7 +85,7 @@ const ManageProducts = () => {
         spacing={2}
         mb={4}
       >
-        <Typography variant="h5" fontWeight={600} color="#f8961e">
+        <Typography variant="h5" fontWeight={600} color="#11B808">
           Manage Products
         </Typography>
         <Stack direction="row" spacing={2}>
@@ -137,12 +137,12 @@ const ManageProducts = () => {
                       size="small"
                       startIcon={<Edit size={18} />}
                       sx={{
-                        borderColor: "#f8961e",
-                        color: "#f8961e",
+                        borderColor: "#11B808",
+                        color: "#11B808",
                         "&:hover": {
-                          borderColor: "#e07b00",
-                          backgroundColor: "#fff7f0",
-                          color: "#e07b00",
+                          borderColor: "#0e9006",
+                          backgroundColor: "#f0fff0",
+                          color: "#0e9006",
                         },
                       }}
                     >

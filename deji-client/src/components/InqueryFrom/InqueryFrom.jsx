@@ -112,9 +112,9 @@ const InquiryForm = () => {
                 py: 1.5,
                 textTransform: "none",
                 fontWeight: "bold",
-                backgroundColor: "#f97316",     
+                backgroundColor: "#11B808",     
                 "&:hover": {
-                  backgroundColor: "#ea580c",  
+                  backgroundColor: "#11B808",  
                 },
               }}
               disabled={isSubmitting}

@@ -92,16 +92,16 @@ const ContactPage = () => {
                   py: 1.5,
                   textTransform: 'none',
                   fontWeight: 'bold',
-                  backgroundColor: '#f97316', 
+                  backgroundColor: '#11B808', 
                   color: '#fff',
                   transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                   '&:hover': {
-                    backgroundColor: '#ea580c',
+                    backgroundColor: '#11B808',
                     transform: 'scale(1.05)',
-                    boxShadow: '0 6px 12px rgba(234, 88, 12, 0.5)',
+                  
                   },
                   '&:disabled': {
-                    backgroundColor: '#fbbf24', 
+                  
                     color: '#fff',
                   },
                 }}
