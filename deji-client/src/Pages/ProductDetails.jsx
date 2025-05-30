@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import Companyinfo from "../components/Companyinf/Companyinfo";
 import GlobalNetwork from "../components/GlobalNetwork/GlobalNetwork";
+import FAQSection from "./Question";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -30,6 +31,7 @@ const ProductDetails = () => {
     queryKey: ["product", id],
     queryFn: async () => {
       const res = await axios.get(`http://localhost:5000/products/${id}`);
+      console.log(res.data);
       return res.data[0];
     },
     enabled: !!id,
@@ -117,19 +119,46 @@ const ProductDetails = () => {
               "We Are Looking For Long-Term Partners And Distributors..."}
           </Typography>
 
-          <Typography variant="body2" sx={{ color: "#555" }}>
+          <Box
+            sx={{ backgroundColor: "#f9f9f9", borderRadius: 2, p: 2, mb: 2 }}
+          >
             {product.model && (
-              <>
-                <strong>Model:</strong> {product.model}
-                <br />
-              </>
+              <Box sx={{ color: "#555", lineHeight: 2 }}>
+                <Typography>
+                  <strong>Brand:</strong> {product.brand}
+                </Typography>
+                <Typography>
+                  <strong>Model:</strong> {product.model}
+                </Typography>
+                <Typography>
+                  <strong>Battery Type:</strong> {product.batteryType}
+                </Typography>
+                <Typography>
+                  <strong>Capacity:</strong> {product.capacity}
+                </Typography>
+                <Typography>
+                  <strong>Voltage:</strong> {product.voltage}
+                </Typography>
+                <Typography>
+                  <strong>Limited Voltage:</strong> {product.limitedVoltage}
+                </Typography>
+                <Typography>
+                  <strong>Charging Time:</strong> {product.chargingTime}
+                </Typography>
+                <Typography>
+                  <strong>Stock:</strong> {product.stock}
+                </Typography>
+              </Box>
             )}
+
             {product.title && product.title.includes("Samsung S8") && (
-              <>
-                <strong>Supports:</strong> Galaxy S8, G950, G950F, G950A
-              </>
+              <Box mt={2}>
+                <Typography color="text.secondary">
+                  <strong>Supports:</strong> Galaxy S8, G950, G950F, G950A
+                </Typography>
+              </Box>
             )}
-          </Typography>
+          </Box>
         </div>
       </div>
 
@@ -243,10 +272,10 @@ const ProductDetails = () => {
             </Table>
           </Paper>
           <Companyinfo />
-          <GlobalNetwork/>
-       
+          <GlobalNetwork />
+          <FAQSection />
         </Box>
-      )} 
+      )}
 
       {activeSection === "contact" && (
         <Box mt={4} maxWidth={600} mx="auto">
