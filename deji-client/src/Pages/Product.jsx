@@ -7,7 +7,8 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [products, setProducts] = useState([]);
   const [models, setModels] = useState([]);
-  const navigate = useNavigate()
+  const [loading, setLoading] = useState(true); 
+  const navigate = useNavigate();
 
   // Fetch products
   useEffect(() => {
@@ -18,9 +19,11 @@ export default function App() {
         setProducts(data);
         const uniqueModels = Array.from(new Set(data.map((item) => item.model)));
         setModels(["All", ...uniqueModels]);
+        setLoading(false); 
       })
       .catch((err) => {
         console.error("Failed to fetch products:", err);
+        setLoading(false); 
       });
   }, []);
 
@@ -33,6 +36,14 @@ export default function App() {
       selectedCategory === "All" || product.model === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <span className="loading loading-spinner text-success text-2xl"></span>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
@@ -68,8 +79,8 @@ export default function App() {
         {filteredProducts.map((product, index) => (
           <div
             key={index}
-            className="border border-green-200 p-4 rounded-lg shadow hover:shadow-lg transition duration-200 flex flex-col justify-between h-[350px]"
-             onClick={() => navigate(`/products/${product._id}`)}
+            className="border border-green-200 p-4 rounded-lg shadow hover:shadow-lg transition duration-200 flex flex-col justify-between h-[350px] cursor-pointer"
+            onClick={() => navigate(`/products/${product._id}`)}
           >
             <img
               src={product.imageURLs?.[0]}
