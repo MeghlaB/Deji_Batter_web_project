@@ -15,9 +15,10 @@ function Home() {
     <div>
       <Banner />
       <ChatlingWidget />
-
       <FeaturedProduct></FeaturedProduct>
+
       <AutoPlay></AutoPlay>
+      
       <GlobalExhibition/>
       <Partners/>
       <BulkOrderSection />

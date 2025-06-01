@@ -8,22 +8,22 @@ import { Pagination } from 'swiper/modules';
 const Partners = () => {
     const testimonials = [
         {
-            img: "https://images.pexels.com/photos/842811/pexels-photo-842811.jpeg?auto=compress&cs=tinysrgb&w=600",
+            img: "https://www.dejibattery.com/uploadfile/2023/07/07/20230707154005DqQJhm.jpg",
             title: "The General Manager of Malaysia Distributor",
             message: "Yes I am using your high capacity battery in my iPhone 8 Plus."
         },
         {
-            img: "https://images.pexels.com/photos/842811/pexels-photo-842811.jpeg?auto=compress&cs=tinysrgb&w=600",
+            img: "https://www.dejibattery.com/uploadfile/2023/07/07/20230707154439gyxVrH.png",
             title: "Sales Director of Thailand Electronics",
             message: "Deji batteries have proven reliable and high-quality. I now recommend them to our entire customer base."
         },
         {
-            img: "https://images.pexels.com/photos/842811/pexels-photo-842811.jpeg?auto=compress&cs=tinysrgb&w=600",
+            img: "https://www.dejibattery.com/uploadfile/2020/12/30/20201230172306boRQ65.jpg",
             title: "Retail Partner in Indonesia",
             message: "After switching to Deji, customer satisfaction has improved significantly. Great value and performance."
         },
         {
-            img: "https://images.pexels.com/photos/842811/pexels-photo-842811.jpeg?auto=compress&cs=tinysrgb&w=600",
+            img: "https://www.dejibattery.com/uploadfile/2023/07/07/20230707155005VRZNY3.png",
             title: "Tech Store Owner, Singapore",
             message: "I’ve tried many replacement batteries, but Deji stands out in both longevity and quality."
         },
@@ -32,11 +32,7 @@ const Partners = () => {
             title: "Distributor from Vietnam",
             message: "Deji products are easy to sell due to their proven performance. Repeat purchases are common."
         },
-        {
-            img: "https://images.pexels.com/photos/842811/pexels-photo-842811.jpeg?auto=compress&cs=tinysrgb&w=600",
-            title: "Wholesaler, Philippines",
-            message: "The support from Deji has been excellent. My business has grown since partnering with them."
-        }
+       
     ];
 
     return (

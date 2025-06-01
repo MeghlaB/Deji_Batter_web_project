@@ -112,7 +112,7 @@ const ContactPage = () => {
 
               <Button
                 component="a"
-                href="https://wa.me/65XXXXXXXX" // Replace with actual WhatsApp number
+                href="https://wa.me/65XXXXXXXX" 
                 target="_blank"
                 rel="noopener noreferrer"
                 sx={{
