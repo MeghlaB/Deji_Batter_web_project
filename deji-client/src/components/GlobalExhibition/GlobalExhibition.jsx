@@ -4,16 +4,16 @@ import "../AutoCarosule/AutoPlay.css";
 const GlobalExhibition = () => {
     const exhibitions = [
         {
-            image: 'https://www.dejibattery.com/uploadfile/2023/06/16/20230616113652SC3xku.jpg',
-            text: 'Hong Kong Exhibition'
+            image: 'https://www.dejibattery.com/uploadfile/2024/05/11/20240511115338Qkslyd.jpg',
+            text: 'CSE Exhibition'
         },
         {
             image: 'https://www.dejibattery.com/uploadfile/2023/06/16/20230616113652SC3xku.jpg',
             text: 'Hong Kong Exhibition'
         },
         {
-            image: 'https://www.dejibattery.com/uploadfile/2023/06/16/20230616113652SC3xku.jpg',
-            text: 'Hong Kong Exhibition'
+            image: 'https://www.dejibattery.com/uploadfile/2024/01/25/20240125104729HF7Jjp.jpg',
+            text: 'German Exhibition'
         },
     ]
     return (
