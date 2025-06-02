@@ -25,7 +25,7 @@ const navItems = [
   { label: "HOME", path: "/" },
   { label: "PRODUCTS", path: "/products" },
   { label: "BULK ORDERS", path: "/b2b" },
-  { label: "BLOG", path: "/blog" },
+   { label: "NEWS", path: "/news" },
   { label: "CONTACT US", path: "/contact" },
 ];
 

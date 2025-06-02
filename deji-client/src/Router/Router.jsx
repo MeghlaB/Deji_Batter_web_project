@@ -16,6 +16,9 @@ import AdminHome from "../Dashboard/AdminDashboard/AdminFeauter/AdminHome";
 import ManageProducts from "../Dashboard/AdminDashboard/AdminFeauter/MangePRoducts";
 import EditProduct from "../Dashboard/AdminDashboard/AdminFeauter/EditProduct";
 import Manageoders from "../Dashboard/AdminDashboard/AdminFeauter/Manageoders";
+import NewsPage from "../Pages/News/NewsPage";
+import NewsDetails from "../Pages/News/NewsDetails";
+import NewsArticles from "../Dashboard/AdminDashboard/AdminFeauter/NewsArticles/NewsArticles";
 
 const router = createBrowserRouter([
   {
@@ -38,9 +41,13 @@ const router = createBrowserRouter([
         path: "/contact",
         element: <Contact />,
       },
-      {
-        path: "/blog",
-        element: <Blog />,
+       {
+        path: "/news",
+        element: <NewsPage />,
+      },
+       {
+        path: "/news/:id",
+        element: <NewsDetails/>,
       },
       {
         path: "/cart",
@@ -86,13 +93,17 @@ const router = createBrowserRouter([
         element: <EditProduct/>,
         loader: ({ params }) =>
           fetch(
-            `http://localhost:5000/products/${params.id}`
+            `https://deji-server.vercel.app/products/${params.id}`
           ),
       },
       {
         path:'manage-oders',
         element:<Manageoders/>
-      }
+      },
+       {
+        path: "add-news",
+        element: <NewsArticles />,
+      },
     ],
   },
 ]);
