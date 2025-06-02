@@ -293,9 +293,9 @@ export function TextEditor({
   );
 
   return (
-    <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-900 shadow-sm">
+    <div className="border border-gray-200 rounded-xl overflow-hidden bg-white  shadow-sm">
       {/* Toolbar */}
-      <div className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-3">
+      <div className="border-b border-gray-200  bg-gray-50  p-3">
         <div className="flex flex-wrap items-center gap-1">
           {/* History */}
           <div className="flex items-center gap-1">

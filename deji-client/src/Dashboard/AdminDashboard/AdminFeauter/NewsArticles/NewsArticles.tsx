@@ -43,7 +43,7 @@ export default function NewsArticles() {
   } = useQuery({
     queryKey: ["allNewsArticles"],
     queryFn: async () => {
-      const res = await fetch("https://dejibattery-80307.web.app/news");
+      const res = await fetch("https://deji-server.vercel.app/news");
       return res.json();
     },
   });
@@ -130,7 +130,7 @@ export default function NewsArticles() {
       if (editingId) {
         // Update existing article
         const response = await fetch(
-          `https://dejibattery-80307.web.app/news/${editingId}`,
+          `https://deji-server.vercel.app/news/${editingId}`,
           {
             method: "PATCH",
             headers: {
@@ -165,7 +165,7 @@ export default function NewsArticles() {
         }
       } else {
         // Create new article
-        const response = await fetch("https://dejibattery-80307.web.app/add-news", {
+        const response = await fetch("https://deji-server.vercel.app/add-news", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -217,13 +217,13 @@ export default function NewsArticles() {
     setPreviewImage(article?.image);
     setEditingId(article?._id);
     setIsCreating(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top
   };
 
   // Delete a single news article
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`https://dejibattery-80307.web.app/news/${id}`, {
+      const response = await fetch(`https://deji-server.vercel.app/news/${id}`, {
         method: "DELETE",
       });
 
@@ -259,7 +259,7 @@ export default function NewsArticles() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50   ">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 ">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -292,11 +292,8 @@ export default function NewsArticles() {
 
         {/* Article Form */}
         {isCreating && (
-          <Card className="mb-8 border-0 shadow-xl bg-white/80
-          backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 
-            
-             border-b">
+          <Card className="mb-8 border-0 shadow-xl bg-white/80 backdrop-blur-sm">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50  border-b">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
@@ -417,7 +414,7 @@ export default function NewsArticles() {
                         onChange={(e) =>
                           setFormData({ ...formData, status: e.target.value })
                         }
-                        className="w-full h-12 px-3 border-2 border-gray-200 rounded-md focus:border-blue-500 transition-colors  "
+                        className="w-full h-12 px-3 border-2 border-gray-200 rounded-md focus:border-blue-500 transition-colors "
                       >
                         <option value="draft">Draft</option>
                         <option value="published">Published</option>
@@ -549,7 +546,7 @@ export default function NewsArticles() {
             {allNewsArticles?.map((article) => (
               <Card
                 key={article._id}
-                className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm"
+                className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white/80  backdrop-blur-sm"
               >
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
