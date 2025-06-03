@@ -51,8 +51,23 @@ const Footer = () => {
           </Grid>
         </Grid>
 
+        {/* ✅ Trust & Credibility Section */}
+        <Box mt={5} py={3} borderTop="1px solid #444" borderBottom="1px solid #444">
+          <Grid container spacing={2} justifyContent="center" textAlign="center">
+            <Grid item xs={12} md={4}>
+              <Typography variant="body2">✅ IMDA Certified</Typography>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Typography variant="body2">✅ ACRA Registered</Typography>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Typography variant="body2">📍 SG Office: 10 Anson Road, #10-11, Singapore 079903</Typography>
+            </Grid>
+          </Grid>
+        </Box>
+
         {/* Bottom bar */}
-        <Box mt={4} pt={2} borderTop="1px solid #444" textAlign="center">
+        <Box mt={3} pt={2} textAlign="center">
           <Typography variant="body2" color="gray">
             © {new Date().getFullYear()} DEJI Battery Singapore. All rights reserved.
           </Typography>

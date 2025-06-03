@@ -61,7 +61,7 @@ const EditProduct = () => {
 
   useEffect(() => {
     axios
-      .get(`https://deji-server.vercel.app/products/${id}`)
+      .get(`http://localhost:5000/products/${id}`)
       .then((res) => {
         const data = res.data[0];
         reset(data);
@@ -98,7 +98,7 @@ const EditProduct = () => {
     
       delete updatedProduct.image;
 
-      const res = await axios.patch(`https://deji-server.vercel.app/products/${id}`, updatedProduct);
+      const res = await axios.patch(`http://localhost:5000/products/${id}`, updatedProduct);
 
       if (res.data.modifiedCount > 0) {
         Swal.fire({

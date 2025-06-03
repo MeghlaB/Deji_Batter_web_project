@@ -43,7 +43,7 @@ export default function NewsArticles() {
   } = useQuery({
     queryKey: ["allNewsArticles"],
     queryFn: async () => {
-      const res = await fetch("https://deji-server.vercel.app/news");
+      const res = await fetch("http://localhost:5000/news");
       return res.json();
     },
   });
@@ -130,7 +130,7 @@ export default function NewsArticles() {
       if (editingId) {
         // Update existing article
         const response = await fetch(
-          `https://deji-server.vercel.app/news/${editingId}`,
+          `http://localhost:5000/news/${editingId}`,
           {
             method: "PATCH",
             headers: {
@@ -165,7 +165,7 @@ export default function NewsArticles() {
         }
       } else {
         // Create new article
-        const response = await fetch("https://deji-server.vercel.app/add-news", {
+        const response = await fetch("http://localhost:5000/add-news", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -223,7 +223,7 @@ export default function NewsArticles() {
   // Delete a single news article
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`https://deji-server.vercel.app/news/${id}`, {
+      const response = await fetch(`http://localhost:5000/news/${id}`, {
         method: "DELETE",
       });
 
