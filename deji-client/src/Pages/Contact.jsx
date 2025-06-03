@@ -44,7 +44,7 @@ const ContactPage = () => {
 
   return (
     <div>
-      {/* Contact Form */}
+     
       <Box sx={{ maxWidth: 600, mx: 'auto', mt: 5 }}>
         <Paper elevation={3} sx={{ p: 4 }}>
           <Typography variant="h5" gutterBottom>
@@ -81,7 +81,7 @@ const ContactPage = () => {
               rows={4}
               required
             />
-            {/* Button container flex */}
+         
             <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
               <Button
                 type="submit"

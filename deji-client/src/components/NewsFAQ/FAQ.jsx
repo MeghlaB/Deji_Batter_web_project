@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiPlus, FiMinus } from "react-icons/fi"; // install with `npm i react-icons`
+import { FiPlus, FiMinus } from "react-icons/fi"; 
 
 const faqs = [
   {
