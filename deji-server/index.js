@@ -326,6 +326,7 @@ async function run() {
     const productsCollection = db.collection("products");
     const inquiriesCollection = db.collection("inquiries");
     const contactCollection = db.collection("contacts");
+    const cartCollection = db.collection("carts");
     const newsArticlesCollection = db.collection("newsArticles");
 
     // ---------- USER ROUTES ----------
@@ -620,6 +621,28 @@ async function run() {
   } catch (error) {
     console.error("Server startup failed:", error);
   }
+
+
+// .----- Add to Cart -------------
+app.post('/cart',async(req,res)=>{
+  const cartList = req.body
+  const result = await cartCollection.insertOne(cartList)
+  res.send(result)
+})
+app.get('/carts',async(req,res)=>{
+  const result = await cartCollection.find().toArray()
+  res.send(result)
+})
+
+
+
+
+
+
+
+
+
+
 }
 
 run().catch(console.dir);

@@ -10,6 +10,9 @@ export default function App() {
   const [loading, setLoading] = useState(true); 
   const navigate = useNavigate();
 
+  // USD to SGD converter
+  const convertToSGD = (usd) => (usd * 1.35).toFixed(2);
+
   // Fetch products
   useEffect(() => {
     axios
@@ -88,6 +91,9 @@ export default function App() {
               className="w-full h-[220px] object-contain mb-3"
             />
             <h3 className="text-center font-medium text-sm">{product.title}</h3>
+            <p className="text-center text-green-700 text-sm mt-1 font-semibold">
+              SGD ${convertToSGD(product.price)}
+            </p>
           </div>
         ))}
       </div>

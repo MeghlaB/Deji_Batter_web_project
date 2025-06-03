@@ -30,11 +30,11 @@ const addToLocalCart = (product) => {
 
   Swal.fire({
     icon: 'success',
-    title: 'Added!',
-    text: `${product.name} has been added to your cart.`,
+    title: 'Add to Cart!',
+    text: `${product?.title} has been added to your cart.`,
     timer: 1500,
     showConfirmButton: false,
-    position: 'top-end',
+    position: 'top-center',
     toast: true,
   });
 };
