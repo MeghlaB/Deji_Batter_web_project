@@ -87,7 +87,15 @@ const ProductDetails = () => {
   };
 
   return (
-    <Box sx={{ px: 3, mt: 4, mb: 6 }}>
+    <div>
+    <div>
+      <Link to={'/products'}>
+      <div className="border w-[160px]  rounded-2xl text-center mx-5 mt-8">
+       ← Back to Products</div>
+     
+      </Link>
+    </div>
+      <Box sx={{ px: 3, mt: 4, mb: 6 }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
@@ -563,6 +571,7 @@ const ProductDetails = () => {
         </Box>
       </Modal>
     </Box>
+    </div>
   );
 };
 
