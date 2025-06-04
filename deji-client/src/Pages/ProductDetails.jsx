@@ -111,7 +111,7 @@ const ProductDetails = () => {
           />
 
           <div className="flex gap-3">
-            {images.slice(0, 3).map((img, i) => (
+            {images.slice(0, 4).map((img, i) => (
               <img
                 key={i}
                 src={img}
@@ -381,7 +381,7 @@ const ProductDetails = () => {
                   <TableCell>Trial order is also accepted.</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell colSpan={2} className="font-bold">
+                  <TableCell colSpan={2} className="font-bold text-2xl">
                     Working Temp
                   </TableCell>
                 </TableRow>
@@ -404,135 +404,130 @@ const ProductDetails = () => {
       {/* Contact Section */}
 
       {activeSection === "contact" && (
-        <Box mt={6} maxWidth={900} mx="auto" px={2}>
-
-         {/* Contact Info + Address Section */}
-          <Box
-            mt={6}
-            display="flex"
-            flexDirection={{ xs: "column", md: "row",pb:"8" }}
-            gap={5}
-           
-          >
-            {/* Left Column - Contact Info */}
-            <Box
-              flex={1}
-              p={3}
-              sx={{ backgroundColor: "#fff", borderRadius: 3, boxShadow: 2 }}
+       <Box mt={6} maxWidth={900} mx="auto" px={2}>
+      {/* Contact Info + Address Section */}
+      <Box
+        mt={6}
+        display="flex"
+        flexDirection={{ xs: "column", md: "row" }}
+        gap={5}
+      >
+        {/* Left Column - Contact Info */}
+        <Box
+          flex={1}
+          p={3}
+          sx={{ backgroundColor: "#fff", borderRadius: 3, boxShadow: 2 }}
+        >
+          <Typography variant="h6" gutterBottom>
+            Contact Information
+          </Typography>
+          <Typography variant="body1" mb={1}>
+            <strong>Phone:</strong> +65 1234 5678
+          </Typography>
+          <Typography variant="body1" mb={1}>
+            <strong>Mobile:</strong> +65 1234 5678
+          </Typography>
+          <Typography variant="body1" mb={1}>
+            <strong>WhatsApp:</strong> +65 1234 5678
+          </Typography>
+          <Typography variant="body1">
+            <strong>Email:</strong>{" "}
+            <a
+              href="mailto:support@dejibattery.sg"
+              style={{ color: "#11B808" }}
             >
-              <Typography variant="h6" gutterBottom>
-                Contact Information
-              </Typography>
-              <Typography variant="body1" mb={1}>
-                <strong>Phone:</strong> 0755-84708970
-              </Typography>
-              <Typography variant="body1" mb={1}>
-                <strong>Mobile:</strong> +86-13713586498
-              </Typography>
-              <Typography variant="body1" mb={1}>
-                <strong>WhatsApp:</strong> +86-13823179226
-              </Typography>
-              <Typography variant="body1">
-                <strong>Email:</strong>{" "}
-                <a
-                  href="mailto:sales@batterydeji.com"
-                  style={{ color: "#11B808" }}
-                >
-                  sales@batterydeji.com
-                </a>
-              </Typography>
-            </Box>
-
-            {/* Right Column - Factory Addresses */}
-            <Box
-              flex={1}
-              p={3}
-              sx={{ backgroundColor: "#fff", borderRadius: 3, boxShadow: 2 }}
-             
-            >
-              <Typography variant="h6" gutterBottom>
-                🏭 Factory Addresses
-              </Typography>
-
-              <Box mb={2}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Shenzhen Factory:
-                </Typography>
-                <Typography variant="body2">
-                  401, D Building, Jinchangda Industrial Park, ShangWei
-                  Industrial Road, Zhangkengjing Community, Guanlan Street,
-                  Longhua District, Shenzhen
-                </Typography>
-              </Box>
-
-              <Box>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Dongguan Factory:
-                </Typography>
-                <Typography variant="body2">
-                  A003, Floor 4, Golden Phoenix Park Road, Fenggang Town,
-                  Dongguan
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-          {/* Contact Form */}
-          <Paper
-            elevation={4}
-            sx={{m:5, p: 8, borderRadius: 3, backgroundColor: "#fafafa" }}
-          >
-            <Typography variant="h5" fontWeight="bold" gutterBottom>
-              Contact Us About This Product
-            </Typography>
-
-            <form>
-              <TextField
-                fullWidth
-                label="Your Name"
-                margin="normal"
-                required
-                variant="outlined"
-              />
-              <TextField
-                fullWidth
-                label="Email Address"
-                type="email"
-                margin="normal"
-                required
-                variant="outlined"
-              />
-              <TextField
-                fullWidth
-                label="Message"
-                multiline
-                rows={4}
-                margin="normal"
-                required
-                variant="outlined"
-              />
-              <Box mt={3} textAlign="right">
-                <Button
-                  variant="contained"
-                  type="submit"
-                  size="large"
-                  sx={{
-                    textTransform: "none",
-                    borderRadius: 2,
-                    px: 4,
-                    backgroundColor: "#11B808",
-                    "&:hover": {
-                      backgroundColor: "#0e9e06",
-                    },
-                  }}
-                >
-                  Send
-                </Button>
-              </Box>
-            </form>
-          </Paper>
-
-         
+             support@dejibattery.sg
+            </a>
+          </Typography>
         </Box>
+
+        {/* Right Column - Factory Addresses */}
+        <Box
+          flex={1}
+          p={3}
+          sx={{ backgroundColor: "#fff", borderRadius: 3, boxShadow: 2 }}
+        >
+          <Typography variant="h6" gutterBottom>
+            Factory Addresses
+          </Typography>
+
+          <Box mb={2}>
+            <Typography variant="subtitle1" fontWeight="bold">
+              Shenzhen Factory:
+            </Typography>
+            <Typography variant="body2">
+              401, D Building, Jinchangda Industrial Park, ShangWei Industrial
+              Road, Zhangkengjing Community, Guanlan Street, Longhua District,
+              Shenzhen
+            </Typography>
+          </Box>
+
+          <Box>
+            <Typography variant="subtitle1" fontWeight="bold">
+              Dongguan Factory:
+            </Typography>
+            <Typography variant="body2">
+              A003, Floor 4, Golden Phoenix Park Road, Fenggang Town, Dongguan
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Contact Form */}
+      <Paper
+        elevation={4}
+        sx={{ m: 5, p: 8, borderRadius: 3, backgroundColor: "#fafafa" }}
+      >
+        <Typography variant="h5" fontWeight="bold" gutterBottom>
+          Contact Us About This Product
+        </Typography>
+
+        <form>
+          <TextField
+            fullWidth
+            label="Your Name"
+            margin="normal"
+            required
+            variant="outlined"
+          />
+          <TextField
+            fullWidth
+            label="Email Address"
+            type="email"
+            margin="normal"
+            required
+            variant="outlined"
+          />
+          <TextField
+            fullWidth
+            label="Message"
+            multiline
+            rows={4}
+            margin="normal"
+            required
+            variant="outlined"
+          />
+          <Box mt={3} textAlign="right">
+            <Button
+              variant="contained"
+              type="submit"
+              size="large"
+              sx={{
+                textTransform: "none",
+                borderRadius: 2,
+                px: 4,
+                backgroundColor: "#11B808",
+                "&:hover": {
+                  backgroundColor: "#0e9e06",
+                },
+              }}
+            >
+              Send
+            </Button>
+          </Box>
+        </form>
+      </Paper>
+    </Box>
       )}
 
       <Modal
