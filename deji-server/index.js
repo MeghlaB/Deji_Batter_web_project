@@ -618,10 +618,6 @@ async function run() {
         res.status(500).json({ error: error.message });
       }
     });
-  } catch (error) {
-    console.error("Server startup failed:", error);
-  }
-
 
 // .----- Add to Cart -------------
 app.post('/cart',async(req,res)=>{
@@ -633,6 +629,27 @@ app.get('/carts',async(req,res)=>{
   const result = await cartCollection.find().toArray()
   res.send(result)
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  } catch (error) {
+    console.error("Server startup failed:", error);
+  }
+
+
+
 
 
 

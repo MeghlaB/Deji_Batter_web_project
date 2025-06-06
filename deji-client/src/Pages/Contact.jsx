@@ -24,7 +24,7 @@ const ContactPage = () => {
     setLoading(true);
 
     try {
-      await axios.post('https://deji-server.vercel.app/contact', formData);
+      await axios.post('http://localhost:5000/contact', formData);
       Swal.fire({
         icon: 'success',
         title: 'Message Sent!',
