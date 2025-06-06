@@ -10,7 +10,7 @@ import { AuthContext } from "../../Provider/Authprovider";
 
 // Fetch products
 const fetchProducts = async () => {
-  const {user}=useContext(AuthContext)
+
   const res = await axios.get("http://localhost:5000/products");
   console.log(res.data)
   return res.data;
