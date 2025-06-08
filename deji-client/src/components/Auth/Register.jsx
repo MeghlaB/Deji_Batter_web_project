@@ -57,7 +57,7 @@ function Register() {
       };
 
       const res = await axios.post(
-        "http://localhost:5000/users",
+        "https://deji-server.vercel.app/users",
         userInfo
       );
 

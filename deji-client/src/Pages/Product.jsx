@@ -16,7 +16,7 @@ export default function App() {
   // Fetch products
   useEffect(() => {
     axios
-      .get("http://localhost:5000/products")
+      .get("https://deji-server.vercel.app/products")
       .then((res) => {
         const data = res.data;
         setProducts(data);

@@ -2,32 +2,27 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../Provider/Authprovider";
 
-
 const BulkOrderForm = () => {
- const {user} = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
 
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch cart data
+  // ✅ Fetch cart data whether user exists or not
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/carts", {
-          params: { email: user?.email },
-        });
+        const res = await axios.get("https://deji-server.vercel.app/carts");
         setCartItems(res.data || []);
-        setLoading(false);
       } catch (error) {
         console.error("Failed to fetch cart:", error);
+      } finally {
         setLoading(false);
       }
     };
 
-    if (user?.email) {
-      fetchCart();
-    }
-  }, [user?.email]);
+    fetchCart(); // ✅ Always call
+  }, []); // ✅ No dependency on user
 
   const handleQuantityChange = (id, newQty) => {
     const updated = cartItems.map((item) =>
@@ -46,7 +41,7 @@ const BulkOrderForm = () => {
   const handleAddToCart = () => {
     console.log("Cart Confirmed:", cartItems);
     alert("Cart confirmed!");
-    // You can also POST updated cart if needed
+    // Optional: POST updated cart
   };
 
   if (loading) return <div className="text-center mt-10">Loading cart...</div>;
@@ -55,17 +50,17 @@ const BulkOrderForm = () => {
     <div className="max-w-6xl mx-auto mt-10 p-6 bg-white rounded shadow">
       <h2 className="text-2xl font-bold mb-6">Bulk Order Form - From Server:</h2>
 
-      <div className="grid grid-cols-4 gap-4 font-semibold border-b pb-2">
+      <div className="grid grid-cols-2 gap-4 font-semibold border-b pb-2">
         <div>Product</div>
         <div>Quantity</div>
-        <div>Price</div>
-        <div>Subtotal</div>
+        {/* <div>Price</div>
+        <div>Subtotal</div> */}
       </div>
 
       {cartItems.map((item) => (
         <div
           key={item._id}
-          className="grid grid-cols-4 gap-4 items-center py-3 border-b"
+          className="grid grid-cols-2 gap-4 items-center py-3 border-b"
         >
           <div className="flex items-center gap-2">
             <img
@@ -73,7 +68,7 @@ const BulkOrderForm = () => {
               alt={item.title}
               className="w-10 h-10 object-cover"
             />
-            <span>{item.title}</span>
+            <span className="text-xs md:text-[18px]">{item.title}</span>
           </div>
 
           <input
@@ -84,11 +79,11 @@ const BulkOrderForm = () => {
             className="border px-2 py-1 w-20"
           />
 
-          <div className="text-green-600 font-medium">£{item.price}</div>
+          {/* <div className="text-green-600 font-medium">£{item.price}</div>
 
           <div className="font-bold">
             £{(item.price * item.quantity).toFixed(2)}
-          </div>
+          </div> */}
         </div>
       ))}
 
@@ -98,7 +93,7 @@ const BulkOrderForm = () => {
       </div>
 
       <button
-       
+        onClick={handleAddToCart}
         className="mt-4 px-6 py-2 bg-green-600 text-white font-semibold rounded hover:bg-green-700"
       >
         ADD TO CART

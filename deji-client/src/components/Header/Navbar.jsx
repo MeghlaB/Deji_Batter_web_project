@@ -1,4 +1,3 @@
-
 import React, { useContext, useRef, useState } from "react";
 import icon from "../../assets/icon.png";
 import {
@@ -66,7 +65,26 @@ export default function Navbar() {
             </ListItemButton>
           </ListItem>
         ))}
-        {!user && (
+        {user ? (
+          <>
+            {isAdmin && (
+              <ListItem disablePadding>
+                <ListItemButton
+                  component={Link}
+                  to="/dashboard/adminhome"
+                  sx={{ textAlign: "center" }}
+                >
+                  <ListItemText primary="DASHBOARD" />
+                </ListItemButton>
+              </ListItem>
+            )}
+            <ListItem disablePadding>
+              <ListItemButton onClick={logOut} sx={{ textAlign: "center" }}>
+                <ListItemText primary="LOGOUT" />
+              </ListItemButton>
+            </ListItem>
+          </>
+        ) : (
           <ListItem disablePadding>
             <ListItemButton
               component={Link}
@@ -83,7 +101,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* ✅ Fixed AppBar */}
       <AppBar
         component="nav"
         position="fixed"
@@ -95,7 +112,6 @@ export default function Navbar() {
         }}
       >
         <Toolbar sx={{ justifyContent: "space-between" }}>
-          {/* Mobile Menu Icon */}
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -106,7 +122,6 @@ export default function Navbar() {
             <MenuIcon />
           </IconButton>
 
-          {/* Logo */}
           <Link to="/">
             <img
               src={icon}
@@ -115,7 +130,6 @@ export default function Navbar() {
             />
           </Link>
 
-          {/* Desktop Navigation */}
           <Box
             sx={{
               display: { xs: "none", sm: "flex" },
@@ -139,12 +153,11 @@ export default function Navbar() {
               </Button>
             ))}
 
-            {/* Auth / Dashboard / Profile */}
             <div className="flex items-center gap-4">
               {user ? (
                 <>
                   <img
-                    src={user.photoURL}
+                    src={user.photoURL || "https://i.ibb.co/2FsfXqM/default-user.png"}
                     alt="profile"
                     className="w-8 h-8 rounded-full hidden md:block"
                   />
@@ -183,8 +196,9 @@ export default function Navbar() {
               {user && (
                 <div className="relative md:hidden" ref={profileRef}>
                   <img
-                    src={user.photoURL}
+                    src={user.photoURL || "https://i.ibb.co/2FsfXqM/default-user.png"}
                     alt="profile"
+                    title="Tap to open menu"
                     onClick={() => setShowDropdown(!showDropdown)}
                     className="w-8 h-8 rounded-full cursor-pointer"
                   />
@@ -192,7 +206,7 @@ export default function Navbar() {
                     <div className="absolute right-0 mt-2 w-32 text-black bg-white shadow-md rounded-md py-2 z-50">
                       {isAdmin && (
                         <Link
-                          to="/dashboard"
+                          to="/dashboard/adminhome"
                           className="block px-4 py-2 text-sm hover:bg-gray-200"
                         >
                           <div className="flex items-center gap-1">
@@ -219,10 +233,8 @@ export default function Navbar() {
         </Toolbar>
       </AppBar>
 
-      {/* ✅ Spacer below fixed navbar */}
       <Box sx={{ height: { xs: 56, sm: 64 } }} />
 
-      {/* Mobile Drawer */}
       <Box component="nav">
         <Drawer
           variant="temporary"

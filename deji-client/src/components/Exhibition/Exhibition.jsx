@@ -12,7 +12,7 @@ const ExhibitionSection = () => {
         Exhibition Show
       </Typography>
 
-      {/* Section heading and layout */}
+    
       <Box className=" p-4 rounded-md shadow-md">
         
 

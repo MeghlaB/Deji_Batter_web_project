@@ -15,7 +15,7 @@ const AdminHome = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/inquiries");
+      const res = await axios.get("https://deji-server.vercel.app/carts");
       const orders = res.data || [];
       setTotalOrders(orders.length);
       const total = orders.reduce((sum, order) => sum + (order.total || 0), 0);
@@ -26,22 +26,12 @@ const AdminHome = () => {
     }
   };
 
-  const fetchProducts = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/products");
-      const products = res.data || [];
-      const low = products.filter((p) => p.stock < 5).length;
-      setLowStock(low);
-    } catch (err) {
-      console.error("Error fetching products:", err);
-      setError("Failed to load products");
-    }
-  };
+
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      await Promise.all([fetchOrders(), fetchProducts()]);
+      await Promise.all([fetchOrders()]);
       setLoading(false);
     };
     fetchData();

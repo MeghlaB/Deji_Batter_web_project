@@ -11,7 +11,7 @@ import { AuthContext } from "../../Provider/Authprovider";
 // Fetch products
 const fetchProducts = async () => {
 
-  const res = await axios.get("http://localhost:5000/products");
+  const res = await axios.get("https://deji-server.vercel.app/products");
   console.log(res.data)
   return res.data;
 };
@@ -41,7 +41,7 @@ const addToLocalCart = async (product, user) => {
     };
     console.log(cartData)
 
-    await axios.post("http://localhost:5000/cart", cartData);
+    await axios.post("https://deji-server.vercel.app/cart", cartData);
   } catch (error) {
     console.error("Error posting to cart database:", error);
   }
