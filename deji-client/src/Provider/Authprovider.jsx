@@ -1,9 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import {
   createUserWithEmailAndPassword,
-
   getAuth,
-
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -13,9 +11,6 @@ import {
 } from "firebase/auth";
 import app from "../firebase_init/firebase";
 
-
-
-
 export const AuthContext = createContext(null);
 
 const auth = getAuth(app);
@@ -23,7 +18,6 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 function AuthProvider({ children }) {
-
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -44,34 +38,30 @@ function AuthProvider({ children }) {
   };
 
   // updatephoto
-  const updateUserProfile =(name,photo)=>{
-    return updateProfile(auth.currentUser,{
-      displayName:name,photoURL:photo
-    })
-
-  }
+  const updateUserProfile = (name, photo) => {
+    return updateProfile(auth.currentUser, {
+      displayName: name,
+      photoURL: photo,
+    });
+  };
   // Google_login
-  const GoogleLogin =()=>{
-    setLoading(true)
-    return signInWithPopup(auth,provider)
-  }
+  const GoogleLogin = () => {
+    setLoading(true);
+    return signInWithPopup(auth, provider);
+  };
 
   // onAuthStateChanged
-useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setLoading(false);
-     setUser(currentUser);
-      
-     console.log('Current-user =>',currentUser)
-     
-    
-  });
+      setUser(currentUser);
 
-  return () => unsubscribe();
-}, []);
+      console.log("Current-user =>", currentUser);
+    });
 
+    return () => unsubscribe();
+  }, []);
 
- 
   const authInfo = {
     user,
     loading,
@@ -79,19 +69,19 @@ useEffect(() => {
     signIn,
     logOut,
     updateUserProfile,
-    GoogleLogin
+    GoogleLogin,
   };
   return (
     <AuthContext.Provider value={authInfo}>
-    {children}
-    {/* {loading ? (
-      <div className="fixed inset-0 flex justify-center items-center bg-accent bg-opacity-50">
-        <span className="loading loading-dots loading-lg"></span>
-      </div>
-    ) : (
-      children
-    )} */}
-  </AuthContext.Provider>
+      {loading ? (
+        <div className="fixed inset-0 flex justify-center items-center bg-accent bg-opacity-50">
+          <span className="loading loading-dots loading-lg"></span>
+        </div>
+      ) : (
+        children
+      )}
+    </AuthContext.Provider>
+    
   );
 }
 

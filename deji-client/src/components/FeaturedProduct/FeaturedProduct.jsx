@@ -10,12 +10,11 @@ import { AuthContext } from "../../Provider/Authprovider";
 
 // Fetch products
 const fetchProducts = async () => {
-  const res = await axios.get("http://localhost:5000/products");
-  console.log(res.data);
+  const res = await axios.get("https://deji-server-developers-projects-08e2b070.vercel.app/products");
   return res.data;
 };
 
-// Add product to cart (localStorage + backend)
+// Add to cart (localStorage + DB)
 const addToLocalCart = async (product, user) => {
   const existing = JSON.parse(localStorage.getItem("cart")) || [];
   const exists = existing.find((item) => item._id === product._id);
@@ -33,15 +32,14 @@ const addToLocalCart = async (product, user) => {
       productId: product._id,
       title: product.title,
       price: product.price,
-      image: product.imageURLs ? product.imageURLs[0] : "",
+      image: product.imageURLs?.[0] || "",
       quantity: 1,
-      email: user?.email,  // <-- User email included here
+      email: user?.email,
     };
-    console.log("Posting cart data:", cartData);
 
-    await axios.post("http://localhost:5000/cart", cartData);
+    await axios.post("https://deji-server-developers-projects-08e2b070.vercel.app/cart", cartData);
   } catch (error) {
-    console.error("Error posting to cart database:", error);
+    console.error("Error posting to cart DB:", error);
   }
 
   Swal.fire({
@@ -56,7 +54,7 @@ const addToLocalCart = async (product, user) => {
 };
 
 const FeaturedProduct = () => {
-  const { user } = useContext(AuthContext); // <-- get user context
+  const { user } = useContext(AuthContext);
 
   const {
     data: products = [],
@@ -93,7 +91,7 @@ const FeaturedProduct = () => {
     );
 
   return (
-    <div className="container mx-auto mt-10">
+    <div className="container mx-auto px-4 py-10">
       <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -104,18 +102,27 @@ const FeaturedProduct = () => {
         Featured Products
       </motion.h1>
 
-      <Box sx={{ mt: 4, px: 3, mx: "auto", width: "container" }}>
-        <Grid container spacing={2}>
+      <Box sx={{ mt: 4 }}>
+        <Grid container spacing={3}>
           {products.map((product, index) => (
-            <Link to={`/products/${product._id}`}>
-              <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
+            <Grid
+              item
+              key={product._id}
+              xs={12}
+              sm={6}
+              md={4}
+              lg={3}
+              display="flex"
+              justifyContent="center"
+            >
               <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                initial={{ opacity: 0, scale: 0.95, y: 30 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 whileHover={{ scale: 1.03 }}
+                className="w-full max-w-xs"
               >
-                <Link to={`/products/${product._id}`} onClick={e => e.preventDefault()}>
+                <Link to={`/products/${product._id}`}>
                   <ProductCard
                     product={product}
                     handleAddToCart={() => handleAddToCart(product)}
@@ -123,7 +130,6 @@ const FeaturedProduct = () => {
                 </Link>
               </motion.div>
             </Grid>
-            </Link>
           ))}
         </Grid>
       </Box>

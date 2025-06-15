@@ -18,7 +18,7 @@ const NewsPage = () => {
   const { data: allNewsArticles = [], isLoading } = useQuery({
     queryKey: ["news"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:5000/news");
+      const res = await fetch("https://deji-server-developers-projects-08e2b070.vercel.app/news");
       return res.json();
     },
   });

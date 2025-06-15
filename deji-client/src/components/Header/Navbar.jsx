@@ -12,6 +12,8 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useLocation } from "react-router-dom";
@@ -39,11 +41,15 @@ export default function Navbar() {
   const location = useLocation();
   const [isAdmin] = useAdmin();
 
+  const theme = useTheme();
+  // Adjust breakpoint to 'md' for drawer toggle (tablet and below)
+  const isTabletOrMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   const { data: cartItems } = useQuery({
     queryKey: ["cart", user?.email],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:5000/carts?email=${user.email}`
+        `https://deji-server-developers-projects-08e2b070.vercel.app/carts?email=${user.email}`
       );
       return res.data;
     },
@@ -51,6 +57,16 @@ export default function Navbar() {
   });
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
@@ -70,10 +86,8 @@ export default function Navbar() {
                 primary={item.label}
                 primaryTypographyProps={{
                   style: {
-                    color:
-                      location.pathname === item.path ? "#11B808" : "#000",
-                    fontWeight:
-                      location.pathname === item.path ? 700 : 500,
+                    color: location.pathname === item.path ? "#11B808" : "#000",
+                    fontWeight: location.pathname === item.path ? 700 : 500,
                   },
                 }}
               />
@@ -82,13 +96,29 @@ export default function Navbar() {
         ))}
 
         {user && (
-          <ListItem disablePadding>
+          <ListItem disablePadding sx={{ display: { xs: "flex", sm: "none" } }}>
             <ListItemButton
               component={Link}
               to="/dashboard/my-carts"
-              sx={{ textAlign: "center" }}
+              sx={{ textAlign: "center", position: "relative" }}
             >
-              <ListItemText primary="MY CART" />
+              <ShoppingCart />
+              <ListItemText primary="MY CART" sx={{ ml: 1 }} />
+              <span
+                style={{
+                  position: "absolute",
+                  top: 4,
+                  right: 16,
+                  backgroundColor: "#dc2626",
+                  color: "white",
+                  borderRadius: "50%",
+                  padding: "2px 6px",
+                  fontSize: "0.75rem",
+                  fontWeight: "bold",
+                }}
+              >
+                {cartItems?.length || 0}
+              </span>
             </ListItemButton>
           </ListItem>
         )}
@@ -129,29 +159,26 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Sticky Wrapper for Both Banner + Navbar */}
       <Box
         sx={{
           position: "sticky",
           top: 0,
-          left:0,
+          left: 0,
           zIndex: (theme) => theme.zIndex.drawer + 2,
         }}
       >
-        {/* 🔶 Announcement Banner */}
         <Box
           sx={{
             backgroundColor: "#232323",
             textAlign: "center",
             fontSize: "0.875rem",
             padding: "0.5rem",
-             color: "#ffff",
+            color: "#ffff",
           }}
         >
           Same-Day Singapore Delivery | Order before 3PM
         </Box>
 
-        {/* 🟩 Navbar */}
         <AppBar
           component="nav"
           position="static"
@@ -162,15 +189,17 @@ export default function Navbar() {
           }}
         >
           <Toolbar sx={{ justifyContent: "space-between" }}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: "none" } }}
-            >
-              <MenuIcon />
-            </IconButton>
+            {isTabletOrMobile && (
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ mr: 2, p: 1.5 }}
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
 
             <Link to="/">
               <img
@@ -180,129 +209,196 @@ export default function Navbar() {
               />
             </Link>
 
-            <Box
-              sx={{
-                display: { xs: "none", sm: "flex" },
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
-              {navItems.map((item) => (
-                <Button
-                  key={item.label}
-                  component={Link}
-                  to={item.path}
-                  sx={{
-                    color:
-                      location.pathname === item.path ? "#11B808" : "#000",
-                    fontWeight:
-                      location.pathname === item.path ? 700 : 600,
-                    textTransform: "none",
+            {/* Show nav buttons only if NOT tablet or mobile */}
+            {!isTabletOrMobile && (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: { sm: 2, md: 3, lg: 4 },
+                }}
+              >
+                {navItems.map((item) => (
+                  <Button
+                    key={item.label}
+                    component={Link}
+                    to={item.path}
+                    sx={{
+                      color: location.pathname === item.path ? "#11B808" : "#000",
+                      fontWeight: location.pathname === item.path ? 700 : 600,
+                      textTransform: "none",
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                ))}
+
+                {user && (
+                  <Link
+                    to="/dashboard/my-carts"
+                    className="relative inline-block"
+                    aria-label="My Cart"
+                    style={{ marginLeft: 12 }}
+                  >
+                    <ShoppingCart style={{ width: 24, height: 24 }} />
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: -8,
+                        right: -8,
+                        backgroundColor: "#dc2626",
+                        color: "white",
+                        fontSize: 12,
+                        padding: "2px 6px",
+                        borderRadius: "50%",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {cartItems?.length || 0}
+                    </span>
+                  </Link>
+                )}
+
+                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  {user ? (
+                    <>
+                      <img
+                        src={
+                          user.photoURL ||
+                          "https://i.ibb.co/2FsfXqM/default-user.png"
+                        }
+                        alt="profile"
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: "50%",
+                          display: "block",
+                        }}
+                      />
+                      {isAdmin && (
+                        <Link
+                          to="/dashboard/adminhome"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 4,
+                            fontWeight: "bold",
+                            fontSize: 14,
+                          }}
+                        >
+                          <LuLayoutDashboard />
+                          <span>DASHBOARD</span>
+                        </Link>
+                      )}
+                      <Button
+                        onClick={logOut}
+                        sx={{
+                          textTransform: "none",
+                          color: "#000",
+                          fontWeight: "600",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                        }}
+                      >
+                        <MdLogout />
+                        LogOut
+                      </Button>
+                    </>
+                  ) : (
+                    <Link
+                      to="/auth/login"
+                      style={{
+                        padding: "6px 16px",
+                        borderRadius: 6,
+                        fontWeight: 600,
+                        fontSize: 14,
+                        color: "white",
+                        backgroundImage: "linear-gradient(to right, #11B808, #77B254)",
+                        textDecoration: "none",
+                      }}
+                    >
+                      Login
+                    </Link>
+                  )}
+                </div>
+              </Box>
+            )}
+
+            {/* Mobile & Tablet user menu */}
+            {isTabletOrMobile && user && (
+              <div className="relative" ref={profileRef}>
+                <img
+                  src={
+                    user.photoURL ||
+                    "https://i.ibb.co/2FsfXqM/default-user.png"
+                  }
+                  alt="profile"
+                  title="Tap to open menu"
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: "50%",
+                    cursor: "pointer",
                   }}
-                >
-                  {item.label}
-                </Button>
-              ))}
-
-              {user && (
-                <Link to="/my-carts" className="relative inline-block">
-                  <ShoppingCart className="w-6 h-6" />
-                  <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs px-1.5 rounded-full">
-                    {cartItems?.length || 0}
-                  </span>
-                </Link>
-              )}
-
-              <div className="flex items-center gap-4">
-                {user ? (
-                  <>
-                    <img
-                      src={
-                        user.photoURL ||
-                        "https://i.ibb.co/2FsfXqM/default-user.png"
-                      }
-                      alt="profile"
-                      className="w-8 h-8 rounded-full hidden md:block"
-                    />
+                />
+                {showDropdown && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      right: 0,
+                      mt: 1,
+                      width: 140,
+                      bgcolor: "background.paper",
+                      boxShadow: 3,
+                      borderRadius: 1,
+                      py: 1,
+                      zIndex: 1300,
+                    }}
+                  >
                     {isAdmin && (
                       <Link
                         to="/dashboard/adminhome"
-                        className="hidden md:flex items-center gap-1 font-bold"
+                        style={{
+                          display: "block",
+                          px: 2,
+                          py: 1,
+                          textDecoration: "none",
+                          color: "inherit",
+                        }}
+                        onClick={() => setShowDropdown(false)}
                       >
-                        <LuLayoutDashboard />
-                        <span className="text-sm">DASHBOARD</span>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          <LuLayoutDashboard />
+                          Dashboard
+                        </Box>
                       </Link>
                     )}
                     <Button
                       onClick={logOut}
-                      className="hidden md:flex items-center gap-1"
-                      sx={{ textTransform: "none", color: "#000" }}
+                      sx={{
+                        width: "100%",
+                        justifyContent: "flex-start",
+                        px: 2,
+                        textTransform: "none",
+                      }}
                     >
                       <MdLogout />
-                      <span className="text-sm font-bold">LogOut</span>
+                      Logout
                     </Button>
-                  </>
-                ) : (
-                  <Link
-                    to="/auth/login"
-                    className="md:block px-4 py-1 rounded-md text-sm font-semibold text-white"
-                    style={{
-                      backgroundImage:
-                        "linear-gradient(to right, #11B808, #77B254)",
-                    }}
-                  >
-                    Login
-                  </Link>
-                )}
-
-                {user && (
-                  <div className="relative md:hidden" ref={profileRef}>
-                    <img
-                      src={
-                        user.photoURL ||
-                        "https://i.ibb.co/2FsfXqM/default-user.png"
-                      }
-                      alt="profile"
-                      title="Tap to open menu"
-                      onClick={() => setShowDropdown(!showDropdown)}
-                      className="w-8 h-8 rounded-full cursor-pointer"
-                    />
-                    {showDropdown && (
-                      <div className="absolute right-0 mt-2 w-32 text-black bg-white shadow-md rounded-md py-2 z-50">
-                        {isAdmin && (
-                          <Link
-                            to="/dashboard/adminhome"
-                            className="block px-4 py-2 text-sm hover:bg-gray-200"
-                          >
-                            <div className="flex items-center gap-1">
-                              <LuLayoutDashboard />
-                              <p>Dashboard</p>
-                            </div>
-                          </Link>
-                        )}
-                        <button
-                          onClick={logOut}
-                          className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
-                        >
-                          <div className="flex items-center gap-1">
-                            <MdLogout />
-                            <span>Logout</span>
-                          </div>
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  </Box>
                 )}
               </div>
-            </Box>
+            )}
           </Toolbar>
         </AppBar>
       </Box>
 
-      {/* Spacer to push page content below sticky nav+banner */}
+      {/* Spacer */}
       <Box sx={{ height: { xs: 56 + 36, sm: 64 + 36 } }} />
 
-      {/* Mobile Drawer */}
+      {/* Drawer for tablet and below */}
       <Box component="nav">
         <Drawer
           variant="temporary"
@@ -310,7 +406,7 @@ export default function Navbar() {
           onClose={handleDrawerToggle}
           ModalProps={{ keepMounted: true }}
           sx={{
-            display: { xs: "block", sm: "none" },
+            display: { xs: "block", md: "none" },
             "& .MuiDrawer-paper": { boxSizing: "border-box", width: 240 },
           }}
         >

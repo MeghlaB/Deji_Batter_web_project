@@ -40,7 +40,7 @@ const ProductDetails = () => {
   } = useQuery({
     queryKey: ["product", id],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:5000/products/${id}`);
+      const res = await axios.get(`https://deji-server-developers-projects-08e2b070.vercel.app/products/${id}`);
       return res.data[0];
     },
     enabled: !!id,

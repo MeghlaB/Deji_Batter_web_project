@@ -62,7 +62,7 @@ function Login() {
           name: res.user?.displayName,
           photo: res.user?.photoURL,
         };
-        axios.post("http://localhost:5000/users", userInfo).then((res) => {
+        axios.post("https://deji-server-developers-projects-08e2b070.vercel.app/users", userInfo).then((res) => {
           if (res.data.insertedId || res.data.success) {
             Swal.fire({
               position: "top-center",

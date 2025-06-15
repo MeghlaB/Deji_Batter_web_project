@@ -16,7 +16,7 @@ const ExportButton = () => {
 });
   const handleExport = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/export-products");
+      const response = await fetch("https://deji-server-developers-projects-08e2b070.vercel.app/api/export-products");
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
 

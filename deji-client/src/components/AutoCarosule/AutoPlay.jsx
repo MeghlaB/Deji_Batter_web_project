@@ -8,12 +8,26 @@ function AutoPlay() {
   const settings = {
     dots: true,
     infinite: true,
-    slidesToShow: 3,
+    slidesToShow: 3, // ডেক্সটপে ৩ ছবি
     slidesToScroll: 1,
     autoplay: true,
     speed: 2000,
-    autoplaySpeed: 1000,
+    autoplaySpeed: 2500,
     cssEase: "linear",
+    responsive: [
+      {
+        breakpoint: 1024, // ট্যাবলেট
+        settings: {
+          slidesToShow: 2, // ২ ছবি দেখাবে
+        },
+      },
+      {
+        breakpoint: 640, // মোবাইল
+        settings: {
+          slidesToShow: 1, // একবারে ১ ছবি দেখাবে
+        },
+      },
+    ],
   };
 
   const categories = [
@@ -52,13 +66,19 @@ function AutoPlay() {
   ];
 
   return (
-    <div className="slider-container" style={{ margin: "50px" }}>
+    <div className="max-w-7xl mx-auto px-4 py-10">
       <Slider {...settings}>
         {categories.map((item, index) => (
-          <div key={index}>
-            <div className="image-wrapper">
-              <img src={item.image} alt={`Slide ${index + 1}`} className="zoom-image" />
-              <p className="text-center mt-3 font-semibold hover:text-green-600">{item.title}</p>
+          <div key={index} className="px-2">
+            <div className="image-wrapper bg-white rounded-lg shadow-md p-4 h-full flex flex-col items-center">
+              <img
+                src={item.image}
+                alt={`Slide ${index + 1}`}
+                className="zoom-image w-full h-56 object-cover rounded-md"
+              />
+              <p className="text-center mt-3 font-semibold hover:text-green-600 transition duration-300">
+                {item.title}
+              </p>
             </div>
           </div>
         ))}

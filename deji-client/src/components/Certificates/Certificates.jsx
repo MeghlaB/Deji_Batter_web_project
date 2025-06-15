@@ -47,7 +47,7 @@ const CertificateGallery = () => {
     setActiveIndex((prev) => (prev === 0 ? certificates.length - 1 : prev - 1));
 
   return (
-    <div className="bg-white py-12 px-4 md:px-20 text-center">
+    <div className="bg-white py-12 px-4 md:px-20 text-center max-w-7xl mx-auto">
       <h2 className="text-3xl md:text-4xl font-bold mb-8 text-yellow-700">
         CERTIFICATES
       </h2>
@@ -57,7 +57,7 @@ const CertificateGallery = () => {
           <div
             key={i}
             onClick={() => openModal(i)}
-            className="w-60 mx-3 brounded-md shadow-lg cursor-pointer transform hover:scale-105 transition duration-300 ease-in-out bg-white"
+            className="w-48 sm:w-56 mx-3 rounded-md shadow-lg cursor-pointer transform hover:scale-105 transition duration-300 ease-in-out bg-white"
           >
             <img
               src={cert.img}
@@ -68,46 +68,48 @@ const CertificateGallery = () => {
         ))}
       </Marquee>
 
-   {open && isHomePage && (
-  <div className="fixed inset-0 z-50  bg-opacity-90 flex items-center justify-center px-4">
-    <div className="relative bg-white rounded-md shadow-xl p-4 w-full max-w-3xl text-center">
-      {/* Close button */}
-      <button
-        onClick={closeModal}
-        className="absolute top-2 right-2 text-gray-600 text-3xl hover:text-red-400"
-      >
-        &times;
-      </button>
+      {open && isHomePage && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center px-4">
+          <div className="relative bg-white rounded-md shadow-xl p-6 w-full max-w-xl text-center">
+            {/* Close button */}
+            <button
+              onClick={closeModal}
+              className="absolute top-3 right-3 text-gray-600 text-3xl hover:text-red-500 focus:outline-none"
+              aria-label="Close Modal"
+            >
+              &times;
+            </button>
 
-      {/* Previous button */}
-      <button
-        onClick={prev}
-        className="absolute top-1/2 left-2 transform -translate-y-1/2 text-3xl text-gray-600 hover:text-yellow-500"
-      >
-        &#10094;
-      </button>
+            {/* Previous button */}
+            <button
+              onClick={prev}
+              className="absolute top-1/2 left-3 transform -translate-y-1/2 text-4xl text-gray-600 hover:text-yellow-500 focus:outline-none"
+              aria-label="Previous Image"
+            >
+              &#10094;
+            </button>
 
-      {/* Image */}
-      <img
-        src={certificates[activeIndex].img}
-        alt={certificates[activeIndex].title}
-        className="max-h-[250px] mx-auto object-contain rounded"
-      />
-      <p className="text-gray-700 mt-4 text-lg">
-        {activeIndex + 1} of {certificates.length}
-      </p>
+            {/* Image */}
+            <img
+              src={certificates[activeIndex].img}
+              alt={certificates[activeIndex].title}
+              className="max-h-[300px] mx-auto object-contain rounded"
+            />
+            <p className="text-gray-700 mt-4 text-lg font-semibold">
+              {certificates[activeIndex].title} — {activeIndex + 1} of {certificates.length}
+            </p>
 
-      {/* Next button */}
-      <button
-        onClick={next}
-        className="absolute top-1/2 right-2 transform -translate-y-1/2 text-3xl text-gray-600 hover:text-yellow-500"
-      >
-        &#10095;
-      </button>
-    </div>
-  </div>
-)}
-
+            {/* Next button */}
+            <button
+              onClick={next}
+              className="absolute top-1/2 right-3 transform -translate-y-1/2 text-4xl text-gray-600 hover:text-yellow-500 focus:outline-none"
+              aria-label="Next Image"
+            >
+              &#10095;
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
