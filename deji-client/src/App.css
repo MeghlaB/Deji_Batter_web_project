@@ -1,0 +1,14 @@
+@media (max-width: 768px) {
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .nav-item {
+    padding: 12px 16px !important;
+  }
+  .menu-toggle {
+    display: block;
+    font-size: 24px;
+  }
+}

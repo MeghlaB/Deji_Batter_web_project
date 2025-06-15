@@ -42,7 +42,7 @@ const ManageProducts = () => {
   } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
-      const res = await axios.get("https://deji-server-developers-projects-08e2b070.vercel.app/products");
+      const res = await axios.get("http://localhost:5000/products");
       return res.data;
     },
   });

@@ -100,6 +100,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
           component="img"
           height="200"
           image={product.imageURLs?.[0]}
+            loading="lazy"
           alt={product.name}
           sx={{ objectFit: "contain", padding: 1 }}
         />
@@ -155,8 +156,9 @@ const ProductCard = ({ product, handleAddToCart }) => {
             mt: "auto",
             backgroundColor: "#11B808",
             "&:hover": {
-              backgroundColor: "#0f9d07",
-            },
+  transform: "scale(1.02)",
+  boxShadow: "0 10px 20px rgba(0,0,0,0.1)"
+}
           }}
           onClick={() => handleAddToCart(product)}
           disabled={loading}

@@ -42,14 +42,13 @@ export default function Navbar() {
   const [isAdmin] = useAdmin();
 
   const theme = useTheme();
-  // Adjust breakpoint to 'md' for drawer toggle (tablet and below)
   const isTabletOrMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const { data: cartItems } = useQuery({
     queryKey: ["cart", user?.email],
     queryFn: async () => {
       const res = await axios.get(
-        `https://deji-server-developers-projects-08e2b070.vercel.app/carts?email=${user.email}`
+        `http://localhost:5000/carts?email=${user.email}`
       );
       return res.data;
     },
@@ -59,11 +58,11 @@ export default function Navbar() {
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
 
   useEffect(() => {
-    function handleClickOutside(event) {
+    const handleClickOutside = (event) => {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
         setShowDropdown(false);
       }
-    }
+    };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -73,14 +72,17 @@ export default function Navbar() {
       <Typography variant="h6" sx={{ my: 1, color: "#003049" }}>
         DEJI
       </Typography>
-      <List>
+      <List sx={{ px: 1 }}>
         {navItems.map((item) => (
           <ListItem key={item.label} disablePadding>
             <ListItemButton
               component={Link}
               to={item.path}
               selected={location.pathname === item.path}
-              sx={{ textAlign: "center" }}
+              sx={{
+                textAlign: "center",
+                padding: "12px 16px !important",
+              }}
             >
               <ListItemText
                 primary={item.label}
@@ -96,12 +98,8 @@ export default function Navbar() {
         ))}
 
         {user && (
-          <ListItem disablePadding sx={{ display: { xs: "flex", sm: "none" } }}>
-            <ListItemButton
-              component={Link}
-              to="/dashboard/my-carts"
-              sx={{ textAlign: "center", position: "relative" }}
-            >
+          <ListItem disablePadding>
+            <ListItemButton component={Link} to="/dashboard/my-carts">
               <ShoppingCart />
               <ListItemText primary="MY CART" sx={{ ml: 1 }} />
               <span
@@ -127,28 +125,20 @@ export default function Navbar() {
           <>
             {isAdmin && (
               <ListItem disablePadding>
-                <ListItemButton
-                  component={Link}
-                  to="/dashboard/adminhome"
-                  sx={{ textAlign: "center" }}
-                >
+                <ListItemButton component={Link} to="/dashboard/adminhome">
                   <ListItemText primary="DASHBOARD" />
                 </ListItemButton>
               </ListItem>
             )}
             <ListItem disablePadding>
-              <ListItemButton onClick={logOut} sx={{ textAlign: "center" }}>
+              <ListItemButton onClick={logOut}>
                 <ListItemText primary="LOGOUT" />
               </ListItemButton>
             </ListItem>
           </>
         ) : (
           <ListItem disablePadding>
-            <ListItemButton
-              component={Link}
-              to="/auth/login"
-              sx={{ textAlign: "center" }}
-            >
+            <ListItemButton component={Link} to="/auth/login">
               <ListItemText primary="LOGIN" />
             </ListItemButton>
           </ListItem>
@@ -159,246 +149,191 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Top Bar */}
       <Box
         sx={{
-          position: "sticky",
-          top: 0,
-          left: 0,
-          zIndex: (theme) => theme.zIndex.drawer + 2,
+          backgroundColor: "#232323",
+          textAlign: "center",
+          fontSize: "0.875rem",
+          padding: "0.5rem",
+          color: "#ffff",
         }}
       >
-        <Box
-          sx={{
-            backgroundColor: "#232323",
-            textAlign: "center",
-            fontSize: "0.875rem",
-            padding: "0.5rem",
-            color: "#ffff",
-          }}
-        >
-         "🚚 Same-Day Singapore Delivery | Order Before 3PM for Today's Dispatch | Free Delivery for Orders <span></span>$100
-        </Box>
+        🚚 Same-Day Singapore Delivery | Order Before 3PM for Today's Dispatch | Free Delivery for Orders <span>$100</span>
+      </Box>
 
-        <AppBar
-          component="nav"
-          position="static"
-          sx={{
-            backgroundColor: "white",
-            color: "#000",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-          }}
-        >
-          <Toolbar sx={{ justifyContent: "space-between" }}>
-            {isTabletOrMobile && (
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                onClick={handleDrawerToggle}
-                sx={{ mr: 2, p: 1.5 }}
-              >
-                <MenuIcon />
-              </IconButton>
-            )}
+      <AppBar
+        component="nav"
+        position="sticky"
+        sx={{
+          backgroundColor: "white",
+          color: "#000",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+        }}
+      >
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          {/* Hamburger icon */}
+          {isTabletOrMobile && (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, p: 1.5 }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
 
-            <Link to="/">
-              <img
-                src={icon}
-                alt="logo"
-                style={{ width: "50px", height: "40px" }}
-              />
-            </Link>
+          {/* Logo */}
+          <Link to="/">
+            <img src={icon} alt="logo" style={{ width: "50px", height: "40px" }} />
+          </Link>
 
-            {/* Show nav buttons only if NOT tablet or mobile */}
-            {!isTabletOrMobile && (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: { sm: 2, md: 3, lg: 4 },
-                }}
-              >
-                {navItems.map((item) => (
-                  <Button
-                    key={item.label}
-                    component={Link}
-                    to={item.path}
-                    sx={{
-                      color: location.pathname === item.path ? "#11B808" : "#000",
-                      fontWeight: location.pathname === item.path ? 700 : 600,
-                      textTransform: "none",
-                    }}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
-
-                {user && (
-                  <Link
-                    to="/dashboard/my-carts"
-                    className="relative inline-block"
-                    aria-label="My Cart"
-                    style={{ marginLeft: 12 }}
-                  >
-                    <ShoppingCart style={{ width: 24, height: 24 }} />
-                    <span
-                      style={{
-                        position: "absolute",
-                        top: -8,
-                        right: -8,
-                        backgroundColor: "#dc2626",
-                        color: "white",
-                        fontSize: 12,
-                        padding: "2px 6px",
-                        borderRadius: "50%",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {cartItems?.length || 0}
-                    </span>
-                  </Link>
-                )}
-
-                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                  {user ? (
-                    <>
-                      <img
-                        src={
-                          user.photoURL ||
-                          "https://i.ibb.co/2FsfXqM/default-user.png"
-                        }
-                        alt="profile"
-                        style={{
-                          width: 32,
-                          height: 32,
-                          borderRadius: "50%",
-                          display: "block",
-                        }}
-                      />
-                      {isAdmin && (
-                        <Link
-                          to="/dashboard/adminhome"
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 4,
-                            fontWeight: "bold",
-                            fontSize: 14,
-                          }}
-                        >
-                          <LuLayoutDashboard />
-                          <span>DASHBOARD</span>
-                        </Link>
-                      )}
-                      <Button
-                        onClick={logOut}
-                        sx={{
-                          textTransform: "none",
-                          color: "#000",
-                          fontWeight: "600",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 4,
-                        }}
-                      >
-                        <MdLogout />
-                        LogOut
-                      </Button>
-                    </>
-                  ) : (
-                    <Link
-                      to="/auth/login"
-                      style={{
-                        padding: "6px 16px",
-                        borderRadius: 6,
-                        fontWeight: 600,
-                        fontSize: 14,
-                        color: "white",
-                        backgroundImage: "linear-gradient(to right, #11B808, #77B254)",
-                        textDecoration: "none",
-                      }}
-                    >
-                      Login
-                    </Link>
-                  )}
-                </div>
-              </Box>
-            )}
-
-            {/* Mobile & Tablet user menu */}
-            {isTabletOrMobile && user && (
-              <div className="relative" ref={profileRef}>
-                <img
-                  src={
-                    user.photoURL ||
-                    "https://i.ibb.co/2FsfXqM/default-user.png"
-                  }
-                  alt="profile"
-                  title="Tap to open menu"
-                  onClick={() => setShowDropdown(!showDropdown)}
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: "50%",
-                    cursor: "pointer",
+          {/* Desktop Menu */}
+          {!isTabletOrMobile && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+              {navItems.map((item) => (
+                <Button
+                  key={item.label}
+                  component={Link}
+                  to={item.path}
+                  sx={{
+                    color: location.pathname === item.path ? "#11B808" : "#000",
+                    fontWeight: location.pathname === item.path ? 700 : 600,
+                    textTransform: "none",
                   }}
-                />
-                {showDropdown && (
-                  <Box
-                    sx={{
+                >
+                  {item.label}
+                </Button>
+              ))}
+
+              {user && (
+                <Link to="/dashboard/my-carts" className="relative" aria-label="My Cart">
+                  <ShoppingCart style={{ width: 24, height: 24 }} />
+                  <span
+                    style={{
                       position: "absolute",
-                      right: 0,
-                      mt: 1,
-                      width: 140,
-                      bgcolor: "background.paper",
-                      boxShadow: 3,
-                      borderRadius: 1,
-                      py: 1,
-                      zIndex: 1300,
+                      top: -8,
+                      right: -8,
+                      backgroundColor: "#dc2626",
+                      color: "white",
+                      fontSize: 12,
+                      padding: "2px 6px",
+                      borderRadius: "50%",
+                      fontWeight: "bold",
                     }}
                   >
+                    {cartItems?.length || 0}
+                  </span>
+                </Link>
+              )}
+
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                {user ? (
+                  <>
+                    <img
+                      src={user.photoURL || "https://i.ibb.co/2FsfXqM/default-user.png"}
+                      alt="profile"
+                      style={{ width: 32, height: 32, borderRadius: "50%" }}
+                    />
                     {isAdmin && (
-                      <Link
-                        to="/dashboard/adminhome"
-                        style={{
-                          display: "block",
-                          px: 2,
-                          py: 1,
-                          textDecoration: "none",
-                          color: "inherit",
-                        }}
-                        onClick={() => setShowDropdown(false)}
-                      >
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                          <LuLayoutDashboard />
-                          Dashboard
-                        </Box>
+                      <Link to="/dashboard/adminhome" style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                        <LuLayoutDashboard />
+                        <span>DASHBOARD</span>
                       </Link>
                     )}
                     <Button
                       onClick={logOut}
-                      sx={{
-                        width: "100%",
-                        justifyContent: "flex-start",
-                        px: 2,
-                        textTransform: "none",
-                      }}
+                      sx={{ color: "#000", textTransform: "none", fontWeight: 600 }}
                     >
                       <MdLogout />
-                      Logout
+                      LogOut
                     </Button>
-                  </Box>
+                  </>
+                ) : (
+                  <Link
+                    to="/auth/login"
+                    style={{
+                      padding: "6px 16px",
+                      borderRadius: 6,
+                      fontWeight: 600,
+                      fontSize: 14,
+                      color: "white",
+                      backgroundImage: "linear-gradient(to right, #11B808, #77B254)",
+                      textDecoration: "none",
+                    }}
+                  >
+                    Login
+                  </Link>
                 )}
-              </div>
-            )}
-          </Toolbar>
-        </AppBar>
-      </Box>
+              </Box>
+            </Box>
+          )}
 
-      {/* Spacer */}
+          {/* Mobile Profile Dropdown */}
+          {isTabletOrMobile && user && (
+            <div className="relative" ref={profileRef}>
+              <img
+                src={user.photoURL || "https://i.ibb.co/2FsfXqM/default-user.png"}
+                alt="profile"
+                onClick={() => setShowDropdown(!showDropdown)}
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                }}
+              />
+              {showDropdown && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    right: 0,
+                    mt: 1,
+                    width: 140,
+                    bgcolor: "background.paper",
+                    boxShadow: 3,
+                    borderRadius: 1,
+                    py: 1,
+                    zIndex: 1300,
+                  }}
+                >
+                  {isAdmin && (
+                    <Link
+                      to="/dashboard/adminhome"
+                      style={{ display: "block", padding: "8px 16px", textDecoration: "none", color: "inherit" }}
+                      onClick={() => setShowDropdown(false)}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <LuLayoutDashboard />
+                        Dashboard
+                      </Box>
+                    </Link>
+                  )}
+                  <Button
+                    onClick={logOut}
+                    sx={{
+                      width: "100%",
+                      justifyContent: "flex-start",
+                      px: 2,
+                      textTransform: "none",
+                    }}
+                  >
+                    <MdLogout />
+                    Logout
+                  </Button>
+                </Box>
+              )}
+            </div>
+          )}
+        </Toolbar>
+      </AppBar>
+
+      {/* Offset for fixed header */}
       <Box sx={{ height: { xs: 56 + 36, sm: 64 + 36 } }} />
 
-      {/* Drawer for tablet and below */}
+      {/* Drawer for mobile */}
       <Box component="nav">
         <Drawer
           variant="temporary"
@@ -407,7 +342,10 @@ export default function Navbar() {
           ModalProps={{ keepMounted: true }}
           sx={{
             display: { xs: "block", md: "none" },
-            "& .MuiDrawer-paper": { boxSizing: "border-box", width: 240 },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: 240,
+            },
           }}
         >
           {drawer}
