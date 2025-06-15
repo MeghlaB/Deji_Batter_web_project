@@ -140,6 +140,12 @@ const Footer = () => {
                 100% Singapore-Based Operations
               </Typography>
             </Grid>
+            <Grid item xs={12} md={4} sx={{ textAlign: { xs: 'center', md: 'right' } }}>
+              <Typography variant="body2">
+                <BusinessIcon sx={{ fontSize: 16, verticalAlign: 'middle', mr: 0.5 }} />
+               <span>📍 123 Battery Rd, Singapore</span>
+              </Typography>
+            </Grid>
           </Grid>
         </Box>
 

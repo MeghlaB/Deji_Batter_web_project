@@ -60,7 +60,7 @@ const AddProductForm = () => {
         imageURLs: imageURLs,
       };
 
-      const res = await axios.post("http://localhost:5000/add-products", productData);
+      const res = await axios.post("https://deji-server-developers-projects-08e2b070.vercel.app/add-products", productData);
 
       if (res.data.insertedId) {
         reset();
