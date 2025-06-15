@@ -15,7 +15,12 @@ import {
   Button,
   Modal,
   Grid,
+  Dialog,
+  DialogContent,
+  IconButton,
+  Zoom,
 } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 import Companyinfo from "../components/Companyinf/Companyinfo";
 import GlobalNetworkSection from "../components/GlobalNetwork/GlobalNetwork";
 import FAQSection from "./Question";
@@ -24,14 +29,22 @@ import { Play } from "lucide-react";
 import CertificateSection from "../components/CertificateSection/CertificateSection";
 import ExhibitionSection from "../components/Exhibition/Exhibition";
 import ContactSection from "../components/Factory_Address/Factory_address";
+
 const ProductDetails = () => {
   const { id } = useParams();
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(0);
   const [activeSection, setActiveSection] = useState("details");
   const [openVideoModal, setOpenVideoModal] = useState(false);
+  const [zoomOpen, setZoomOpen] = useState(false);
+  const [zoomImage, setZoomImage] = useState("");
 
   const handleOpenVideoModal = () => setOpenVideoModal(true);
   const handleCloseVideoModal = () => setOpenVideoModal(false);
+  const handleZoomOpen = (img) => {
+    setZoomImage(img);
+    setZoomOpen(true);
+  };
+  const handleZoomClose = () => setZoomOpen(false);
 
   const {
     isError,
@@ -67,6 +80,13 @@ const ProductDetails = () => {
       ? [product.imageURL]
       : [];
 
+  // Enhanced warranty display
+  const warrantyText = product.warranty 
+    ? product.warranty.includes("Year") || product.warranty.includes("year")
+      ? product.warranty
+      : `${product.warranty} Warranty`
+    : "1 Year Manufacturer Warranty";
+
   const schemaData = {
     "@context": "https://schema.org/",
     "@type": "Product",
@@ -83,14 +103,19 @@ const ProductDetails = () => {
       priceCurrency: "SGD",
       price: product.price,
       availability: "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+      warranty: {
+        "@type": "WarrantyPromise",
+        duration: warrantyText,
+      }
     },
   };
 
   return (
-    <div>
+    <div className="mt-[-30px]">
       <div>
         <Link to={"/products"}>
-          <div className="border w-[160px]  rounded-2xl text-center mx-5 mt-8">
+          <div className="border w-[160px] rounded-2xl text-center mx-5 mt-8 hover:bg-gray-100 transition-colors">
             ← Back to Products
           </div>
         </Link>
@@ -104,34 +129,72 @@ const ProductDetails = () => {
         {/* Image & Info Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <img
-              src={selectedImage || images[0]}
-              alt={product.title}
-              className="w-full rounded-lg mb-4 object-contain max-h-[400px] transition-opacity duration-500 ease-in-out"
-            />
+            <Box 
+              onClick={() => handleZoomOpen(images[selectedImage])}
+              sx={{ cursor: 'zoom-in' }}
+            >
+              <img
+                src={images[selectedImage]}
+                alt={product.title}
+                className="w-full rounded-lg mb-4 object-contain max-h-[400px] transition-opacity duration-500 ease-in-out"
+              />
+            </Box>
 
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-wrap">
               {images.slice(0, 4).map((img, i) => (
-                <img
+                <Box
                   key={i}
-                  src={img}
-                  alt={`thumb-${i}`}
-                  onClick={() => setSelectedImage(img)}
-                  className={`w-20 h-20 object-cover rounded-md cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105 border ${
-                    selectedImage === img
-                      ? "border-blue-600 border-2"
-                      : "border-gray-300"
-                  }`}
-                />
+                  onClick={() => setSelectedImage(i)}
+                  sx={{
+                    position: 'relative',
+                    cursor: 'pointer',
+                    border: selectedImage === i ? '2px solid #11B808' : '1px solid #ddd',
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                    width: '80px',
+                    height: '80px',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'scale(1.05)',
+                      borderColor: '#11B808'
+                    }
+                  }}
+                >
+                  <img
+                    src={img}
+                    alt={`thumb-${i}`}
+                    className="w-full h-full object-cover"
+                  />
+                  {images.length > 4 && i === 3 && (
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontSize: '12px'
+                      }}
+                    >
+                      +{images.length - 4}
+                    </Box>
+                  )}
+                </Box>
               ))}
             </div>
           </div>
 
           <div>
-            <Typography variant="h5" fontWeight="bold" mb={2}>
+            <Typography variant="h4" fontWeight="bold" mb={2}>
               {product.title}
             </Typography>
             <Typography
+              variant="subtitle1"
               sx={{
                 color: "green",
                 fontWeight: 500,
@@ -141,434 +204,77 @@ const ProductDetails = () => {
             >
               {product.description}
             </Typography>
+            
+            {/* Key Specs Highlight */}
             <Box
-              sx={{ backgroundColor: "#f9f9f9", borderRadius: 2, p: 2, mb: 2 }}
+              sx={{ 
+                backgroundColor: "#f5f5f5", 
+                borderRadius: 2, 
+                p: 2, 
+                mb: 2,
+                borderLeft: '4px solid #11B808'
+              }}
             >
-              {product.model && (
-                <>
-                  <Typography>
-                    <strong>Brand:</strong> {product.brand}
-                  </Typography>
-                  <Typography>
-                    <strong>Model:</strong> {product.model}
-                  </Typography>
-                  <Typography>
-                    <strong>Battery Type:</strong> {product.batteryType}
-                  </Typography>
-                  <Typography>
-                    <strong>Capacity:</strong> {product.capacity}
-                  </Typography>
-                  <Typography>
-                    <strong>Voltage:</strong> {product.voltage}
-                  </Typography>
-                  <Typography>
-                    <strong>Limited Voltage:</strong> {product.limitedVoltage}
-                  </Typography>
-                  <Typography>
-                    <strong>Charging Time:</strong> {product.chargingTime}
-                  </Typography>
-                  <Typography>
-                    <strong>Cycle Time:</strong> {product.cycleTime}
-                  </Typography>
-                  <Typography>
-                    <strong>Stock:</strong> {product.stock}
-                  </Typography>
-                  <Typography>
-                    <strong>Battery Grade:</strong> {product.batteryGrade}
-                  </Typography>
-                  <Typography>
-                    <strong>Certification:</strong> {product.certification}
-                  </Typography>
-                </>
-              )}
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Typography><strong>Model:</strong> {product.model || '-'}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography><strong>Brand:</strong> {product.brand || '-'}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography><strong>Capacity:</strong> {product.capacity || '-'}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography><strong>Voltage:</strong> {product.voltage || '-'}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography><strong>Warranty:</strong> {warrantyText}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography><strong>Stock:</strong> {product.stock || '-'}</Typography>
+                </Grid>
+              </Grid>
             </Box>
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <Link href="#" underline="none">
-                <button className="bg-green-700 text-white px-2 py-2 rounded-2xl border-none">
-                  Inquiry now
-                </button>
-              </Link>
-
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 3 }}>
               <Button
-                onClick={handleOpenVideoModal}
+                variant="contained"
                 sx={{
-                  color: "#fff",
-                  backgroundColor: "green",
-                  "&:hover": { backgroundColor: "darkgreen" },
-                  minWidth: "40px",
-                  padding: "6px",
-                  borderRadius: "4px",
+                  backgroundColor: "#11B808",
+                  '&:hover': { backgroundColor: "#0e9e06" },
+                  px: 4,
+                  py: 1.5,
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  fontSize: '16px'
                 }}
               >
-                <Play />
+                Inquiry Now
               </Button>
+
+              {product.youtubeDemoVideoId && (
+                <Button
+                  onClick={handleOpenVideoModal}
+                  startIcon={<PlayCircleOutlineIcon />}
+                  sx={{
+                    color: "#11B808",
+                    border: "1px solid #11B808",
+                    '&:hover': { backgroundColor: "rgba(17, 184, 8, 0.1)" },
+                    px: 3,
+                    py: 1.5,
+                    borderRadius: '8px',
+                    textTransform: 'none'
+                  }}
+                >
+                  Watch Demo
+                </Button>
+              )}
             </Box>
           </div>
         </div>
 
-        {/* YouTube Demo */}
-        {product.youtubeDemoVideoId && (
-          <Box mt={4}>
-            <div className="aspect-w-16 aspect-h-9">
-              <iframe
-                src={`https://www.youtube.com/watch?v=Lp7sZnLy62c`}
-                title="Demo Video"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-60 md:h-96 rounded-lg"
-              ></iframe>
-            </div>
-          </Box>
-        )}
-
-        {/* Toggle Buttons */}
-        <Box mt={6} mb={2} display="flex" gap={2}>
-          <button
-            onClick={() => setActiveSection("details")}
-            className={`px-4 py-2 rounded text-sm transition ${
-              activeSection === "details"
-                ? "bg-green-600 text-white"
-                : "bg-gray-200 text-black"
-            }`}
-          >
-            Project Details
-          </button>
-          <button
-            onClick={() => setActiveSection("contact")}
-            className={`px-4 py-2 rounded text-sm transition ${
-              activeSection === "contact"
-                ? "bg-green-600 text-white"
-                : "bg-gray-200 text-black"
-            }`}
-          >
-            Contact Us
-          </button>
-        </Box>
-
-        {/* Product Details Section */}
-        {activeSection === "details" && (
-          <Box className="max-w-7xl mx-auto mt-10 px-4">
-            {/* ✅ Image Gallery */}
-            {images.length > 0 && (
-              <Box className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                {images.slice(0, 4).map((img, index) => (
-                  <Box key={index} className="w-full">
-                    <img
-                      src={img}
-                      alt={`Product ${index + 1}`}
-                      className="w-full h-64 object-cover rounded-md shadow hover:scale-105 transition-transform duration-300"
-                    />
-                  </Box>
-                ))}
-              </Box>
-            )}
-
-            {/* ✅ Specs & Warranty Table */}
-            <Paper elevation={2} className="p-4">
-              <Typography variant="h6" className="text-center font-bold mb-4">
-                100% Brand NEW & Unused!
-              </Typography>
-
-              <Table size="small">
-                <TableBody>
-                  {/* Specs Title */}
-                  <TableRow>
-                    <TableCell colSpan={2} className="text-xl font-bold">
-                      Specifications
-                    </TableCell>
-                  </TableRow>
-
-                  {/* Specs Rows */}
-                  <TableRow>
-                    <TableCell>Battery Type</TableCell>
-                    <TableCell>{product?.batteryType || "-"}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Battery Cell Grade</TableCell>
-                    <TableCell>{product?.batteryGrade || "-"}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Capacity</TableCell>
-                    <TableCell>{product?.capacity || "-"}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Voltage</TableCell>
-                    <TableCell>{product?.voltage || "-"}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Limited Voltage</TableCell>
-                    <TableCell>{product?.limitedVoltage || "-"}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>PCM Board</TableCell>
-                    <TableCell>Self Made & Designable</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Color</TableCell>
-                    <TableCell>Blue</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Cycle Time</TableCell>
-                    <TableCell>{product?.cycleTime || "-"}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Charging Time</TableCell>
-                    <TableCell>{product?.chargingTime || "-"}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Standby Time</TableCell>
-                    <TableCell>{product?.standbyTime || "-"}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Certification</TableCell>
-                    <TableCell>{product?.certification || "-"}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Safety</TableCell>
-                    <TableCell>Dual IC’s protection</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Material</TableCell>
-                    <TableCell>{product?.material || "-"}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Compatible Models</TableCell>
-                    <TableCell>{product?.model || "-"}</TableCell>
-                  </TableRow>
-
-                  {/* ✅ Warranty Section */}
-                  <TableRow>
-                    <TableCell colSpan={2} className="text-xl font-bold">
-                      Warranty
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Warranty</TableCell>
-                    <TableCell>
-                      {product?.warranty || "1 Year Manufacturer Warranty"}
-                    </TableCell>
-                  </TableRow>
-
-                  {/* Safety */}
-                  <TableRow>
-                    <TableCell colSpan={2} className="text-xl font-bold">
-                      Safety
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Safety</TableCell>
-                    <TableCell>{product?.safety || "-"}</TableCell>
-                  </TableRow>
-
-                  {/* Terms & Conditions */}
-                  <TableRow>
-                    <TableCell colSpan={2} className="text-xl font-bold">
-                      Terms & Condition
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>MOQ</TableCell>
-                    <TableCell>
-                      {product?.moq ? `${product.moq} pcs` : "-"}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Payment Terms</TableCell>
-                    <TableCell>{product?.paymentTerms || "-"}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Port</TableCell>
-                    <TableCell>{product?.port || "-"}</TableCell>
-                  </TableRow>
-
-                  {/* OEM */}
-                  <TableRow>
-                    <TableCell colSpan={2} className="text-xl font-bold">
-                      OEM
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>OEM Order</TableCell>
-                    <TableCell>OEM order is warmly welcomed.</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Trial Order</TableCell>
-                    <TableCell>Trial order is also accepted.</TableCell>
-                  </TableRow>
-
-                  {/* Working Temp */}
-                  <TableRow>
-                    <TableCell colSpan={2} className="text-xl font-bold">
-                      Working Temp
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Working Temp</TableCell>
-                    <TableCell>{product?.workingTemp || "-"}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Paper>
-
-            {/* ✅ Other Sections */}
-            <Companyinfo />
-            <GlobalNetworkSection />
-            <CertificateSection />
-            <ExhibitionSection />
-            <FAQSection />
-          </Box>
-        )}
-
-        {/* Contact Section */}
-
-        {activeSection === "contact" && (
-          <Box mt={6} maxWidth={900} mx="auto" px={2}>
-            {/* 📞 Customer Support Summary (Optional, can remove if redundant) */}
-            <Box className="mb-6 bg-gray-100 p-4 rounded">
-              <Typography variant="subtitle1" fontWeight="bold">
-                📞 Customer Support (Singapore)
-              </Typography>
-              <Typography variant="body2">
-                - Hotline: +65 6123 4567
-                <br />- Email:{" "}
-                <a
-                  href="mailto:support@dejibattery.sg"
-                  style={{ color: "#11B808" }}
-                >
-                  support@dejibattery.sg
-                </a>
-                <br />- Hours: Mon–Fri, 9 AM – 6 PM (SGT)
-              </Typography>
-            </Box>
-
-            {/* Contact Info + Factory Addresses Section */}
-            <Box
-              mt={6}
-              display="flex"
-              flexDirection={{ xs: "column", md: "row" }}
-              gap={5}
-            >
-              {/* Left Column - Contact Info */}
-              <Box
-                flex={1}
-                p={3}
-                sx={{ backgroundColor: "#fff", borderRadius: 3, boxShadow: 2 }}
-              >
-                <Typography variant="h6" gutterBottom>
-                  Contact Information
-                </Typography>
-                <Typography variant="body1" mb={1}>
-                  <strong>Phone:</strong> +65 1234 5678
-                </Typography>
-                <Typography variant="body1" mb={1}>
-                  <strong>Mobile:</strong> +65 1234 5678
-                </Typography>
-                <Typography variant="body1" mb={1}>
-                  <strong>WhatsApp:</strong> +65 1234 5678
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Email:</strong>{" "}
-                  <a
-                    href="mailto:support@dejibattery.sg"
-                    style={{ color: "#11B808" }}
-                  >
-                    support@dejibattery.sg
-                  </a>
-                </Typography>
-              </Box>
-
-              {/* Right Column - Factory Addresses */}
-              <Box
-                flex={1}
-                p={3}
-                sx={{ backgroundColor: "#fff", borderRadius: 3, boxShadow: 2 }}
-              >
-                <Typography variant="h6" gutterBottom>
-                  Factory Addresses
-                </Typography>
-
-                <Box mb={2}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Shenzhen Factory:
-                  </Typography>
-                  <Typography variant="body2">
-                    401, D Building, Jinchangda Industrial Park, ShangWei
-                    Industrial Road, Zhangkengjing Community, Guanlan Street,
-                    Longhua District, Shenzhen
-                  </Typography>
-                </Box>
-
-                <Box>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Dongguan Factory:
-                  </Typography>
-                  <Typography variant="body2">
-                    A003, Floor 4, Golden Phoenix Park Road, Fenggang Town,
-                    Dongguan
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-
-            {/* Contact Form Section */}
-            <Paper
-              elevation={4}
-              sx={{ m: 5, p: 8, borderRadius: 3, backgroundColor: "#fafafa" }}
-            >
-              <Typography variant="h5" fontWeight="bold" gutterBottom>
-                Contact Us About This Product
-              </Typography>
-
-              <form>
-                <TextField
-                  fullWidth
-                  label="Your Name"
-                  margin="normal"
-                  required
-                  variant="outlined"
-                />
-                <TextField
-                  fullWidth
-                  label="Email Address"
-                  type="email"
-                  margin="normal"
-                  required
-                  variant="outlined"
-                />
-                <TextField
-                  fullWidth
-                  label="Message"
-                  multiline
-                  rows={4}
-                  margin="normal"
-                  required
-                  variant="outlined"
-                />
-                <Box mt={3} textAlign="right">
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    size="large"
-                    sx={{
-                      textTransform: "none",
-                      borderRadius: 2,
-                      px: 4,
-                      backgroundColor: "#11B808",
-                      "&:hover": {
-                        backgroundColor: "#0e9e06",
-                      },
-                    }}
-                  >
-                    Send
-                  </Button>
-                </Box>
-              </form>
-            </Paper>
-          </Box>
-        )}
-
+        {/* YouTube Demo Modal */}
         <Modal
           open={openVideoModal}
           onClose={handleCloseVideoModal}
@@ -585,25 +291,496 @@ const ProductDetails = () => {
           <Box
             sx={{
               position: "relative",
-              width: { xs: "90%", sm: 600 },
+              width: { xs: "90%", sm: 800 },
+              height: { xs: 300, sm: 450 },
               bgcolor: "background.paper",
               boxShadow: 24,
               borderRadius: 2,
               outline: "none",
             }}
           >
+            <IconButton
+              aria-label="close"
+              onClick={handleCloseVideoModal}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+                zIndex: 1
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
             <iframe
-              width="560"
-              height="315"
-              src="https://www.youtube.com/embed/Lp7sZnLy62c?si=V0b04Rsj0SC9DBYf"
-              title="YouTube video player"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen
+              width="100%"
+              height="100%"
+              src={`https://www.youtube.com/embed/${product.youtubeDemoVideoId}?autoplay=1`}
+              title="Product Demo Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              style={{ borderRadius: '8px' }}
             ></iframe>
           </Box>
         </Modal>
+
+        {/* Image Zoom Modal */}
+        <Dialog
+          open={zoomOpen}
+          onClose={handleZoomClose}
+          maxWidth="md"
+          TransitionComponent={Zoom}
+        >
+          <DialogContent sx={{ p: 0 }}>
+            <IconButton
+              aria-label="close"
+              onClick={handleZoomClose}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+                zIndex: 1
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <img
+              src={zoomImage}
+              alt="Zoomed product"
+              style={{ width: '100%', height: 'auto', maxHeight: '80vh', objectFit: 'contain' }}
+            />
+          </DialogContent>
+        </Dialog>
+
+        {/* Toggle Buttons */}
+        <Box mt={6} mb={2} display="flex" gap={2}>
+          <Button
+            onClick={() => setActiveSection("details")}
+            variant={activeSection === "details" ? "contained" : "outlined"}
+            sx={{
+              backgroundColor: activeSection === "details" ? "#11B808" : "transparent",
+              color: activeSection === "details" ? "#fff" : "#11B808",
+              borderColor: "#11B808",
+              '&:hover': {
+                backgroundColor: activeSection === "details" ? "#0e9e06" : "rgba(17, 184, 8, 0.1)",
+              },
+              px: 3,
+              py: 1,
+              borderRadius: '8px',
+              textTransform: 'none'
+            }}
+          >
+            Product Details
+          </Button>
+          <Button
+            onClick={() => setActiveSection("contact")}
+            variant={activeSection === "contact" ? "contained" : "outlined"}
+            sx={{
+              backgroundColor: activeSection === "contact" ? "#11B808" : "transparent",
+              color: activeSection === "contact" ? "#fff" : "#11B808",
+              borderColor: "#11B808",
+              '&:hover': {
+                backgroundColor: activeSection === "contact" ? "#0e9e06" : "rgba(17, 184, 8, 0.1)",
+              },
+              px: 3,
+              py: 1,
+              borderRadius: '8px',
+              textTransform: 'none'
+            }}
+          >
+            Contact Us
+          </Button>
+        </Box>
+
+        {/* Product Details Section */}
+        {activeSection === "details" && (
+          <Box className="max-w-7xl mx-auto mt-10 px-4">
+            {/* Full Image Gallery */}
+            {images.length > 0 && (
+              <Box sx={{ mb: 6 }}>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>
+                  Product Gallery
+                </Typography>
+                <Box className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {images.map((img, index) => (
+                    <Box 
+                      key={index} 
+                      onClick={() => handleZoomOpen(img)}
+                      sx={{
+                        cursor: 'zoom-in',
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                        boxShadow: 1,
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          boxShadow: 3,
+                          transform: 'translateY(-4px)'
+                        }
+                      }}
+                    >
+                      <img
+                        src={img}
+                        alt={`Product ${index + 1}`}
+                        className="w-full h-64 object-cover"
+                      />
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+            )}
+
+            {/* Enhanced Specs & Warranty Table */}
+            <Paper elevation={2} sx={{ p: 3, mb: 4, borderRadius: '12px' }}>
+              <Typography variant="h5" sx={{ textAlign: 'center', fontWeight: 'bold', mb: 3, color: '#11B808' }}>
+                100% Brand NEW & Unused!
+              </Typography>
+
+              <Table size="small" sx={{ '& .MuiTableCell-root': { py: 1.5 } }}>
+                <TableBody>
+                  {/* Specs Title */}
+                  <TableRow>
+                    <TableCell colSpan={2} sx={{ fontSize: '18px', fontWeight: 'bold', pt: 0, borderBottom: '2px solid #11B808' }}>
+                      Technical Specifications
+                    </TableCell>
+                  </TableRow>
+
+                  {/* Battery Specifications */}
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold', width: '40%' }}>Battery Type</TableCell>
+                    <TableCell>{product?.batteryType || "Lithium-ion"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Battery Cell Grade</TableCell>
+                    <TableCell>{product?.batteryGrade || "A Grade"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Nominal Capacity</TableCell>
+                    <TableCell>{product?.capacity || "-"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Nominal Voltage</TableCell>
+                    <TableCell>{product?.voltage || "-"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Limited Voltage</TableCell>
+                    <TableCell>{product?.limitedVoltage || "-"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Internal Resistance</TableCell>
+                    <TableCell>{product?.internalResistance || "≤100mΩ"}</TableCell>
+                  </TableRow>
+
+                  {/* Performance */}
+                  <TableRow>
+                    <TableCell colSpan={2} sx={{ fontSize: '18px', fontWeight: 'bold', pt: 3, borderBottom: '2px solid #11B808' }}>
+                      Performance
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Cycle Life</TableCell>
+                    <TableCell>{product?.cycleTime || "≥500 cycles"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Charging Time</TableCell>
+                    <TableCell>{product?.chargingTime || "2-3 hours"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Standby Time</TableCell>
+                    <TableCell>{product?.standbyTime || "Up to 30 days"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Operating Temperature</TableCell>
+                    <TableCell>{product?.workingTemp || "-20°C to 60°C"}</TableCell>
+                  </TableRow>
+
+                  {/* Enhanced Warranty Section */}
+                  <TableRow>
+                    <TableCell colSpan={2} sx={{ fontSize: '18px', fontWeight: 'bold', pt: 3, borderBottom: '2px solid #11B808' }}>
+                      Warranty & Support
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Warranty Period</TableCell>
+                    <TableCell>{warrantyText}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Warranty Coverage</TableCell>
+                    <TableCell>
+                      Covers manufacturing defects under normal use. Does not cover physical damage, water damage, or unauthorized modifications.
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Support</TableCell>
+                    <TableCell>
+                      24/7 email support. Phone support available Mon-Fri 9AM-6PM SGT.
+                    </TableCell>
+                  </TableRow>
+
+                  {/* Safety & Certifications */}
+                  <TableRow>
+                    <TableCell colSpan={2} sx={{ fontSize: '18px', fontWeight: 'bold', pt: 3, borderBottom: '2px solid #11B808' }}>
+                      Safety & Certifications
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Certification</TableCell>
+                    <TableCell>{product?.certification || "CE, RoHS, UL Certified"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Safety Features</TableCell>
+                    <TableCell>
+                      Overcharge protection, over-discharge protection, short circuit protection, temperature protection
+                    </TableCell>
+                  </TableRow>
+
+                  {/* Ordering Information */}
+                  <TableRow>
+                    <TableCell colSpan={2} sx={{ fontSize: '18px', fontWeight: 'bold', pt: 3, borderBottom: '2px solid #11B808' }}>
+                      Ordering Information
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>MOQ</TableCell>
+                    <TableCell>
+                      {product?.moq ? `${product.moq} pcs` : "50 pcs"}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Lead Time</TableCell>
+                    <TableCell>3-5 business days for ready stock</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Payment Terms</TableCell>
+                    <TableCell>{product?.paymentTerms || "T/T, PayPal, Credit Card"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Shipping</TableCell>
+                    <TableCell>DHL/FedEx Express (2-3 days to Singapore)</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Paper>
+
+            {/* Company Sections */}
+            <Companyinfo />
+            <GlobalNetworkSection />
+            <CertificateSection />
+            <ExhibitionSection />
+            <FAQSection />
+          </Box>
+        )}
+
+        {/* Contact Section */}
+        {activeSection === "contact" && (
+          <Box mt={6} maxWidth={900} mx="auto" px={2}>
+            {/* Contact Info + Factory Addresses Section */}
+            <Box
+              mt={6}
+              display="flex"
+              flexDirection={{ xs: "column", md: "row" }}
+              gap={5}
+            >
+              {/* Left Column - Contact Info */}
+              <Box
+                flex={1}
+                p={3}
+                sx={{ 
+                  backgroundColor: "#fff", 
+                  borderRadius: 3, 
+                  boxShadow: 2,
+                  borderTop: '4px solid #11B808'
+                }}
+              >
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
+                  Singapore Office
+                </Typography>
+                <Typography variant="body1" mb={1}>
+                  <strong>Address:</strong> 123 Battery Street, #04-56, Singapore 123456
+                </Typography>
+                <Typography variant="body1" mb={1}>
+                  <strong>Phone:</strong> +65 6123 4567
+                </Typography>
+                <Typography variant="body1" mb={1}>
+                  <strong>WhatsApp:</strong> +65 9123 4567
+                </Typography>
+                <Typography variant="body1" mb={1}>
+                  <strong>Email:</strong>{" "}
+                  <a
+                    href="mailto:support@dejibattery.sg"
+                    style={{ color: "#11B808" }}
+                  >
+                    support@dejibattery.sg
+                  </a>
+                </Typography>
+                <Typography variant="body1" mb={1}>
+                  <strong>Hours:</strong> Mon-Fri: 9AM-6PM SGT
+                </Typography>
+              </Box>
+
+              {/* Right Column - Factory Addresses */}
+              <Box
+                flex={1}
+                p={3}
+                sx={{ 
+                  backgroundColor: "#fff", 
+                  borderRadius: 3, 
+                  boxShadow: 2,
+                  borderTop: '4px solid #11B808'
+                }}
+              >
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
+                  Factory Addresses
+                </Typography>
+
+                <Box mb={3}>
+                  <Typography variant="subtitle1" fontWeight="bold" color="#11B808">
+                    Shenzhen Factory:
+                  </Typography>
+                  <Typography variant="body2">
+                    401, D Building, Jinchangda Industrial Park, ShangWei
+                    Industrial Road, Zhangkengjing Community, Guanlan Street,
+                    Longhua District, Shenzhen
+                  </Typography>
+                  <Typography variant="body2" mt={1}>
+                    <strong>Phone:</strong> +86 755 1234 5678
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography variant="subtitle1" fontWeight="bold" color="#11B808">
+                    Dongguan Factory:
+                  </Typography>
+                  <Typography variant="body2">
+                    A003, Floor 4, Golden Phoenix Park Road, Fenggang Town,
+                    Dongguan
+                  </Typography>
+                  <Typography variant="body2" mt={1}>
+                    <strong>Phone:</strong> +86 769 1234 5678
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+
+            {/* Enhanced Contact Form */}
+            <Paper
+              elevation={4}
+              sx={{ 
+                mt: 5, 
+                p: 4, 
+                borderRadius: 3, 
+                backgroundColor: "#fafafa",
+                borderTop: '4px solid #11B808'
+              }}
+            >
+              <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: '#11B808' }}>
+                Product Inquiry Form
+              </Typography>
+              <Typography variant="body2" color="text.secondary" mb={3}>
+                Fill out the form below and our team will contact you within 24 hours.
+              </Typography>
+
+              <form>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label="Your Name"
+                      margin="normal"
+                      required
+                      variant="outlined"
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label="Company Name"
+                      margin="normal"
+                      variant="outlined"
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label="Email Address"
+                      type="email"
+                      margin="normal"
+                      required
+                      variant="outlined"
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label="Phone Number"
+                      margin="normal"
+                      required
+                      variant="outlined"
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Product Model"
+                      margin="normal"
+                      value={product.model || ''}
+                      variant="outlined"
+                      size="small"
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Quantity Needed"
+                      margin="normal"
+                      variant="outlined"
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Your Message"
+                      multiline
+                      rows={4}
+                      margin="normal"
+                      required
+                      variant="outlined"
+                      size="small"
+                      placeholder="Please include any specific requirements or questions about this product..."
+                    />
+                  </Grid>
+                </Grid>
+                <Box mt={3} textAlign="right">
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    size="large"
+                    sx={{
+                      textTransform: "none",
+                      borderRadius: 2,
+                      px: 4,
+                      backgroundColor: "#11B808",
+                      "&:hover": {
+                        backgroundColor: "#0e9e06",
+                      },
+                    }}
+                  >
+                    Submit Inquiry
+                  </Button>
+                </Box>
+              </form>
+            </Paper>
+          </Box>
+        )}
       </Box>
     </div>
   );

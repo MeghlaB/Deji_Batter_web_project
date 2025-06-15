@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -6,20 +6,78 @@ import {
   Typography,
   Button,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-// USD ➜ SGD conversion (1 USD = 1.35 SGD)
-const convertToSGD = (usd) => (usd * 1.35).toFixed(2);
-
 const ProductCard = ({ product, handleAddToCart }) => {
   const navigate = useNavigate();
+  const [sgdPrice, setSgdPrice] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch live exchange rate with better error handling and fallbacks
+  useEffect(() => {
+    const fetchExchangeRate = async () => {
+      try {
+        // Try primary API first
+        const primaryResponse = await fetch(
+          "https://api.exchangerate-api.com/v4/latest/USD"
+        );
+        
+        if (primaryResponse.ok) {
+          const data = await primaryResponse.json();
+          const rate = data.rates.SGD;
+          if (rate) {
+            setSgdPrice(convertToSGD(product.price, rate));
+            return;
+          }
+        }
+        
+        // Fallback to secondary API if primary fails
+        const secondaryResponse = await fetch(
+          "https://api.frankfurter.app/latest?from=USD&to=SGD"
+        );
+        
+        if (secondaryResponse.ok) {
+          const data = await secondaryResponse.json();
+          const rate = data.rates.SGD;
+          if (rate) {
+            setSgdPrice(convertToSGD(product.price, rate));
+            return;
+          }
+        }
+        
+        // Final fallback to static rate
+        throw new Error("Using fallback exchange rate");
+        
+      } catch (err) {
+        console.warn(err.message);
+        // Static fallback rate (updated periodically)
+        setSgdPrice(convertToSGD(product.price, 1.35));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Helper function to convert and format SGD price
+    const convertToSGD = (usdPrice, rate) => {
+      return (usdPrice * rate).toLocaleString('en-SG', {
+        style: 'currency',
+        currency: 'SGD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    };
+
+    fetchExchangeRate();
+  }, [product.price]);
 
   return (
     <Card
       sx={{
         maxWidth: 250,
-        height: 450,
+        height: 500,
         m: 2,
         borderRadius: 3,
         display: "flex",
@@ -66,18 +124,26 @@ const ProductCard = ({ product, handleAddToCart }) => {
           {product.model}
         </Typography>
 
-        <Typography
-          sx={{
-            textAlign: "center",
-            color: "#11B808",
-            fontWeight: "bold",
-            fontSize: "16px",
-           
-          }}
-        >
-         Price: S${convertToSGD(product.price)}
-
-        </Typography>
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", height: 40 }}>
+            <CircularProgress size={20} />
+          </Box>
+        ) : (
+          <Box sx={{ textAlign: "center" }}>
+            <Typography
+              sx={{
+                color: "#11B808",
+                fontWeight: "bold",
+                fontSize: "16px",
+              }}
+            >
+              {sgdPrice || "S$ --"}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              (Includes GST)
+            </Typography>
+          </Box>
+        )}
 
         {/* Spacer to push button to bottom */}
         <Box sx={{ flexGrow: 1 }} />
@@ -93,8 +159,9 @@ const ProductCard = ({ product, handleAddToCart }) => {
             },
           }}
           onClick={() => handleAddToCart(product)}
+          disabled={loading}
         >
-          Add to Cart
+          {loading ? "Loading..." : "Add to Cart"}
         </Button>
       </CardContent>
     </Card>

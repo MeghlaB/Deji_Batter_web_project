@@ -176,7 +176,7 @@ export default function Navbar() {
             color: "#ffff",
           }}
         >
-          Same-Day Singapore Delivery | Order before 3PM
+         "🚚 Same-Day Singapore Delivery | Order Before 3PM for Today's Dispatch | Free Delivery for Orders <span></span>$100
         </Box>
 
         <AppBar

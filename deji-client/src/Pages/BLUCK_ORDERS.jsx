@@ -53,7 +53,7 @@ const BulkOrderForm = () => {
         <title>BLUK ODERs | Deji Battery</title>
         <meta name="description" content="Get in touch with us for any inquiries about our batteries, bulk orders, or technical support." />
       </Helmet>
-<div className="max-w-6xl mx-auto mt-10 p-6 bg-white rounded shadow">
+<div className="max-w-6xl mx-auto mt-[-20px] p-6 bg-white rounded shadow">
       <h2 className="text-2xl font-bold mb-6">Bulk Order Form - From Server:</h2>
 
       <div className="grid grid-cols-2 gap-4 font-semibold border-b pb-2">
