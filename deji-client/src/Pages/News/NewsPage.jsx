@@ -9,6 +9,7 @@ import {
   CardContent,
   CardDescription,
 } from "../../components/ui/card";
+import { Helmet } from "react-helmet";
 
 const NewsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,7 +32,12 @@ const NewsPage = () => {
 
   isLoading && console.log("Loading...");
   return (
-    <div className="container mx-auto px-2 my-10">
+    <>
+     <Helmet>
+        <title>NEWS | Deji Battery</title>
+        <meta name="description" content="Get in touch with us for any inquiries about our batteries, bulk orders, or technical support." />
+      </Helmet>
+ <div className="container mx-auto px-2 my-10">
       {/* Search and Filter */}
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-800">News Articles</h1>
@@ -97,6 +103,8 @@ const NewsPage = () => {
         </div>
       )}
     </div>
+    </>
+   
   );
 };
 

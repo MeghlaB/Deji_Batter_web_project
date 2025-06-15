@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 export default function App() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -49,7 +50,12 @@ export default function App() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen">
+    <>
+     <Helmet>
+        <title>Product | Deji Battery</title>
+        <meta name="description" content="Get in touch with us for any inquiries about our batteries, bulk orders, or technical support." />
+      </Helmet>
+ <div className="flex flex-col lg:flex-row min-h-screen">
       {/* Sidebar */}
       <div className="w-full lg:w-64 p-4 bg-gray-100 border-b lg:border-b-0 lg:border-r">
         <h2 className="text-2xl font-bold mb-4 text-center lg:text-left">Deji Battery</h2>
@@ -98,5 +104,7 @@ export default function App() {
         ))}
       </div>
     </div>
+    </>
+   
   );
 }

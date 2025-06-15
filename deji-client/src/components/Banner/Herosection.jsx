@@ -41,7 +41,7 @@ export default function Banner() {
   }, [nextSlider]);
 
   return (
-    <div className="relative w-full h-[600px] overflow-hidden">
+    <div className="relative w-full  h-[600px] overflow-hidden -mt-24">
       {/* Slider Images */}
       <div
         className="flex transition-transform duration-700 ease-in-out h-full"

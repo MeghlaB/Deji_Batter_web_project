@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../Provider/Authprovider";
+import { Helmet } from "react-helmet";
 
 const BulkOrderForm = () => {
   const { user } = useContext(AuthContext);
@@ -12,7 +13,7 @@ const BulkOrderForm = () => {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/carts");
+        const res = await axios.get("http://localhost:5000/all-carts");
         setCartItems(res.data || []);
       } catch (error) {
         console.error("Failed to fetch cart:", error);
@@ -47,7 +48,12 @@ const BulkOrderForm = () => {
   if (loading) return <div className="text-center mt-10">Loading cart...</div>;
 
   return (
-    <div className="max-w-6xl mx-auto mt-10 p-6 bg-white rounded shadow">
+    <>
+     <Helmet>
+        <title>BLUK ODERs | Deji Battery</title>
+        <meta name="description" content="Get in touch with us for any inquiries about our batteries, bulk orders, or technical support." />
+      </Helmet>
+<div className="max-w-6xl mx-auto mt-10 p-6 bg-white rounded shadow">
       <h2 className="text-2xl font-bold mb-6">Bulk Order Form - From Server:</h2>
 
       <div className="grid grid-cols-2 gap-4 font-semibold border-b pb-2">
@@ -99,6 +105,8 @@ const BulkOrderForm = () => {
         ADD TO CART
       </button>
     </div>
+    </>
+    
   );
 };
 

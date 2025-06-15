@@ -249,21 +249,23 @@ const ProductDetails = () => {
 
         {/* Product Details Section */}
         {activeSection === "details" && (
-          <Box className="max-w-7xl mx-auto mt-10">
+          <Box className="max-w-7xl mx-auto mt-10 px-4">
+            {/* ✅ Image Gallery */}
             {images.length > 0 && (
-              <Box className="grid grid-cols-1  lg:grid-cols-3 gap-4 mb-6">
-                {images.slice(0, 3).map((img, index) => (
-                  <Box key={index} className=" md:w-[350px] mx-auto w-full">
+              <Box className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                {images.slice(0, 4).map((img, index) => (
+                  <Box key={index} className="w-full">
                     <img
                       src={img}
                       alt={`Product ${index + 1}`}
-                      className="w-full h-auto rounded-md shadow hover:scale-105 transition-transform duration-300"
+                      className="w-full h-64 object-cover rounded-md shadow hover:scale-105 transition-transform duration-300"
                     />
                   </Box>
                 ))}
               </Box>
             )}
 
+            {/* ✅ Specs & Warranty Table */}
             <Paper elevation={2} className="p-4">
               <Typography variant="h6" className="text-center font-bold mb-4">
                 100% Brand NEW & Unused!
@@ -271,167 +273,137 @@ const ProductDetails = () => {
 
               <Table size="small">
                 <TableBody>
+                  {/* Specs Title */}
                   <TableRow>
-                    <TableCell
-                      colSpan={2}
-                      style={{ fontWeight: "bold", fontSize: "1.5rem" }}
-                    >
-                      Specs
+                    <TableCell colSpan={2} className="text-xl font-bold">
+                      Specifications
                     </TableCell>
                   </TableRow>
 
+                  {/* Specs Rows */}
                   <TableRow>
                     <TableCell>Battery Type</TableCell>
                     <TableCell>{product?.batteryType || "-"}</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Battery Cell Grade</TableCell>
                     <TableCell>{product?.batteryGrade || "-"}</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Capacity</TableCell>
                     <TableCell>{product?.capacity || "-"}</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Voltage</TableCell>
                     <TableCell>{product?.voltage || "-"}</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Limited Voltage</TableCell>
                     <TableCell>{product?.limitedVoltage || "-"}</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>PCM Board</TableCell>
                     <TableCell>Self Made & Designable</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Color</TableCell>
                     <TableCell>Blue</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Cycle Time</TableCell>
                     <TableCell>{product?.cycleTime || "-"}</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Charging Time</TableCell>
                     <TableCell>{product?.chargingTime || "-"}</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Standby Time</TableCell>
                     <TableCell>{product?.standbyTime || "-"}</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Certification</TableCell>
                     <TableCell>{product?.certification || "-"}</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Safety</TableCell>
                     <TableCell>Dual IC’s protection</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Material</TableCell>
                     <TableCell>{product?.material || "-"}</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Compatible Models</TableCell>
                     <TableCell>{product?.model || "-"}</TableCell>
                   </TableRow>
 
+                  {/* ✅ Warranty Section */}
                   <TableRow>
-                    <TableCell
-                      colSpan={2}
-                      style={{ fontWeight: "bold", fontSize: "1.5rem" }}
-                    >
+                    <TableCell colSpan={2} className="text-xl font-bold">
                       Warranty
                     </TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Warranty</TableCell>
-                    <TableCell>{product?.warranty || "-"}</TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell
-                      colSpan={2}
-                      style={{ fontWeight: "bold", fontSize: "1.5rem" }}
-                    >
-                      Safety
+                    <TableCell>
+                      {product?.warranty || "1 Year Manufacturer Warranty"}
                     </TableCell>
                   </TableRow>
 
+                  {/* Safety */}
+                  <TableRow>
+                    <TableCell colSpan={2} className="text-xl font-bold">
+                      Safety
+                    </TableCell>
+                  </TableRow>
                   <TableRow>
                     <TableCell>Safety</TableCell>
                     <TableCell>{product?.safety || "-"}</TableCell>
                   </TableRow>
 
+                  {/* Terms & Conditions */}
                   <TableRow>
-                    <TableCell
-                      colSpan={2}
-                      style={{ fontWeight: "bold", fontSize: "1.5rem" }}
-                    >
+                    <TableCell colSpan={2} className="text-xl font-bold">
                       Terms & Condition
                     </TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>MOQ</TableCell>
                     <TableCell>
                       {product?.moq ? `${product.moq} pcs` : "-"}
                     </TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Payment Terms</TableCell>
                     <TableCell>{product?.paymentTerms || "-"}</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Port</TableCell>
                     <TableCell>{product?.port || "-"}</TableCell>
                   </TableRow>
 
+                  {/* OEM */}
                   <TableRow>
-                    <TableCell
-                      colSpan={2}
-                      style={{ fontWeight: "bold", fontSize: "1.5rem" }}
-                    >
+                    <TableCell colSpan={2} className="text-xl font-bold">
                       OEM
                     </TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>OEM Order</TableCell>
                     <TableCell>OEM order is warmly welcomed.</TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Trial Order</TableCell>
                     <TableCell>Trial order is also accepted.</TableCell>
                   </TableRow>
 
+                  {/* Working Temp */}
                   <TableRow>
-                    <TableCell
-                      colSpan={2}
-                      style={{ fontWeight: "bold", fontSize: "1.5rem" }}
-                    >
+                    <TableCell colSpan={2} className="text-xl font-bold">
                       Working Temp
                     </TableCell>
                   </TableRow>
-
                   <TableRow>
                     <TableCell>Working Temp</TableCell>
                     <TableCell>{product?.workingTemp || "-"}</TableCell>
@@ -440,6 +412,7 @@ const ProductDetails = () => {
               </Table>
             </Paper>
 
+            {/* ✅ Other Sections */}
             <Companyinfo />
             <GlobalNetworkSection />
             <CertificateSection />
