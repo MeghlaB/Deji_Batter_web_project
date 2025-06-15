@@ -86,13 +86,13 @@ const Footer = () => {
         <Box mt={5} py={3} borderTop="1px solid #444" borderBottom="1px solid #444">
           <Grid container spacing={2} justifyContent="center" textAlign="center">
             <Grid item xs={12} md={4}>
-              <Typography variant="body2">✅ IMDA Certified</Typography>
+              <Typography variant="body2"> IMDA Certified</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-              <Typography variant="body2">✅ ACRA Registered</Typography>
+              <Typography variant="body2">ACRA Registered</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-              <Typography variant="body2">📍 SG Office: 10 Anson Road, #10-11, Singapore 079903</Typography>
+              <Typography variant="body2"> SG Office: 123 Singapore Rd</Typography>
             </Grid>
           </Grid>
         </Box>

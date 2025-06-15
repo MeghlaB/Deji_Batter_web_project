@@ -283,7 +283,6 @@
 // app.listen(port, () => {
 //   console.log(`✅ Server listening on http://localhost:${port}`);
 // });
-    
 
 const express = require("express");
 const cors = require("cors");
@@ -477,7 +476,7 @@ async function run() {
       res.send(data);
     });
 
-     // news articles route
+    // news articles route
     // create news articles route
     app.post("/add-news", async (req, res) => {
       try {
@@ -489,7 +488,7 @@ async function run() {
         res.status(500).send("Internal Server Error");
       }
     });
-// get all news articles
+    // get all news articles
     app.get("/news", async (req, res) => {
       try {
         const news = await newsArticlesCollection.find().toArray();
@@ -499,11 +498,13 @@ async function run() {
         res.status(500).send("Internal Server Error");
       }
     });
-// get single news article
+    // get single news article
     app.get("/news/:id", async (req, res) => {
       try {
         const id = req.params.id;
-        const news = await newsArticlesCollection.findOne({ _id: new ObjectId(id) });
+        const news = await newsArticlesCollection.findOne({
+          _id: new ObjectId(id),
+        });
         res.send(news);
       } catch (error) {
         console.error("Error fetching news:", error);
@@ -511,11 +512,13 @@ async function run() {
       }
     });
 
-// delete news article
+    // delete news article
     app.delete("/news/:id", async (req, res) => {
       try {
         const id = req.params.id;
-        const result = await newsArticlesCollection.deleteOne({ _id: new ObjectId(id) });
+        const result = await newsArticlesCollection.deleteOne({
+          _id: new ObjectId(id),
+        });
         res.send(result);
       } catch (error) {
         console.error("Error deleting news:", error);
@@ -523,19 +526,21 @@ async function run() {
       }
     });
 
-// update a single news article
+    // update a single news article
     app.patch("/news/:id", async (req, res) => {
       try {
         const id = req.params.id;
         const newsData = req.body;
-        const result = await newsArticlesCollection.updateOne({ _id: new ObjectId(id) }, { $set: newsData });
+        const result = await newsArticlesCollection.updateOne(
+          { _id: new ObjectId(id) },
+          { $set: newsData }
+        );
         res.send(result);
       } catch (error) {
         console.error("Error updating news:", error);
         res.status(500).send("Internal Server Error");
       }
     });
-
 
     // ---------- CSV EXPORT ROUTE ----------
     app.get("/api/export-products", async (req, res) => {
@@ -587,7 +592,6 @@ async function run() {
       }
     });
 
-   
     // ---------- AI Blog Generation ----------
 
     app.get("/models", async (req, res) => {
@@ -619,47 +623,38 @@ async function run() {
       }
     });
 
-// .----- Add to Cart -------------
-app.post('/cart',async(req,res)=>{
-  const cartList = req.body
-  const result = await cartCollection.insertOne(cartList)
-  res.send(result)
-})
-app.get('/carts',async(req,res)=>{
-  const result = await cartCollection.find().toArray()
-  res.send(result)
-})
+    // ......ADD TO CART.....
+    app.post("/cart", async (req, res) => {
+      const items = req.body;
+      const result = await cartCollection.insertOne(items);
+      res.send(result);
+    });
 
+    app.get("/all-carts", async (req, res) => {
+      const allItems = req.body;
+      const result = await cartCollection.find().toArray();
+      res.send(result);
+    });
 
+    app.get("/carts", async (req, res) => {
+      const email = req.query.email;
+      if (!email) {
+        return res
+          .status(400)
+          .send({ message: "Email query parameter is required" });
+      }
 
-
-
-
-
-
-
-
-
-
-
-
-
+      try {
+        const result = await cartCollection.find({ email }).toArray();
+        res.send(result);
+      } catch (err) {
+        console.error(err);
+        res.status(500).send({ message: "Failed to fetch cart items" });
+      }
+    });
   } catch (error) {
     console.error("Server startup failed:", error);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 run().catch(console.dir);

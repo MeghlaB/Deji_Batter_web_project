@@ -75,7 +75,8 @@ const ProductCard = ({ product, handleAddToCart }) => {
            
           }}
         >
-          Price: SGD ${convertToSGD(product.price)}
+         Price: S${convertToSGD(product.price)}
+
         </Typography>
 
         {/* Spacer to push button to bottom */}

@@ -15,7 +15,7 @@ const AdminHome = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("https://deji-server.vercel.app/carts");
+      const res = await axios.get("http://localhost:5000/carts");
       const orders = res.data || [];
       setTotalOrders(orders.length);
       const total = orders.reduce((sum, order) => sum + (order.total || 0), 0);

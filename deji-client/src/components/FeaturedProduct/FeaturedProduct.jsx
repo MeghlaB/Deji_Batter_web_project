@@ -4,19 +4,18 @@ import axios from "axios";
 import ProductCard from "../ProductCard/ProductCard";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { motion } from "framer-motion"; //
+import { motion } from "framer-motion";
 import { useContext } from "react";
 import { AuthContext } from "../../Provider/Authprovider";
 
 // Fetch products
 const fetchProducts = async () => {
-
-  const res = await axios.get("https://deji-server.vercel.app/products");
-  console.log(res.data)
+  const res = await axios.get("http://localhost:5000/products");
+  console.log(res.data);
   return res.data;
 };
 
-// Add product to cart (localStorage)
+// Add product to cart (localStorage + backend)
 const addToLocalCart = async (product, user) => {
   const existing = JSON.parse(localStorage.getItem("cart")) || [];
   const exists = existing.find((item) => item._id === product._id);
@@ -27,7 +26,6 @@ const addToLocalCart = async (product, user) => {
     existing.push({ ...product, quantity: 1 });
   }
 
-  // Update localStorage
   localStorage.setItem("cart", JSON.stringify(existing));
 
   try {
@@ -35,13 +33,13 @@ const addToLocalCart = async (product, user) => {
       productId: product._id,
       title: product.title,
       price: product.price,
-      image: product.imageURLs[0],
+      image: product.imageURLs ? product.imageURLs[0] : "",
       quantity: 1,
-      email: user?.email, 
+      email: user?.email,  // <-- User email included here
     };
-    console.log(cartData)
+    console.log("Posting cart data:", cartData);
 
-    await axios.post("https://deji-server.vercel.app/cart", cartData);
+    await axios.post("http://localhost:5000/cart", cartData);
   } catch (error) {
     console.error("Error posting to cart database:", error);
   }
@@ -58,6 +56,8 @@ const addToLocalCart = async (product, user) => {
 };
 
 const FeaturedProduct = () => {
+  const { user } = useContext(AuthContext); // <-- get user context
+
   const {
     data: products = [],
     isLoading,
@@ -68,7 +68,14 @@ const FeaturedProduct = () => {
   });
 
   const handleAddToCart = (product) => {
-    addToLocalCart(product);
+    if (!user) {
+      Swal.fire({
+        icon: "warning",
+        title: "Please log in to add items to your cart.",
+      });
+      return;
+    }
+    addToLocalCart(product, user);
   };
 
   if (isLoading)
@@ -98,24 +105,25 @@ const FeaturedProduct = () => {
       </motion.h1>
 
       <Box sx={{ mt: 4, px: 3, mx: "auto", width: "container" }}>
-        {/* Product Grid with Animation */}
         <Grid container spacing={2}>
           {products.map((product, index) => (
-            <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
+            <Link to={`/products/${product._id}`}>
+              <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 30 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 whileHover={{ scale: 1.03 }}
               >
-                <Link to={`/products/${product._id}`}>
+                <Link to={`/products/${product._id}`} onClick={e => e.preventDefault()}>
                   <ProductCard
                     product={product}
-                    handleAddToCart={handleAddToCart}
+                    handleAddToCart={() => handleAddToCart(product)}
                   />
                 </Link>
               </motion.div>
             </Grid>
+            </Link>
           ))}
         </Grid>
       </Box>

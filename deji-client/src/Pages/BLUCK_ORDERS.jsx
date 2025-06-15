@@ -12,7 +12,7 @@ const BulkOrderForm = () => {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const res = await axios.get("https://deji-server.vercel.app/carts");
+        const res = await axios.get("http://localhost:5000/carts");
         setCartItems(res.data || []);
       } catch (error) {
         console.error("Failed to fetch cart:", error);
