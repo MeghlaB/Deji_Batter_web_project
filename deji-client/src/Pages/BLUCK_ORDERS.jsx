@@ -85,11 +85,7 @@ const BulkOrderForm = () => {
             className="border px-2 py-1 w-20"
           />
 
-          {/* <div className="text-green-600 font-medium">£{item.price}</div>
-
-          <div className="font-bold">
-            £{(item.price * item.quantity).toFixed(2)}
-          </div> */}
+          
         </div>
       ))}
 
