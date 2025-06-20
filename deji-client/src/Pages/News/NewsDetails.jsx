@@ -23,7 +23,7 @@ const NewsDetails = () => {
   } = useQuery({
     queryKey: ["article", id],
     queryFn: async () => {
-      const res = await fetch(`https://deji-server-developers-projects-08e2b070.vercel.app/news/${id}`);
+      const res = await fetch(`https://deji-server.vercel.app/news/${id}`);
       if (!res.ok) throw new Error("Failed to fetch article");
       return res.json();
     },

@@ -46,7 +46,7 @@ export default function App() {
       };
 
       await axios.post(
-        "https://deji-server-developers-projects-08e2b070.vercel.app/cart",
+        "https://deji-server.vercel.app/cart",
         cartData
       );
     } catch (error) {
@@ -69,7 +69,7 @@ export default function App() {
       try {
         setLoading(true);
         const res = await axios.get(
-          "https://deji-server-developers-projects-08e2b070.vercel.app/products"
+          "https://deji-server.vercel.app/products"
         );
         const data = res.data || [];
 

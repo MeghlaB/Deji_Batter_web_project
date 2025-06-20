@@ -28,7 +28,7 @@ const InquiryForm = () => {
     };
 
     try {
-      const res = await axios.post("https://deji-server-developers-projects-08e2b070.vercel.app/inquiries", formattedData);
+      const res = await axios.post("https://deji-server.vercel.app/inquiries", formattedData);
       if (res.data.insertedId) {
         Swal.fire({
           title: "Order Submitted Successfully!",

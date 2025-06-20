@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import { AuthContext } from "../../Provider/Authprovider";
 
 const fetchProducts = async () => {
-  const res = await axios.get("https://deji-server-developers-projects-08e2b070.vercel.app/products");
+  const res = await axios.get("https://deji-server.vercel.app/products");
   console.log(res.data)
   return res.data;
 };
@@ -37,7 +37,7 @@ const ProductList = () => {
   // };
 
   // try {
-  //   const res = await axios.post("https://deji-server-developers-projects-08e2b070.vercel.app/cart", cartItem);
+  //   const res = await axios.post("https://deji-server.vercel.app/cart", cartItem);
   //   if (res.data.insertedId) {
   //     Swal.fire("Added!", "Product added to cart.", "success");
   //   }

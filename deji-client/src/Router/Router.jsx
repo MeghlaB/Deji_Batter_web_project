@@ -93,7 +93,7 @@ const router = createBrowserRouter([
         element: <EditProduct/>,
         loader: ({ params }) =>
           fetch(
-            `https://deji-server-developers-projects-08e2b070.vercel.app/products/${params.id}`
+            `https://deji-server.vercel.app/products/${params.id}`
           ),
       },
       {

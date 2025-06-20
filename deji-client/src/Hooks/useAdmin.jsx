@@ -12,7 +12,7 @@ function useAdmin() {
     queryKey: [user?.email, 'isAdmin'],
     enabled: !loading && !!user?.email, 
     queryFn: async () => {
-      const res = await axios.get(`https://deji-server-developers-projects-08e2b070.vercel.app/users/admin/${user?.email}`);
+      const res = await axios.get(`https://deji-server.vercel.app/users/admin/${user?.email}`);
       console.log(res.data);
       return res?.data?.admin;
     },

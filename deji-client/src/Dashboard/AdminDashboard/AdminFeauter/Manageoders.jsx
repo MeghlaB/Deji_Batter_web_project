@@ -20,7 +20,7 @@ const ManageOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("https://deji-server-developers-projects-08e2b070.vercel.app/inquiries");
+      const res = await axios.get("https://deji-server.vercel.app/inquiries");
       setOrders(res.data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -42,7 +42,7 @@ const ManageOrders = () => {
     if (newStatus === currentStatus) return;
 
     try {
-      await axios.patch(`https://deji-server-developers-projects-08e2b070.vercel.app/inquiries/${id}`, {
+      await axios.patch(`https://deji-server.vercel.app/inquiries/${id}`, {
         status: newStatus,
       });
       setOrders((prev) =>

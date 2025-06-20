@@ -10,7 +10,7 @@ import { AuthContext } from "../../Provider/Authprovider";
 
 // Fetch products
 const fetchProducts = async () => {
-  const res = await axios.get("https://deji-server-developers-projects-08e2b070.vercel.app/products");
+  const res = await axios.get("https://deji-server.vercel.app/products");
   return res.data;
 };
 
@@ -37,7 +37,7 @@ const addToLocalCart = async (product, user) => {
       email: user?.email,
     };
 
-    await axios.post("https://deji-server-developers-projects-08e2b070.vercel.app/cart", cartData);
+    await axios.post("https://deji-server.vercel.app/cart", cartData);
   } catch (error) {
     console.error("Error posting to cart DB:", error);
   }
@@ -60,9 +60,12 @@ const FeaturedProduct = () => {
     data: products = [],
     isLoading,
     isError,
+    isFetching,
   } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
+    staleTime: 5 * 60 * 1000, // 5 minutes before data becomes stale
+    keepPreviousData: true, // Keep previous data while fetching new data
   });
 
   const handleAddToCart = (product) => {
@@ -75,13 +78,6 @@ const FeaturedProduct = () => {
     }
     addToLocalCart(product, user);
   };
-
-  if (isLoading)
-    return (
-      <Box textAlign="center" mt={5}>
-        <CircularProgress />
-      </Box>
-    );
 
   if (isError)
     return (
@@ -100,38 +96,64 @@ const FeaturedProduct = () => {
         style={{ color: "#11B808" }}
       >
         Featured Products
+        {isFetching && !isLoading && (
+          <CircularProgress size={20} sx={{ ml: 2 }} />
+        )}
       </motion.h1>
 
-      <Box sx={{ mt: 4 }}>
-        <Grid container spacing={3}>
-          {products.map((product, index) => (
-            <Grid
-              item
-              key={product._id}
-              xs={12}
-              sm={6}
-              md={4}
-              lg={3}
-              display="flex"
-              justifyContent="center"
-            >
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 30 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ scale: 1.03 }}
-                className="w-full max-w-xs"
+      <Box sx={{ 
+        mt: 4,
+        display: 'flex',
+        justifyContent: 'center',
+        width: '100%'
+      }}>
+        {isLoading && !products.length ? (
+          <Box textAlign="center" mt={5}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Grid 
+            container 
+            spacing={3}
+            sx={{
+              maxWidth: '1400px',
+              justifyContent: 'center'
+            }}
+          >
+            {products.map((product, index) => (
+              <Grid
+                item
+                key={product._id}
+                xs={12}
+                sm={6}
+                md={4}
+                lg={3}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}
               >
-                <Link to={`/products/${product._id}`}>
-                  <ProductCard
-                    product={product}
-                    handleAddToCart={() => handleAddToCart(product)}
-                  />
-                </Link>
-              </motion.div>
-            </Grid>
-          ))}
-        </Grid>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.03 }}
+                  style={{
+                    width: '100%',
+                    maxWidth: '300px'
+                  }}
+                >
+                  <Link to={`/products/${product._id}`} style={{ textDecoration: 'none' }}>
+                    <ProductCard
+                      product={product}
+                      handleAddToCart={() => handleAddToCart(product)}
+                    />
+                  </Link>
+                </motion.div>
+              </Grid>
+            ))}
+          </Grid>
+        )}
       </Box>
     </div>
   );
