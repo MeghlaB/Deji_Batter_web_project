@@ -74,7 +74,7 @@ function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={authInfo}>
       {loading ? (
-        <div className="fixed inset-0 flex justify-center items-center bg-accent bg-opacity-50">
+        <div className="fixed inset-0 flex justify-center items-center  ">
           <span className="loading loading-dots loading-lg"></span>
         </div>
       ) : (
