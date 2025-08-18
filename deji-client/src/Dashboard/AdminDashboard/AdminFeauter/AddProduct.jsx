@@ -60,7 +60,7 @@ const AddProductForm = () => {
         imageURLs: imageURLs,
       };
 
-      const res = await axios.post("https://deji-server.vercel.app/add-products", productData);
+      const res = await axios.post("https://deji-baterryserver-1.onrender.com/add-products", productData);
 
       if (res.data.insertedId) {
         reset();

@@ -49,7 +49,7 @@ export default function Navbar() {
     queryKey: ["cart", user?.email],
     queryFn: async () => {
       const res = await axios.get(
-        `https://deji-server.vercel.app/carts?email=${user.email}`
+        `https://deji-baterryserver-1.onrender.com/carts?email=${user.email}`
       );
       return res.data;
     },

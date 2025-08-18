@@ -42,7 +42,7 @@ const ManageProducts = () => {
   } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
-      const res = await axios.get("https://deji-server.vercel.app/products");
+      const res = await axios.get("https://deji-baterryserver-1.onrender.com/products");
       return res.data;
     },
   });

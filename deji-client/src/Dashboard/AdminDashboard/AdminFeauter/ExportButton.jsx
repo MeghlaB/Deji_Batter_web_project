@@ -16,7 +16,7 @@ const ExportButton = () => {
 });
   const handleExport = async () => {
     try {
-      const response = await fetch("https://deji-server.vercel.app/api/export-products");
+      const response = await fetch("https://deji-baterryserver-1.onrender.com/api/export-products");
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
 

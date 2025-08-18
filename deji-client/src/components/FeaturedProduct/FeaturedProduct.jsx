@@ -10,7 +10,7 @@ import { AuthContext } from "../../Provider/Authprovider";
 
 // Fetch products
 const fetchProducts = async () => {
-  const res = await axios.get("https://deji-server.vercel.app/products");
+  const res = await axios.get("https://deji-baterryserver-1.onrender.com/products");
   return res.data;
 };
 
@@ -37,7 +37,7 @@ const addToLocalCart = async (product, user) => {
       email: user?.email,
     };
 
-    await axios.post("https://deji-server.vercel.app/cart", cartData);
+    await axios.post("https://deji-baterryserver-1.onrender.com/cart", cartData);
   } catch (error) {
     console.error("Error posting to cart DB:", error);
   }

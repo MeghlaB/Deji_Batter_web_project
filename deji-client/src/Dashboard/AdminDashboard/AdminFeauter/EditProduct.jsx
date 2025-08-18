@@ -61,7 +61,7 @@ const EditProduct = () => {
 
   useEffect(() => {
     axios
-      .get(`https://deji-server.vercel.app/products/${id}`)
+      .get(`https://deji-baterryserver-1.onrender.com/products/${id}`)
       .then((res) => {
         const data = res.data[0];
         reset(data);
@@ -98,7 +98,7 @@ const EditProduct = () => {
     
       delete updatedProduct.image;
 
-      const res = await axios.patch(`https://deji-server.vercel.app/products/${id}`, updatedProduct);
+      const res = await axios.patch(`https://deji-baterryserver-1.onrender.com/products/${id}`, updatedProduct);
 
       if (res.data.modifiedCount > 0) {
         Swal.fire({

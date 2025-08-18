@@ -20,7 +20,7 @@ const ManageOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("https://deji-server.vercel.app/inquiries");
+      const res = await axios.get("https://deji-baterryserver-1.onrender.com/inquiries");
       setOrders(res.data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -42,7 +42,7 @@ const ManageOrders = () => {
     if (newStatus === currentStatus) return;
 
     try {
-      await axios.patch(`https://deji-server.vercel.app/inquiries/${id}`, {
+      await axios.patch(`https://deji-baterryserver-1.onrender.com/inquiries/${id}`, {
         status: newStatus,
       });
       setOrders((prev) =>

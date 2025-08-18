@@ -46,7 +46,7 @@ export default function App() {
       };
 
       await axios.post(
-        "https://deji-server.vercel.app/cart",
+        "https://deji-baterryserver-1.onrender.com/cart",
         cartData
       );
     } catch (error) {
@@ -69,7 +69,7 @@ export default function App() {
       try {
         setLoading(true);
         const res = await axios.get(
-          "https://deji-server.vercel.app/products"
+          "https://deji-baterryserver-1.onrender.com/products"
         );
         const data = res.data || [];
 

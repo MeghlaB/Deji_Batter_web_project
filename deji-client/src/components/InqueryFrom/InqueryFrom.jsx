@@ -28,7 +28,7 @@ const InquiryForm = () => {
     };
 
     try {
-      const res = await axios.post("https://deji-server.vercel.app/inquiries", formattedData);
+      const res = await axios.post("https://deji-baterryserver-1.onrender.com/inquiries", formattedData);
       if (res.data.insertedId) {
         Swal.fire({
           title: "Order Submitted Successfully!",

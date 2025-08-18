@@ -57,7 +57,7 @@ function Register() {
       };
 
       const res = await axios.post(
-        "https://deji-server.vercel.app/users",
+        "https://deji-baterryserver-1.onrender.com/users",
         userInfo
       );
 

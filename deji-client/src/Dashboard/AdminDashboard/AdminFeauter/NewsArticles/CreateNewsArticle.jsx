@@ -7,7 +7,7 @@ const CreateNewsArticle = () => {
     
   const handleArticleSubmit = async (data) => {
     try {
-      const res = await fetch("https://deji-server.vercel.app/add-news", {
+      const res = await fetch("https://deji-baterryserver-1.onrender.com/add-news", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

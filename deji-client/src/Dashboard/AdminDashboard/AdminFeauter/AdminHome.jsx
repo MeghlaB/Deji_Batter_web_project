@@ -25,7 +25,7 @@ const AdminHome = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("https://deji-server.vercel.app/all-carts");
+      const res = await axios.get("https://deji-baterryserver-1.onrender.com/all-carts");
       const orders = res.data || [];
       setTotalOrders(orders.length);
       const total = orders.reduce((sum, order) => sum + (order.total || 0), 0);
@@ -38,7 +38,7 @@ const AdminHome = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("https://deji-server.vercel.app/products");
+      const res = await axios.get("https://deji-baterryserver-1.onrender.com/products");
       const products = res.data || [];
       setTotalProducts(products.length);
 
@@ -53,7 +53,7 @@ const AdminHome = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("https://deji-server.vercel.app/users");
+      const res = await axios.get("https://deji-baterryserver-1.onrender.com/users");
       const users = res.data || [];
       setTotalUsers(users.length);
     } catch (err) {
